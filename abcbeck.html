@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edytowalny Model Depresji Becka</title>
+    <style>
+        /* Globalne style dla tła i czcionki */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Styl kontenera głównego, aby wyśrodkować schemat */
+        .flowchart-container {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        /* Styl nagłówka */
+        .header {
+            font-weight: bold;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        /* Styl ogólny dla wszystkich bloków (kroków) */
+        .step {
+            background-color: #d8edf7; /* Jasnoniebieski jak na obrazku */
+            border: 1px solid #a6cde2;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Styl dla bloku "Zdarzenie krytyczne" (kropkowana ramka) */
+        .critical-event {
+            border: 2px dashed #000;
+            background-color: #fff; /* Białe tło wewnątrz kropkowanej ramki */
+        }
+
+        /* Styl dla bloku dolnego "Objawy depresji" */
+        .symptoms-block {
+            margin-bottom: 25px;
+        }
+
+        /* Styl dla edytowalnego tekstu/pola */
+        .editable-text {
+            width: 90%;
+            border: none;
+            background: transparent;
+            text-align: center;
+            font-size: 1em;
+            padding: 5px 0;
+            outline: none; /* Usuwa obramowanie przy fokusie */
+        }
+
+        /* Styl dla strzałek (używając pseudoelementów) */
+        .arrow-down::after {
+            content: '';
+            display: block;
+            width: 2px;
+            height: 20px;
+            background-color: #000;
+            margin: 5px auto;
+        }
+
+        /* Styl dla sekcji końcowej (typów objawów) */
+        .bottom-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 15px;
+            padding: 0 10px;
+        }
+
+        /* Styl dla pojedynczego bloku końcowego */
+        .type-block {
+            background-color: #d8edf7;
+            border: 1px solid #a6cde2;
+            padding: 8px 5px;
+            border-radius: 5px;
+            width: calc(20% - 10px); /* 5 bloków z marginesem */
+            font-size: 0.9em;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        /* Łączniki do dolnych bloków */
+        .symptoms-block::after {
+            content: '';
+            display: block;
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 15px;
+            background-color: #000;
+        }
+
+        /* Linie poziome łączące dolne bloki */
+        .bottom-row-connector {
+            position: relative;
+            height: 20px;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .bottom-row-connector::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 5%;
+            right: 5%;
+            height: 2px;
+            background-color: #000;
+        }
+
+        /* Strzałki w górę i w dół między Objawami a Negatywnymi Myślami */
+        .bidirectional-arrow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 20px;
+            margin: 5px 0;
+            position: relative;
+        }
+
+        .bidirectional-arrow::before {
+            content: '↑↓'; /* Symbol strzałek góra-dół */
+            font-size: 1.2em;
+            line-height: 1;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="flowchart-container">
+        <div class="header">
+            Model depresji (Beck, 1967, 1976)
+        </div>
+
+        <div class="step arrow-down">
+            <input type="text" class="editable-text" value="Wczesne doświadczenia życiowe">
+        </div>
+
+        <div class="step arrow-down">
+            <input type="text" class="editable-text" value="Przekonania kluczowe i założenia (przekonania pośrednie)">
+        </div>
+
+        <div class="step critical-event arrow-down">
+            <input type="text" class="editable-text" value="Zdarzenie krytyczne">
+        </div>
+
+        <div class="step arrow-down">
+            <input type="text" class="editable-text" value="Aktywizacja założeń">
+        </div>
+
+        <div class="step">
+            <input type="text" class="editable-text" value="Negatywne myśli automatyczne">
+        </div>
+        
+        <div class="bidirectional-arrow"></div>
+
+        <div class="step symptoms-block">
+            <input type="text" class="editable-text" value="Objawy depresji">
+        </div>
+
+        <div class="bottom-row-connector"></div>
+
+        <div class="bottom-row">
+            <div class="type-block">
+                <input type="text" class="editable-text" value="Behawioralne">
+            </div>
+            <div class="type-block">
+                <input type="text" class="editable-text" value="Motywacyjne">
+            </div>
+            <div class="type-block">
+                <input type="text" class="editable-text" value="Emocjonalne">
+            </div>
+            <div class="type-block">
+                <input type="text" class="editable-text" value="Poznawcze">
+            </div>
+            <div class="type-block">
+                <input type="text" class="editable-text" value="Somatyczne">
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
