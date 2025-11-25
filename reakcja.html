@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Czasu Reakcji</title>
+    
+    <style>
+        /* --- STYLIZACJA CSS --- */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+            padding: 20px;
+        }
+
+        #game-area {
+            width: 350px;
+            height: 350px;
+            /* Kolor początkowy: niebieski */
+            background-color: #3498db; 
+            color: white;
+            text-align: center;
+            line-height: 350px; /* Wyśrodkowanie pionowe tekstu */
+            font-size: 1.8em;
+            font-weight: bold;
+            margin: 30px auto;
+            cursor: pointer;
+            border-radius: 20px;
+            user-select: none;
+            transition: background-color 0.2s; /* Płynna zmiana koloru */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Stan, gdy użytkownik powinien kliknąć (zielony) */
+        .ready {
+            background-color: #2ecc71 !important; 
+        }
+
+        /* Stan, gdy użytkownik kliknął za wcześnie (czerwony) */
+        .early {
+            background-color: #e74c3c !important; 
+        }
+
+        #result {
+            font-size: 1.2em;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Sprawdź swój czas reakcji! ⏱️</h1>
+    <p>Gdy tło zmieni się na **zielone**, kliknij w pole jak najszybciej.</p>
+
+    <div id="game-area">
+        Kliknij, aby rozpocząć
+    </div>
+
+    <p id="result">Twój czas reakcji: -</p>
+
+    <script>
+        /* --- LOGIKA JAVASCRIPT --- */
+        const gameArea = document.getElementById('game-area');
+        const resultDisplay = document.getElementById('result');
+
+        let startTime; 
+        let timeoutId; 
+        let isWaitingForClick = false; 
+        let isGameRunning = false; 
+
+        /**
+         * Ustawia stan gry na oczekiwanie i planuje zmianę koloru.
+         */
+        function prepareGame() {
+            isGameRunning = true;
+            isWaitingForClick = false;
+            gameArea.textContent = 'Czekaj na zielony...';
+            gameArea.className = ''; // Usuwamy klasy ready/early
+            resultDisplay.textContent = 'Przygotuj się...';
+
+            // Losowe opóźnienie między 1000ms (1s) a 4000ms (4s)
+            const delay = Math.floor(Math.random() * 3000) + 1000;
+
+            // Ustawiamy opóźnienie i po nim wywołujemy funkcję changeToGreen
+            timeoutId = setTimeout(changeToGreen, delay);
+        }
+
+        /**
+         * Zmienia kolor na zielony i zapisuje czas startu.
+         */
+        function changeToGreen() {
+            gameArea.textContent = 'KLIKNIJ TERAZ!';
+            gameArea.className = 'ready'; // Dodajemy klasę, która zmienia kolor na zielony
+            isWaitingForClick = true;
+
+            // Zapisujemy dokładny czas, kiedy kolor się zmienił (w milisekundach)
+            startTime = new Date().getTime();
+        }
+
+        /**
+         * Obsługa kliknięcia użytkownika w pole gry.
+         */
+        gameArea.addEventListener('click', function() {
+            if (!isGameRunning) {
+                // STAN 1: Kliknięcie na start
+                prepareGame();
+            } else if (isWaitingForClick) {
+                // STAN 2: Kliknięcie po zmianie na zielony (PRAWIDŁOWA REAKCJA)
+                const endTime = new Date().getTime();
+                const reactionTime = endTime - startTime;
+
+                gameArea.textContent = 'WYNIK: ' + reactionTime + ' ms. Kliknij, aby spróbować ponownie.';
+                resultDisplay.textContent = '🎉 Twój czas reakcji: ' + reactionTime + ' ms';
+
+                isWaitingForClick = false;
+                isGameRunning = false;
+                gameArea.className = ''; // Powrót do koloru początkowego
+
+            } else {
+                // STAN 3: Kliknięcie ZA WCZEŚNIE (Fałszywy start)
+                if (timeoutId) {
+                    clearTimeout(timeoutId); // Anulujemy zaplanowaną zmianę na zielony
+                }
+
+                gameArea.textContent = 'ZA WCZEŚNIE! Fałszywy start. Kliknij, aby spróbować ponownie.';
+                resultDisplay.textContent = '❌ Błąd: Kliknięcie przed bodźcem. Spróbuj ponownie.';
+                gameArea.className = 'early'; // Zmiana koloru na czerwony
+                isGameRunning = false;
+            }
+        });
+    </script>
+</body>
+</html>
