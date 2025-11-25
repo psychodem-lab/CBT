@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktywny Model CBT</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+
+        /* Główny kontener diagramu */
+        .diagram-container {
+            position: relative;
+            width: 900px;
+            height: 750px;
+            background-color: white;
+            /* Opcjonalnie: odkomentuj poniższą linię, aby zobaczyć granice kontenera */
+            /* border: 1px dashed #ccc; */
+        }
+
+        /* Etykiety literowe (A, B, C) */
+        .big-letter {
+            position: absolute;
+            font-size: 80px;
+            font-weight: bold;
+            color: #5c9bd5; /* Kolor niebieski z obrazka */
+            font-family: Arial, sans-serif;
+            user-select: none;
+        }
+
+        .letter-a { top: 50px; left: 20px; }
+        .letter-b { top: 300px; left: 20px; }
+        .letter-c { top: 550px; left: 20px; }
+
+        /* Style dla edytowalnych pudełek */
+        .box {
+            position: absolute;
+            width: 240px;
+            height: 120px;
+            border: 2px solid black;
+            background: white;
+            padding: 10px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 10;
+            overflow: hidden; /* Ukrywa nadmiar tekstu przed przeskalowaniem */
+            transition: border-color 0.3s;
+        }
+
+        .box:focus {
+            outline: none;
+            border-color: #5c9bd5;
+            box-shadow: 0 0 5px rgba(92, 155, 213, 0.5);
+        }
+
+        /* Tytuły wewnątrz pudełek (niebieskie) */
+        .box-title {
+            color: #5c9bd5;
+            font-weight: bold;
+            margin-bottom: 5px;
+            pointer-events: none; /* Kliknięcie przenosi do edycji tekstu */
+            font-size: 18px; 
+        }
+
+        /* Treść użytkownika */
+        .box-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            outline: none;
+            font-size: 16px; /* Startowy rozmiar czcionki */
+            line-height: 1.2;
+        }
+
+        /* Mały 'x' w rogu - opcjonalnie, jak na obrazku */
+        .corner-x {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            font-size: 12px;
+            color: black;
+            pointer-events: none;
+        }
+
+        /* Pozycjonowanie pudełek */
+        .pos-top {
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .pos-center {
+            top: 280px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 280px; /* Środkowe pudełko jest nieco szersze */
+        }
+
+        .pos-left {
+            top: 500px;
+            left: 50px;
+        }
+
+        .pos-right {
+            top: 500px;
+            right: 50px;
+        }
+
+        .pos-bottom {
+            top: 600px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Warstwa SVG dla strzałek */
+        .arrows-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Przepuszcza kliknięcia do pudełek */
+            z-index: 1;
+        }
+
+        /* Styl linii strzałek */
+        path {
+            fill: none;
+            stroke: black;
+            stroke-width: 4;
+            stroke-linecap: round;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="diagram-container">
+        
+        <div class="big-letter letter-a">A</div>
+        <div class="big-letter letter-b">B</div>
+        <div class="big-letter letter-c">C</div>
+
+        <svg class="arrows-layer">
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="black" />
+                </marker>
+                <marker id="arrowhead-start" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto-start-reverse">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="black" />
+                </marker>
+            </defs>
+
+            <path d="M 450 145 L 450 270" marker-end="url(#arrowhead)" />
+
+            <path d="M 450 410 L 450 590" marker-end="url(#arrowhead)" marker-start="url(#arrowhead-start)" />
+
+            <path d="M 310 340 Q 200 340 170 490" marker-end="url(#arrowhead)" marker-start="url(#arrowhead-start)" />
+
+            <path d="M 590 340 Q 700 340 730 490" marker-end="url(#arrowhead)" marker-start="url(#arrowhead-start)" />
+
+            <path d="M 170 630 Q 200 700 320 700" marker-end="url(#arrowhead)" marker-start="url(#arrowhead-start)" />
+
+            <path d="M 730 630 Q 700 700 580 700" marker-end="url(#arrowhead)" marker-start="url(#arrowhead-start)" />
+            
+            <path d="M 300 560 L 600 560" marker-end="url(#arrowhead)" marker-start="url(#arrowhead-start)" stroke-width="4" />
+
+        </svg>
+
+        <div class="box pos-top">
+            <div class="box-title">Czynnik wyzwalający</div>
+            <div class="box-content" contenteditable="true" spellcheck="false" data-placeholder="Wpisz treść..."></div>
+            <div class="corner-x">x</div>
+        </div>
+
+        <div class="box pos-center" style="height: 150px;"> <div class="box-title">Automatyczne Myśli</div>
+            <div class="box-content" contenteditable="true" spellcheck="false" data-placeholder="Wpisz treść..."></div>
+            <div class="corner-x">x</div>
+        </div>
+
+        <div class="box pos-left">
+            <div class="box-title">Zachowanie</div>
+            <div class="box-content" contenteditable="true" spellcheck="false" data-placeholder="Wpisz treść..."></div>
+            <div class="corner-x">x</div>
+        </div>
+
+        <div class="box pos-right">
+            <div class="box-title">Objawy fizjologiczne</div>
+            <div class="box-content" contenteditable="true" spellcheck="false" data-placeholder="Wpisz treść..."></div>
+            <div class="corner-x">x</div>
+        </div>
+
+        <div class="box pos-bottom">
+            <div class="box-title">Emocje</div>
+            <div class="box-content" contenteditable="true" spellcheck="false" data-placeholder="Wpisz treść..."></div>
+            <div class="corner-x">x</div>
+        </div>
+
+    </div>
+
+    <script>
+        // Skrypt do automatycznego zmniejszania czcionki, aby tekst się mieścił
+        const editors = document.querySelectorAll('.box-content');
+
+        editors.forEach(editor => {
+            // Funkcja dopasowująca
+            const fitText = () => {
+                let fontSize = 16; // Rozmiar startowy (musi pasować do CSS)
+                const minFontSize = 8; // Minimalny rozmiar czytelny
+                
+                // Resetujemy rozmiar, żeby sprawdzić czy można powiększyć po usunięciu tekstu
+                editor.style.fontSize = fontSize + 'px';
+
+                // Zmniejszamy dopóki tekst wychodzi poza ramkę (scrollHeight > clientHeight)
+                while (editor.scrollHeight > editor.clientHeight && fontSize > minFontSize) {
+                    fontSize--;
+                    editor.style.fontSize = fontSize + 'px';
+                }
+            };
+
+            // Nasłuchiwanie na wpisywanie tekstu
+            editor.addEventListener('input', fitText);
+            
+            // Nasłuchiwanie na wklejanie tekstu (czyszczenie formatowania)
+            editor.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const text = (e.clipboardData || window.clipboardData).getData('text');
+                document.execCommand("insertHTML", false, text);
+            });
+            
+            // Inicjalizacja przy załadowaniu (jeśli byłby jakiś tekst startowy)
+            fitText();
+        });
+    </script>
+</body>
+</html>
