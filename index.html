@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kwestionariusz Myśli Automatycznych - Narzędzie CBT</title>
+    <title>Biblioteka Psychoedukacyjna - Podstawowe Mechanizmy</title>
     
     <style>
-        /* Globalne Style i Reset */
+        /* Styl bazowy */
         body { 
-            font-family: 'Arial', sans-serif; 
+            font-family: 'Inter', sans-serif; 
             line-height: 1.6; 
             margin: 20px; 
-            background-color: #f4f7f6; /* Lekko szare tło */
-            color: #333; 
+            background-color: #e3f2fd; /* Bardzo jasny błękit (light blue) */
+            color: #1a237e; /* Głęboki granat, kontrastowy i czytelny */
         }
         
         .container { 
@@ -20,185 +20,191 @@
             margin: 0 auto; 
             background-color: #ffffff; 
             padding: 30px; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Delikatny cień */
+            border-radius: 15px; 
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); 
         }
         
         h1 { 
-            color: #1e88e5; /* Główny kolor - niebieski */
+            color: #0d47a1; /* Głęboki, wyraźny niebieski */
             text-align: center; 
-            margin-bottom: 30px; 
-        }
-        
-        /* Stylizacja sekcji formularza */
-        .form-section { 
-            margin-bottom: 25px; 
-            padding: 15px; 
-            border-left: 5px solid #1e88e5; /* Wizualne wyróżnienie sekcji */
-            background-color: #f9f9f9; 
-            border-radius: 5px; 
-        }
-        
-        label { 
-            display: block; 
-            font-weight: bold; 
-            margin-bottom: 8px; 
-            color: #1e88e5; 
-        }
-        
-        textarea { 
-            width: 100%; 
-            padding: 10px; 
-            border: 1px solid #ccc; 
-            border-radius: 5px; 
-            box-sizing: border-box; 
-            resize: vertical; 
-            min-height: 80px; 
-        }
-        
-        .description { 
-            font-size: 0.9em; 
-            color: #666; 
-            margin-top: 5px; 
-        }
-        
-        /* Grid dla Dowodów ZA i PRZECIW */
-        .cbt-steps { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; /* Dwie równe kolumny */
-            gap: 20px; 
-        }
-        
-        /* Przyciski Akcji */
-        .action-buttons { 
-            text-align: center; 
-            margin-top: 30px; 
-        }
-        
-        .action-buttons button { 
-            padding: 12px 25px; 
-            margin: 0 10px; 
-            border: none; 
-            border-radius: 25px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            transition: background-color 0.3s;
-        }
-        
-        .print-btn { 
-            background-color: #4caf50; /* Zielony */
-            color: white; 
-        }
-        
-        .print-btn:hover {
-            background-color: #43a047;
+            margin-bottom: 10px; 
         }
 
-        .clear-btn { 
-            background-color: #e53935; /* Czerwony */
-            color: white; 
+        .subtitle {
+            text-align: center;
+            color: #1976d2; /* Średnio-ciemny niebieski */
+            margin-bottom: 30px;
+            font-weight: 300;
         }
 
-        .clear-btn:hover {
-            background-color: #d32f2f;
+        /* Stylizacja sekcji rozwijanej (<details>) */
+        details {
+            margin-bottom: 15px;
+            border: 1px solid #90caf9; /* Jasnoniebieska ramka */
+            border-radius: 8px;
+            background-color: #f7fbff; /* Bardzo jasny, prawie biały błękit */
+            transition: all 0.3s ease-in-out;
+        }
+
+        details[open] {
+            background-color: #bbdefb; /* Jasnoniebieski po otwarciu */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         
-        /* Media Query dla responsywności */
-        @media (max-width: 650px) {
-            .cbt-steps { 
-                grid-template-columns: 1fr; /* Na małych ekranach: jedna kolumna */
-            }
-            .container {
-                padding: 20px;
-            }
+        /* Stylizacja nagłówka (<summary>) */
+        summary {
+            font-size: 1.15em;
+            font-weight: bold;
+            padding: 15px 20px;
+            cursor: pointer;
+            color: #1a237e; /* Głęboki granat */
+            list-style: none; 
+            position: relative;
         }
 
-        /* Ulepszenia dla drukowania (Media Print) */
+        /* Dodanie niestandardowej ikony strzałki */
+        summary::marker {
+            display: none;
+        }
+
+        summary::after {
+            content: '▶'; /* Ikona zamknięta */
+            position: absolute;
+            right: 15px;
+            transition: transform 0.3s;
+            color: #0d47a1; /* Głęboki niebieski dla ikon */
+            font-size: 0.8em;
+        }
+
+        details[open] summary::after {
+            content: '▼'; /* Ikona otwarta */
+        }
+        
+        /* Stylizacja treści wewnątrz details */
+        .content {
+            padding: 10px 20px 20px 20px;
+            border-top: 1px dashed #90caf9;
+        }
+
+        .content p {
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+
+        .key-term {
+            font-weight: bold;
+            color: #1976d2; /* Średni niebieski dla kluczowych terminów */
+        }
+        
+        .example-list {
+            list-style-type: square;
+            margin-left: 20px;
+            padding-left: 0;
+            font-size: 0.95em;
+            color: #1a237e;
+        }
+
+        /* Media Print */
         @media print {
-            .action-buttons, .description {
-                display: none; /* Ukrywamy przyciski i opisy podczas drukowania */
-            }
-            body, .container {
+            body { background-color: white !important; color: black !important; }
+            .container { box-shadow: none; }
+            h1, .subtitle { color: black !important; }
+            /* Pokaż całą treść na wydruku, otwierając wszystkie sekcje */
+            details {
+                border: 1px solid #ccc;
+                margin-bottom: 10px;
                 background-color: white !important;
-                box-shadow: none;
-                margin: 0;
-                padding: 0;
             }
-            h1, label, p {
+            details summary {
                 color: black !important;
+                background-color: #eee;
             }
-            .form-section {
-                border-left: 2px solid #ccc; /* Subtelniejsze obramowanie przy druku */
-                background-color: white;
-                padding: 5px 0;
-            }
-            /* Upewnij się, że tekstarea jest widoczna */
-            textarea {
-                border: 1px dashed #aaa;
+            summary::after {
+                display: none; /* Ukryj ikony strzałek przy drukowaniu */
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🧠 Kwestionariusz Myśli Automatycznych (CBT)</h1>
-        <p class="description" style="text-align: center;">Wypełnij poniższe pola, aby zidentyfikować i zmodyfikować niepomocne wzorce myślenia. Po wypełnieniu, zapisz lub wydrukuj swoje zapisy.</p>
+        <h1>📚 Biblioteka Psychoedukacyjna</h1>
+        <p class="subtitle">Zrozumienie kluczowych mechanizmów, które wpływają na Twoje myśli i emocje.</p>
 
-        <div class="form-section">
-            <label for="situation">1. Sytuacja (Co się wydarzyło, gdzie, kiedy i z kim?)</label>
-            <textarea id="situation" placeholder="Np. Dostałem negatywną opinię od szefa na spotkaniu."></textarea>
-            <div class="description">Opisz fakty (kto, co, gdzie, kiedy), bez oceniania czy interpretowania.</div>
-        </div>
-
-        <div class="form-section">
-            <label for="emotions">2. Emocje (Co czułeś? Jaki był poziom intensywności 0-100%?)</label>
-            <textarea id="emotions" placeholder="Np. Lęk (85%), Smutek (60%), Wstyd (40%)"></textarea>
-            <div class="description">Nazwij emocje (używaj pojedynczych słów) i oceń ich siłę przed kwestionowaniem.</div>
-        </div>
-
-        <div class="form-section" style="border-left-color: #ff9800;">
-            <label for="automatic-thought" style="color: #ff9800;">3. Myśl Automatyczna (Jaka myśl/przekonanie pojawiło się w Twojej głowie w tym momencie?)</label>
-            <textarea id="automatic-thought" placeholder="Np. 'Jestem beznadziejny/a', 'Nigdy mi się nie uda', 'Wszyscy mnie oceniają'."></textarea>
-            <div class="description">Zapisz myśl w formie dosłownej, tak jak się pojawiła, nawet jeśli wydaje się irracjonalna.</div>
-        </div>
-
-        <div class="cbt-steps">
-            <div class="form-section" style="border-left-color: #4caf50;">
-                <label for="evidence-for" style="color: #4caf50;">4. Dowody ZA Myślą (Co przemawia za tym, że ta myśl jest PRAWIDŁOWA?)</label>
-                <textarea id="evidence-for" placeholder="Np. Szef faktycznie wytknął mi błąd."></textarea>
-                <div class="description">Bądź obiektywny – zbierz fakty, które potwierdzają tylko tę myśl.</div>
+        <!-- MECHANIZM 1: SPIRALA LĘKU / ATAK PANIKI -->
+        <details>
+            <summary>Czym jest Spirala Lęku i Jak Ją Przerwać?</summary>
+            <div class="content">
+                <p>
+                    <span class="key-term">Spirala Lęku (lub Błędne Koło Lęku)</span> to samonapędzający się mechanizm, w którym objawy fizyczne lęku prowadzą do lękowych myśli, co z kolei nasila objawy fizyczne, tworząc pętlę. Jest to typowe w atakach paniki.
+                </p>
+                <p><strong>Jak to działa:</strong></p>
+                <ol class="example-list">
+                    <li><span class="key-term">Wyzwalacz:</span> Zaczynasz myśleć o czymś stresującym.</li>
+                    <li><span class="key-term">Objaw Fizyczny:</span> Serce zaczyna szybciej bić, czujesz duszności.</li>
+                    <li><span class="key-term">Myśl Katastroficzna:</span> "Mam zawał", "Zaraz zemdleję", "Tracę kontrolę".</li>
+                    <li><span class="key-term">Wzrost Lęku:</span> Ta myśl dramatycznie nasila Twój lęk.</li>
+                    <li><span class="key-term">Nasila Objaw:</span> Lęk powoduje jeszcze szybsze bicie serca. Pętla się zamyka.</li>
+                </ol>
+                <p>
+                    <strong>Cel:</strong> Przerwać połączenie między objawem fizycznym a katastroficzną interpretacją, np. poprzez techniki oddechowe lub ugruntowania.
+                </p>
             </div>
+        </details>
 
-            <div class="form-section" style="border-left-color: #2196f3;">
-                <label for="evidence-against" style="color: #2196f3;">5. Dowody PRZECIW Myśli (Co przemawia za tym, że ta myśl jest NIEPRAWDZIWA lub PRZEKOLORYZOWANA?)</label>
-                <textarea id="evidence-against" placeholder="Np. Pochwalił mnie za inne projekty w zeszłym miesiącu. To tylko jedno zadanie, a nie dowód na moją beznadziejność."></textarea>
-                <div class="description">Poszukaj alternatywnych wyjaśnień i faktów zaprzeczających.</div>
+        <!-- MECHANIZM 2: ZNIEKSZTAŁCENIA POZNAWCZE (Błędy Myślenia) -->
+        <details>
+            <summary>Zniekształcenia Poznawcze – 10 Typowych Błędów Myślenia</summary>
+            <div class="content">
+                <p>
+                    <span class="key-term">Zniekształcenia poznawcze</span> to nawykowe, nieobiektywne sposoby interpretowania informacji, które prowadzą do negatywnych emocji. Zrozumienie ich to pierwszy krok do ich kwestionowania (patrz: Kwestionariusz Myśli Automatycznych).
+                </p>
+                <p><strong>Przykłady:</strong></p>
+                <ul class="example-list">
+                    <li><span class="key-term">Myślenie Dychotomiczne (Czarne/Białe):</span> Widzisz tylko skrajności (albo jestem idealny, albo beznadziejny).</li>
+                    <li><span class="key-term">Filtr Mentalny:</span> Skupiasz się tylko na negatywnych detalach, ignorując pozytywne.</li>
+                    <li><span class="key-term">Czytanie w Myślach:</span> Zakładasz, że wiesz, co myślą inni, bez dowodów.</li>
+                    <li><span class="key-term">Wróżenie:</span> Przepowiadasz negatywne scenariusze, jakby były faktem.</li>
+                    <li><span class="key-term">Nadmierne Uogólnienie:</span> Wyciągasz ogólny, negatywny wniosek na podstawie pojedynczego zdarzenia.</li>
+                </ul>
             </div>
-        </div>
-
-        <div class="form-section" style="border-left-color: #9c27b0;">
-            <label for="alternative-thought" style="color: #9c27b0;">6. Myśl Alternatywna/Realistyczna (Jaka jest bardziej zrównoważona i pomocna perspektywa?)</label>
-            <textarea id="alternative-thought" placeholder="Np. 'Popełniłem/am błąd w tym zadaniu. Błędy się zdarzają i uczę się na nich. Mogę to naprawić.'"></textarea>
-            <div class="description">Przeformułuj myśl na bardziej realistyczną, uwzględniającą wszystkie dowody.</div>
-        </div>
+        </details>
         
-        <div class="form-section">
-            <label for="re-rate-emotions">7. Ponowna Ocena Emocji (Jaki jest poziom intensywności emocji TERAZ? 0-100%?)</label>
-            <textarea id="re-rate-emotions" placeholder="Np. Lęk (20%), Smutek (10%)"></textarea>
-            <div class="description">Porównaj obecną intensywność emocji z intensywnością początkową.</div>
-        </div>
+        <!-- MECHANIZM 3: UNIKANIE vs EKSPOZYCJA -->
+        <details>
+            <summary>Unikanie, a Terapia Ekspozycyjna (Jak Pokonać Lęk)</summary>
+            <div class="content">
+                <p>
+                    <span class="key-term">Unikanie</span> jest najczęstszą strategią radzenia sobie z lękiem. Chwilowo zmniejsza dyskomfort, ale długoterminowo **wzmacnia lęk** i utwierdza mózg w przekonaniu, że sytuacja jest faktycznie niebezpieczna.
+                </p>
+                <p>
+                    <span class="key-term">Ekspozycja</span> to technika, w której stopniowo i bezpiecznie konfrontujesz się z sytuacjami, których się boisz. Kluczem jest pozostanie w sytuacji wystarczająco długo, aby mózg nauczył się, że: 1) lęk jest nieprzyjemny, ale nie niebezpieczny, 2) lęk sam spada (habituacja), 3) katastrofa nie następuje.
+                </p>
+                <p>
+                    <strong>Wskazówka:</strong> Zbuduj "hierarchię lęku" – listę rzeczy, których się boisz, od najmniej do najbardziej lękotwórczych, i zacznij od tej najłatwiejszej.
+                </p>
+            </div>
+        </details>
 
-        <div class="action-buttons">
-            <button class="print-btn" onclick="window.print()">🖨️ Drukuj / Zapisz jako PDF</button>
-            <form onsubmit="return false;" style="display:inline;"> 
-                <button class="clear-btn" type="reset">🗑️ Wyczyść formularz</button>
-            </form>
-        </div>
-        
-        <p class="description" style="text-align: center; margin-top: 20px;">
-            **Ważna uwaga:** Dane wpisane w ten formularz zostają **tylko** w Twojej przeglądarce i **nie są** przesyłane na żaden serwer. Pamiętaj, aby wydrukować lub zapisać zapis, zanim zamkniesz stronę!
+        <!-- MECHANIZM 4: ROLA MYŚLI a ROLA FAKTÓW -->
+        <details>
+            <summary>Myśl to Nie Fakt - Rozróżnianie Subiektywnej Oceny</summary>
+            <div class="content">
+                <p>
+                    Jedną z podstawowych umiejętności terapeutycznych jest oddzielenie myśli od faktów.
+                </p>
+                <ul class="example-list">
+                    <li><span class="key-term">Fakt:</span> Coś, co można udowodnić i co jest obiektywne ("Temperatura wynosi 20°C").</li>
+                    <li><span class="key-term">Myśl:</span> Subiektywna interpretacja, opinia lub osąd ("Jest mi za ciepło/za zimno").</li>
+                </ul>
+                <p>
+                    Jeśli często używasz słów takich jak "zawsze", "nigdy", "muszę" lub "powinienem", prawdopodobnie mylisz myśli z faktami. Pamiętaj: kiedy mówisz **"Jestem porażką"**, mówisz **Myśl**. Prawidłowe stwierdzenie to: **"Mam myśl, że jestem porażką"**. To proste przeformułowanie daje Ci przestrzeń na dystans i kwestionowanie.
+                </p>
+            </div>
+        </details>
+
+        <p class="subtitle" style="margin-top: 40px; color: #1a237e;">
+            Pamiętaj: Zrozumienie mechanizmu to połowa sukcesu.
         </p>
-
     </div>
 </body>
 </html>
