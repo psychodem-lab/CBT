@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Narzędzia CBT: Psychoedukacja i Kwestionariusz Myśli</title>
+    <title>Biblioteka Psychoedukacyjna - Mechanizmy CBT</title>
     
     <style>
         /* Styl bazowy */
@@ -22,7 +22,7 @@
             padding: 30px; 
             border-radius: 15px; 
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); 
-            margin-bottom: 40px; /* Dodatkowy margines na dole */
+            margin-bottom: 40px; 
         }
         
         h1 { 
@@ -37,6 +37,30 @@
             margin-bottom: 30px;
             font-weight: 300;
         }
+
+        /* --- NAWIGACJA --- */
+        .nav-bar {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            border-bottom: 2px solid #90caf9;
+            background-color: #bbdefb;
+            border-radius: 10px;
+        }
+        .nav-link {
+            text-decoration: none;
+            color: #0d47a1;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 20px;
+            background-color: #e3f2fd;
+            transition: background-color 0.3s;
+        }
+        .nav-link:hover {
+            background-color: #90caf9;
+            color: #1a237e;
+        }
+
 
         /* --- STYLIZE DLA SEKCJI PSYCHOEDUKACJI --- */
         details {
@@ -100,136 +124,15 @@
             color: #1a237e;
         }
 
-
-        /* --- STYLIZE DLA KWestionariusza Myśli Automatycznych (KMA) --- */
-        .kma-section {
-            border-top: 5px solid #0d47a1; /* Wyraźne oddzielenie */
-            padding-top: 20px;
-            margin-top: 40px;
-        }
-
-        .kma-header {
-            color: #0d47a1;
-            text-align: center;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #ccc;
-            padding-bottom: 10px;
-        }
-
-        .form-section { 
-            margin-bottom: 25px; 
-            padding: 15px; 
-            border-left: 5px solid #1e88e5; /* Wizualne wyróżnienie sekcji */
-            background-color: #f9f9f9; 
-            border-radius: 5px; 
-        }
-
-        .form-section label { 
-            display: block; 
-            font-weight: bold; 
-            margin-bottom: 8px; 
-            color: #1e88e5; 
-        }
-        
-        .form-section textarea { 
-            width: 100%; 
-            padding: 10px; 
-            border: 1px solid #ccc; 
-            border-radius: 5px; 
-            box-sizing: border-box; 
-            resize: vertical; 
-            min-height: 80px; 
-        }
-
-        .kma-steps { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 20px; 
-        }
-
-        /* Wyróżnienie Myśli Automatycznej */
-        .thought-section {
-            border-left-color: #ff9800; /* Pomarańczowy dla kluczowej myśli */
-        }
-        .thought-section label {
-            color: #ff9800 !important;
-        }
-        
-        /* Wyróżnienie Dowodów ZA i PRZECIW */
-        .evidence-for { border-left-color: #4caf50; }
-        .evidence-for label { color: #4caf50 !important; }
-
-        .evidence-against { border-left-color: #2196f3; }
-        .evidence-against label { color: #2196f3 !important; }
-
-        /* Wyróżnienie Myśli Alternatywnej */
-        .alternative-thought { border-left-color: #9c27b0; }
-        .alternative-thought label { color: #9c27b0 !important; }
-
-
-        /* Przyciski Akcji (Kwestionariusz) */
-        .action-buttons { 
-            text-align: center; 
-            margin-top: 30px; 
-        }
-        
-        .action-buttons button { 
-            padding: 12px 25px; 
-            margin: 0 10px; 
-            border: none; 
-            border-radius: 25px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            transition: background-color 0.3s;
-        }
-        
-        .print-btn { 
-            background-color: #4caf50; /* Zielony */
-            color: white; 
-        }
-        
-        .print-btn:hover {
-            background-color: #43a047;
-        }
-
-        .clear-btn { 
-            background-color: #e53935; /* Czerwony */
-            color: white; 
-        }
-
-        .clear-btn:hover {
-            background-color: #d32f2f;
-        }
-
-        /* Media Query dla responsywności */
-        @media (max-width: 650px) {
-            .kma-steps { 
-                grid-template-columns: 1fr; 
-            }
-        }
-        
-        /* Media Print (zintegrowane) */
+        /* Media Print */
         @media print {
+            .nav-bar { display: none; }
             body { background-color: white !important; color: black !important; }
-            .container { box-shadow: none; margin: 0; padding: 0; }
-            h1, .subtitle, .kma-header { color: black !important; }
-            
-            /* Pokaż całą treść psychoedukacyjną */
+            .container { box-shadow: none; }
+            h1, .subtitle { color: black !important; }
             details { border: 1px solid #ccc; margin-bottom: 10px; background-color: white !important; }
             details summary { color: black !important; background-color: #eee; }
             summary::after { display: none; }
-
-            /* KMA - ukryj przyciski */
-            .action-buttons { display: none; }
-            .form-section {
-                border-left: 2px solid #ccc;
-                background-color: white;
-                padding: 5px 0;
-            }
-            textarea {
-                border: 1px dashed #aaa;
-                background-color: #fff;
-            }
         }
     </style>
 </head>
@@ -237,6 +140,11 @@
     <div class="container">
         <h1>📚 Biblioteka Psychoedukacyjna</h1>
         <p class="subtitle">Zrozumienie kluczowych mechanizmów, które wpływają na Twoje myśli i emocje.</p>
+        
+        <div class="nav-bar">
+            <!-- Link do drugiej strony, Kwestionariusza Myśli Automatycznych -->
+            <a href="tabela.html" class="nav-link">Przejdź do 🧠 Tabela Myśli Automatycznych</a>
+        </div>
 
         <!-- MECHANIZMY PSYCHOEDUKACYJNE -->
         
@@ -315,74 +223,6 @@
         <p class="subtitle" style="margin-top: 40px; color: #1a237e;">
             Pamiętaj: Zrozumienie mechanizmu to połowa sukcesu.
         </p>
-
-        <!-- KWestionariusz MYŚLI AUTOMATYCZNYCH (Zintegrowany Formularz) -->
-        <div class="kma-section">
-            <h2 class="kma-header">🧠 Kwestionariusz Myśli Automatycznych (KMA)</h2>
-            <p class="description" style="text-align: center;">Po zidentyfikowaniu mechanizmu, użyj tego formularza, aby przeanalizować swoją konkretną myśl.</p>
-
-            <form id="kmaForm" onsubmit="return false;">
-
-                <!-- KROK 1: SYTUACJA I EMOCJE -->
-                <div class="form-section">
-                    <label for="situation">1. Sytuacja (Co się wydarzyło, gdzie, kiedy i z kim?)</label>
-                    <textarea id="situation" placeholder="Np. Dostałem negatywną opinię od szefa na spotkaniu."></textarea>
-                    <div class="description">Opisz fakty (kto, co, gdzie, kiedy), bez oceniania czy interpretowania.</div>
-                </div>
-
-                <div class="form-section">
-                    <label for="emotions">2. Emocje (Co czułeś? Jaki był poziom intensywności 0-100%?)</label>
-                    <textarea id="emotions" placeholder="Np. Lęk (85%), Smutek (60%), Wstyd (40%)"></textarea>
-                    <div class="description">Nazwij emocje (używaj pojedynczych słów) i oceń ich siłę przed kwestionowaniem.</div>
-                </div>
-
-                <!-- KROK 2: MYŚL AUTOMATYCZNA -->
-                <div class="form-section thought-section">
-                    <label for="automatic-thought">3. Myśl Automatyczna (Jaka myśl/przekonanie pojawiło się w Twojej głowie w tym momencie?)</label>
-                    <textarea id="automatic-thought" placeholder="Np. 'Jestem beznadziejny/a', 'Nigdy mi się nie uda', 'Wszyscy mnie oceniają'."></textarea>
-                    <div class="description">Zapisz myśl w formie dosłownej, tak jak się pojawiła, nawet jeśli wydaje się irracjonalna.</div>
-                </div>
-
-                <!-- KROK 3: KWestionowanie Myśli -->
-                <div class="kma-steps">
-                    <div class="form-section evidence-for">
-                        <label for="evidence-for">4. Dowody ZA Myślą (Co przemawia za tym, że ta myśl jest PRAWIDŁOWA?)</label>
-                        <textarea id="evidence-for" placeholder="Np. Szef faktycznie wytknął mi błąd."></textarea>
-                        <div class="description">Bądź obiektywny – zbierz fakty, które potwierdzają tylko tę myśl.</div>
-                    </div>
-
-                    <div class="form-section evidence-against">
-                        <label for="evidence-against">5. Dowody PRZECIW Myśli (Co przemawia za tym, że ta myśl jest NIEPRAWDZIWA lub PRZEKOLORYZOWANA?)</label>
-                        <textarea id="evidence-against" placeholder="Np. Pochwalił mnie za inne projekty w zeszłym miesiącu. To tylko jedno zadanie, a nie dowód na moją beznadziejność."></textarea>
-                        <div class="description">Poszukaj alternatywnych wyjaśnień i faktów zaprzeczających.</div>
-                    </div>
-                </div>
-
-                <!-- KROK 4: NOWA PERSPEKTYWA -->
-                <div class="form-section alternative-thought">
-                    <label for="alternative-thought">6. Myśl Alternatywna/Realistyczna (Jaka jest bardziej zrównoważona i pomocna perspektywa?)</label>
-                    <textarea id="alternative-thought" placeholder="Np. 'Popełniłem/am błąd w tym zadaniu. Błędy się zdarzają i uczę się na nich. Mogę to naprawić.'"></textarea>
-                    <div class="description">Przeformułuj myśl na bardziej realistyczną, uwzględniającą wszystkie dowody.</div>
-                </div>
-                
-                <div class="form-section">
-                    <label for="re-rate-emotions">7. Ponowna Ocena Emocji (Jaki jest poziom intensywności emocji TERAZ? 0-100%?)</label>
-                    <textarea id="re-rate-emotions" placeholder="Np. Lęk (20%), Smutek (10%)"></textarea>
-                    <div class="description">Porównaj obecną intensywność emocji z intensywnością początkową.</div>
-                </div>
-
-                <!-- PRZYCISKI AKCJI -->
-                <div class="action-buttons">
-                    <button class="print-btn" onclick="window.print()">🖨️ Drukuj / Zapisz jako PDF</button>
-                    <button class="clear-btn" type="reset">🗑️ Wyczyść Kwestionariusz</button>
-                </div>
-            </form>
-
-            <p class="description" style="text-align: center; margin-top: 20px;">
-                **Uwaga:** Dane wpisane w ten formularz są bezpieczne (nie są wysyłane). Pamiętaj, aby wydrukować zapis!
-            </p>
-        </div>
-
     </div>
 </body>
 </html>
