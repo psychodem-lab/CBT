@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interaktywny Model CBT</title>
+    <title>Model CBT - Poprawiony</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
@@ -17,128 +17,118 @@
             background-color: #f9f9f9;
         }
 
-        /* Główny kontener diagramu */
         .diagram-container {
             position: relative;
-            width: 900px;
-            height: 750px;
+            width: 1000px; /* Zwiększona szerokość dla lepszego odstępu */
+            height: 850px; /* Zwiększona wysokość */
             background-color: white;
-            /* Opcjonalnie: odkomentuj poniższą linię, aby zobaczyć granice kontenera */
-            /* border: 1px dashed #ccc; */
+            /* border: 1px dashed #eee;  Możesz odkomentować, żeby widzieć granice */
         }
 
-        /* Etykiety literowe (A, B, C) */
+        /* --- LITERY (A, B, C) --- */
         .big-letter {
             position: absolute;
             font-size: 80px;
             font-weight: bold;
-            color: #5c9bd5; /* Kolor niebieski z obrazka */
+            color: #5c9bd5;
             font-family: Arial, sans-serif;
             user-select: none;
+            z-index: 5;
         }
 
-        .letter-a { top: 50px; left: 20px; }
-        .letter-b { top: 300px; left: 20px; }
-        .letter-c { top: 550px; left: 20px; }
+        .letter-a { top: 50px; left: 30px; }
+        .letter-b { top: 320px; left: 30px; }
+        .letter-c { top: 600px; left: 30px; }
 
-        /* Style dla edytowalnych pudełek */
+        /* --- PUDEŁKA --- */
         .box {
             position: absolute;
-            width: 240px;
-            height: 120px;
+            width: 250px;
+            height: 130px;
             border: 2px solid black;
             background: white;
-            padding: 10px;
+            padding: 15px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
             text-align: center;
             z-index: 10;
-            overflow: hidden; /* Ukrywa nadmiar tekstu przed przeskalowaniem */
-            transition: border-color 0.3s;
+            overflow: hidden;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
-        .box:focus {
-            outline: none;
+        .box:focus-within {
             border-color: #5c9bd5;
-            box-shadow: 0 0 5px rgba(92, 155, 213, 0.5);
+            box-shadow: 0 0 8px rgba(92, 155, 213, 0.4);
         }
 
-        /* Tytuły wewnątrz pudełek (niebieskie) */
         .box-title {
             color: #5c9bd5;
             font-weight: bold;
-            margin-bottom: 5px;
-            pointer-events: none; /* Kliknięcie przenosi do edycji tekstu */
-            font-size: 18px; 
+            margin-bottom: 8px;
+            pointer-events: none;
+            font-size: 18px;
+            flex-shrink: 0; /* Tytuł się nie kurczy */
         }
 
-        /* Treść użytkownika */
         .box-content {
             width: 100%;
             height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             outline: none;
-            font-size: 16px; /* Startowy rozmiar czcionki */
-            line-height: 1.2;
+            font-size: 16px;
+            line-height: 1.3;
+            display: flex;
+            align-items: center;     /* Pionowe wyśrodkowanie tekstu */
+            justify-content: center; /* Poziome wyśrodkowanie tekstu */
         }
 
-        /* Mały 'x' w rogu - opcjonalnie, jak na obrazku */
-        .corner-x {
-            position: absolute;
-            bottom: 5px;
-            left: 5px;
-            font-size: 12px;
-            color: black;
-            pointer-events: none;
-        }
-
-        /* Pozycjonowanie pudełek */
+        /* --- POZYCJONOWANIE PUDEŁEK (Siatka) --- */
+        /* Center X = 500px */
+        
+        /* 1. Góra */
         .pos-top {
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            top: 40px;
+            left: 375px; /* 500 - 125(połowa szerokości) */
         }
 
+        /* 2. Środek (Szerszy) */
         .pos-center {
-            top: 280px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 280px; /* Środkowe pudełko jest nieco szersze */
+            top: 260px;
+            left: 350px; /* 500 - 150 */
+            width: 300px;
+            height: 160px;
         }
 
+        /* 3. Lewo */
         .pos-left {
-            top: 500px;
-            left: 50px;
+            top: 520px;
+            left: 100px;
         }
 
+        /* 4. Prawo */
         .pos-right {
-            top: 500px;
-            right: 50px;
+            top: 520px;
+            right: 100px;
         }
 
+        /* 5. Dół */
         .pos-bottom {
-            top: 600px;
-            left: 50%;
-            transform: translateX(-50%);
+            top: 680px;
+            left: 375px;
         }
 
-        /* Warstwa SVG dla strzałek */
+        /* --- STRZAŁKI SVG --- */
         .arrows-layer {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none; /* Przepuszcza kliknięcia do pudełek */
+            pointer-events: none;
             z-index: 1;
         }
 
-        /* Styl linii strzałek */
         path {
             fill: none;
             stroke: black;
@@ -157,92 +147,88 @@
 
         <svg class="arrows-layer">
             <defs>
-                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                    <polygon points="0 0, 10 3.5, 0 7" fill="black" />
+                <marker id="arrowhead" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L9,3 z" fill="black" stroke="none" />
                 </marker>
-                <marker id="arrowhead-start" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto-start-reverse">
-                    <polygon points="0 0, 10 3.5, 0 7" fill="black" />
+                <marker id="arrowhead-start" markerWidth="9" markerHeight="9" refX="0" refY="3" orient="auto-start-reverse">
+                    <path d="M0,0 L0,6 L9,3 z" fill="black" stroke="none" />
                 </marker>
             </defs>
 
-            <path d="M 450 145 L 450 270" marker-end="url(#arrowhead)" />
+            <path d="M 500 170 L 500 250" marker-end="url(#arrowhead)" />
 
-            <path d="M 450 410 L 450 590" marker-end="url(#arrowhead)" marker-start="url(#arrowhead-start)" />
+            <path d="M 500 420 L 500 670" marker-end="url(#arrowhead)" marker-start="url(#arrowhead-start)" />
 
-            <path d="M 310 340 Q 200 340 170 490" marker-end="url(#arrowhead)" marker-start="url(#arrowhead-start)" />
+            <path d="M 360 585 L 640 585" marker-end="url(#arrowhead)" marker-start="url(#arrowhead-start)" />
 
-            <path d="M 590 340 Q 700 340 730 490" marker-end="url(#arrowhead)" marker-start="url(#arrowhead-start)" />
+            <path d="M 350 340 Q 225 340 225 510" marker-end="url(#arrowhead)" marker-start="url(#arrowhead-start)" />
 
-            <path d="M 170 630 Q 200 700 320 700" marker-end="url(#arrowhead)" marker-start="url(#arrowhead-start)" />
+            <path d="M 650 340 Q 775 340 775 510" marker-end="url(#arrowhead)" marker-start="url(#arrowhead-start)" />
 
-            <path d="M 730 630 Q 700 700 580 700" marker-end="url(#arrowhead)" marker-start="url(#arrowhead-start)" />
-            
-            <path d="M 300 560 L 600 560" marker-end="url(#arrowhead)" marker-start="url(#arrowhead-start)" stroke-width="4" />
+            <path d="M 225 650 Q 225 745 365 745" marker-end="url(#arrowhead)" marker-start="url(#arrowhead-start)" />
+
+            <path d="M 775 650 Q 775 745 635 745" marker-end="url(#arrowhead)" marker-start="url(#arrowhead-start)" />
 
         </svg>
 
         <div class="box pos-top">
             <div class="box-title">Czynnik wyzwalający</div>
             <div class="box-content" contenteditable="true" spellcheck="false" data-placeholder="Wpisz treść..."></div>
-            <div class="corner-x">x</div>
         </div>
 
-        <div class="box pos-center" style="height: 150px;"> <div class="box-title">Automatyczne Myśli</div>
+        <div class="box pos-center">
+            <div class="box-title">Automatyczne Myśli</div>
             <div class="box-content" contenteditable="true" spellcheck="false" data-placeholder="Wpisz treść..."></div>
-            <div class="corner-x">x</div>
         </div>
 
         <div class="box pos-left">
             <div class="box-title">Zachowanie</div>
             <div class="box-content" contenteditable="true" spellcheck="false" data-placeholder="Wpisz treść..."></div>
-            <div class="corner-x">x</div>
         </div>
 
         <div class="box pos-right">
             <div class="box-title">Objawy fizjologiczne</div>
             <div class="box-content" contenteditable="true" spellcheck="false" data-placeholder="Wpisz treść..."></div>
-            <div class="corner-x">x</div>
         </div>
 
         <div class="box pos-bottom">
             <div class="box-title">Emocje</div>
             <div class="box-content" contenteditable="true" spellcheck="false" data-placeholder="Wpisz treść..."></div>
-            <div class="corner-x">x</div>
         </div>
 
     </div>
 
     <script>
-        // Skrypt do automatycznego zmniejszania czcionki, aby tekst się mieścił
+        // --- Skrypt dopasowujący rozmiar tekstu ---
         const editors = document.querySelectorAll('.box-content');
 
         editors.forEach(editor => {
-            // Funkcja dopasowująca
             const fitText = () => {
-                let fontSize = 16; // Rozmiar startowy (musi pasować do CSS)
-                const minFontSize = 8; // Minimalny rozmiar czytelny
+                let fontSize = 16; // Rozmiar startowy
+                const minFontSize = 9; // Minimalny rozmiar
                 
-                // Resetujemy rozmiar, żeby sprawdzić czy można powiększyć po usunięciu tekstu
+                // Reset do startowego, aby sprawdzić czy można powiększyć po usunięciu tekstu
                 editor.style.fontSize = fontSize + 'px';
 
-                // Zmniejszamy dopóki tekst wychodzi poza ramkę (scrollHeight > clientHeight)
+                // Pętla zmniejszająca
+                // Sprawdzamy czy treść (scrollHeight) jest większa niż pudełko (clientHeight)
                 while (editor.scrollHeight > editor.clientHeight && fontSize > minFontSize) {
                     fontSize--;
                     editor.style.fontSize = fontSize + 'px';
                 }
             };
 
-            // Nasłuchiwanie na wpisywanie tekstu
+            // Reaguj na pisanie
             editor.addEventListener('input', fitText);
             
-            // Nasłuchiwanie na wklejanie tekstu (czyszczenie formatowania)
+            // Wklejanie czystego tekstu (bez formatowania)
             editor.addEventListener('paste', (e) => {
                 e.preventDefault();
                 const text = (e.clipboardData || window.clipboardData).getData('text');
                 document.execCommand("insertHTML", false, text);
+                fitText(); // Przelicz po wklejeniu
             });
             
-            // Inicjalizacja przy załadowaniu (jeśli byłby jakiś tekst startowy)
             fitText();
         });
     </script>
