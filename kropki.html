@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Połącz Kropki - Logika Błędów</title>
+    <title>Połącz Kropki - Ukryj Podpowiedzi</title>
     <style>
         /* CSS: Ustawienia dla responsywności i wyglądu */
         :root {
@@ -26,6 +26,48 @@
 
         h1 {
             color: #333;
+            margin-bottom: 5px;
+        }
+
+        /* Kontrola Poziomów i Reset */
+        #controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+            width: 90vw;
+            max-width: 600px;
+        }
+
+        #levelSelect, #resetButton, #hintToggleContainer {
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px;
+        }
+
+        #levelSelect {
+            border: 2px solid var(--color-primary);
+        }
+
+        #resetButton {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #resetButton:hover {
+            background-color: #0056b3;
+        }
+
+        /* Styl dla opcji ukrywania podpowiedzi */
+        #hintToggleContainer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: #e9ecef;
         }
 
         /* Sekcja Statystyk */
@@ -72,31 +114,38 @@
             background-color: #fff;
             border: 1px solid #ccc;
             border-radius: 5px;
-            min-height: 50px; /* Zapewnia stałą wysokość */
+            min-height: 50px; 
+            visibility: visible; /* Domyślna widoczność */
+            transition: visibility 0.2s, opacity 0.2s;
         }
-
-        #resetButton {
-            margin-top: 10px;
-            padding: 10px 20px;
-            background-color: var(--color-primary);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.2s;
-        }
-
-        #resetButton:hover {
-            background-color: #0056b3;
+        
+        /* Klasa dodawana przez JS do ukrywania */
+        .hidden-info {
+            visibility: hidden;
+            opacity: 0;
         }
     </style>
 </head>
 <body>
 
     <h1>Połącz Kropki!</h1>
-    <p>Sekwencja: 1 → A → 2 → B → ... → 8</p>
+    <p id="sequenceInfo">Aktualna sekwencja: 1 → 2 → 3 → ...</p>
     
+    <div id="controls">
+        <select id="levelSelect" onchange="resetGame()">
+            <option value="easy">Łatwy (1 → 20)</option>
+            <option value="medium" selected>Średni (1, A, 2, B, ...)</option>
+            <option value="hard">Trudny (1, A, 2, B, ..., 13)</option>
+        </select>
+        
+        <div id="hintToggleContainer">
+            <label for="hintToggle">Ukryj podpowiedzi (nazwę następnego punktu i błędy):</label>
+            <input type="checkbox" id="hintToggle" onchange="toggleHints()">
+        </div>
+
+        <button id="resetButton" onclick="resetGame()">Zacznij nową grę (Losuj punkty)</button>
+    </div>
+
     <div id="stats">
         <div class="stat-item">
             Czas: <span id="timer" class="stat-value">00:00</span>
@@ -108,8 +157,7 @@
 
     <canvas id="gameCanvas" width="600" height="400"></canvas>
     
-    <div id="info">Kliknij punkt startowy (1), aby rozpocząć!</div>
-    <button id="resetButton" onclick="resetGame()">Zacznij nową grę (Losuj punkty)</button>
+    <div id="info">Wybierz poziom i kliknij (1), aby rozpocząć!</div>
 
     <script>
         // JavaScript: Logika Gry
@@ -118,7 +166,9 @@
         const infoDiv = document.getElementById('info');
         const timerSpan = document.getElementById('timer');
         const errorsSpan = document.getElementById('errors');
-        const resetButton = document.getElementById('resetButton');
+        const levelSelect = document.getElementById('levelSelect');
+        const sequenceInfo = document.getElementById('sequenceInfo');
+        const hintToggle = document.getElementById('hintToggle');
 
         // Wewnętrzne wymiary Canvas
         const CANVAS_WIDTH = canvas.width;
@@ -127,9 +177,27 @@
         const FONT_SIZE = '16px';
         const MIN_DISTANCE = 2 * POINT_RADIUS + 30; 
 
-        // Definicje Etykiet dla 15 punktów
-        const LABELS = ['1', 'A', '2', 'B', '3', 'C', '4', 'D', '5', 'E', '6', 'F', '7', 'G', '8'];
-        const POINTS_COUNT = LABELS.length;
+        // --- DEFINICJE POZIOMÓW ---
+        const LEVELS = {
+            easy: {
+                count: 20,
+                labels: Array.from({ length: 20 }, (_, i) => (i + 1).toString()),
+                desc: "1 → 2 → 3 → ... → 20"
+            },
+            medium: {
+                count: 15,
+                labels: ['1', 'A', '2', 'B', '3', 'C', '4', 'D', '5', 'E', '6', 'F', '7', 'G', '8'],
+                desc: "1 → A → 2 → B → ... → 8"
+            },
+            hard: {
+                count: 25,
+                labels: [
+                    '1', 'A', '2', 'B', '3', 'C', '4', 'D', '5', 'E', '6', 'F', '7', 'G', '8', 
+                    'H', '9', 'I', '10', 'J', '11', 'K', '12', 'L', '13'
+                ],
+                desc: "1 → A → 2 → B → ... → 13"
+            }
+        };
 
         // --- Zmienne Stanu Gry ---
         let timerInterval = null;
@@ -138,6 +206,34 @@
         let currentPointIndex = 0; 
         let connections = [];      
         let points = []; 
+        let currentLevel = LEVELS['medium'];
+
+        // --- Funkcje Ukrywania Podpowiedzi ---
+
+        function toggleHints() {
+            if (hintToggle.checked) {
+                // Ukryj podpowiedzi
+                infoDiv.classList.add('hidden-info');
+            } else {
+                // Pokaż podpowiedzi
+                infoDiv.classList.remove('hidden-info');
+                // Jeśli gra się rozpoczęła, odśwież komunikat
+                if (currentPointIndex > 0 && currentPointIndex < points.length && timerInterval !== null) {
+                    infoDiv.textContent = `Następny punkt: (${points[currentPointIndex].label})`;
+                }
+            }
+        }
+
+        function updateInfoDisplay(message, isEndGame = false) {
+            if (isEndGame || !hintToggle.checked) {
+                // Zawsze pokazuj końcowy komunikat lub jeśli podpowiedzi są włączone
+                infoDiv.innerHTML = message;
+                infoDiv.classList.remove('hidden-info');
+            } else {
+                // Jeśli ukrywamy podpowiedzi, tylko wyczyść/ukryj komunikat
+                infoDiv.classList.add('hidden-info');
+            }
+        }
 
         // --- Funkcje Losowania ---
 
@@ -147,14 +243,16 @@
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
-        function generateRandomPoints(count) {
+        function generateRandomPoints() {
             const randomPoints = [];
+            const labels = currentLevel.labels;
+            
             const xMin = POINT_RADIUS;
             const xMax = CANVAS_WIDTH - POINT_RADIUS;
             const yMin = POINT_RADIUS;
             const yMax = CANVAS_HEIGHT - POINT_RADIUS;
 
-            for (let i = 0; i < count; i++) {
+            for (let i = 0; i < labels.length; i++) {
                 let newPoint;
                 let isTooClose;
 
@@ -162,7 +260,7 @@
                     const x = getRandomInt(xMin, xMax);
                     const y = getRandomInt(yMin, yMax);
                     
-                    newPoint = { x: x, y: y, label: LABELS[i] };
+                    newPoint = { x: x, y: y, label: labels[i] };
                     isTooClose = false;
                     
                     for (const existingPoint of randomPoints) {
@@ -183,35 +281,30 @@
             return randomPoints;
         }
 
-        // --- Funkcje Mierzenia Czasu ---
-
+        // --- Funkcje Czasu ---
         function formatTime(totalSeconds) {
             const minutes = Math.floor(totalSeconds / 60);
             const seconds = totalSeconds % 60;
             return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
-
         function updateTimerDisplay() {
             if (startTime) {
                 const currentTime = Math.floor((Date.now() - startTime) / 1000);
                 timerSpan.textContent = formatTime(currentTime);
             }
         }
-
         function startTimer() {
             if (timerInterval !== null) return;
             startTime = Date.now();
             timerInterval = setInterval(updateTimerDisplay, 1000);
-            infoDiv.textContent = `Start! Kliknij następny punkt: (${points[currentPointIndex].label})`;
+            updateInfoDisplay(`Start! Kliknij następny punkt: (${points[currentPointIndex].label})`);
         }
-
         function stopTimer() {
             clearInterval(timerInterval);
             timerInterval = null;
         }
 
         // --- Funkcje Rysowania ---
-        // (Bez zmian w stosunku do poprzedniej wersji)
         function draw() {
             ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
@@ -263,8 +356,7 @@
             ctx.stroke();
         }
 
-
-        // --- Obsługa Interakcji z NOWĄ LOGIKĄ BŁĘDÓW ---
+        // --- Obsługa Interakcji ---
 
         function handleInteraction(event) {
             if (event.type === 'touchstart') {
@@ -272,7 +364,7 @@
             }
 
             if (timerInterval === null && currentPointIndex === points.length) {
-                return; // Gra zakończona
+                return; 
             }
 
             const rect = canvas.getBoundingClientRect();
@@ -312,25 +404,24 @@
                     stopTimer();
                     const finalTime = timerSpan.textContent;
                     
-                    infoDiv.innerHTML = `
+                    const finalMessage = `
                         <strong>GRATULACJE! Wszystkie punkty połączone! 🥳</strong><br>
                         Twój czas: <span style="color: var(--color-primary);">${finalTime}</span> | 
                         Liczba błędów: <span style="color: var(--color-error);">${errorCount}</span>
                     `;
+                    updateInfoDisplay(finalMessage, true); // Zawsze pokazuj na koniec
                     
                     drawFinalLine();
                 } else {
-                    infoDiv.textContent = `Połączono! Następny: (${points[currentPointIndex].label})`;
+                    updateInfoDisplay(`Połączono! Następny: (${points[currentPointIndex].label})`);
                     draw();
                 }
-                return; // Zakończ funkcję po poprawnym kliknięciu
+                return;
             } 
             
             // 2. Jeśli nie kliknięto poprawnie, sprawdź, czy kliknięto jakikolwiek inny punkt
             let clickedWrongPoint = false;
             if (currentPointIndex > 0 || timerInterval !== null) { 
-                // Sprawdzamy tylko, jeśli gra już się rozpoczęła
-
                 for(let i = 0; i < points.length; i++) {
                     const currentPoint = points[i];
                     
@@ -349,20 +440,26 @@
                 }
             }
 
-
-            // 3. Jeśli kliknięto w ZŁY SYMBOL (a gra się już rozpoczęła) - nalicz błąd
+            // 3. Jeśli kliknięto w ZŁY SYMBOL - nalicz błąd
             if (clickedWrongPoint) {
                 errorCount++;
                 errorsSpan.textContent = errorCount;
-                infoDiv.textContent = `BŁĄD! Kliknięto zły symbol. Oczekiwany: (${expectedPoint.label}). Błędy: ${errorCount}`;
+                const errorMessage = `BŁĄD! Kliknięto zły symbol. Oczekiwany: (${expectedPoint.label}). Błędy: ${errorCount}`;
+                updateInfoDisplay(errorMessage);
             } 
             // 4. W przeciwnym razie (kliknięto puste tło) - zignoruj
             else if (currentPointIndex > 0 || timerInterval !== null) {
-                 infoDiv.textContent = `Puste tło. Kliknij symbol (${expectedPoint.label})`;
+                 const emptyMessage = `Puste tło. Kliknij symbol (${expectedPoint.label})`;
+                 updateInfoDisplay(emptyMessage);
             }
         }
         
+        // --- Funkcja Reset i Konfiguracja Gry ---
         function resetGame() {
+            // Konfiguracja nowego poziomu
+            const selectedLevelKey = levelSelect.value;
+            currentLevel = LEVELS[selectedLevelKey];
+
             // Reset stanu
             stopTimer();
             startTime = null;
@@ -370,13 +467,20 @@
             currentPointIndex = 0;
             connections = [];
 
-            // Losowanie nowych punktów
-            points = generateRandomPoints(POINTS_COUNT);
+            // Generowanie nowych punktów dla wybranego poziomu
+            points = generateRandomPoints();
+
+            // Aktualizacja informacji o sekwencji
+            sequenceInfo.textContent = `Aktualna sekwencja: ${currentLevel.desc}`;
 
             // Reset wyświetlania
             timerSpan.textContent = '00:00';
             errorsSpan.textContent = '0';
-            infoDiv.textContent = `Kliknij punkt startowy (${points[0].label}), aby rozpocząć!`;
+            
+            // Ustawienie początkowego komunikatu
+            const startMessage = `Kliknij punkt startowy (${points[0].label}), aby rozpocząć!`;
+            updateInfoDisplay(startMessage, true); // Zawsze pokazuj początkowy komunikat
+            toggleHints(); // Stosuje ukrycie/pokazanie po resecie
 
             // Przerysowanie
             draw();
@@ -388,7 +492,7 @@
             canvas.addEventListener('touchstart', handleInteraction);
         }
 
-        // INICJALIZACJA
+        // INICJALIZACJA GRY
         resetGame(); 
     </script>
 
