@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Połącz Kropki - Losowe Wyzwanie</title>
+    <title>Połącz Kropki - Logika Błędów</title>
     <style>
         /* CSS: Ustawienia dla responsywności i wyglądu */
         :root {
@@ -72,6 +72,7 @@
             background-color: #fff;
             border: 1px solid #ccc;
             border-radius: 5px;
+            min-height: 50px; /* Zapewnia stałą wysokość */
         }
 
         #resetButton {
@@ -124,7 +125,7 @@
         const CANVAS_HEIGHT = canvas.height;
         const POINT_RADIUS = 18;
         const FONT_SIZE = '16px';
-        const MIN_DISTANCE = 2 * POINT_RADIUS + 30; // Minimalna odległość między środkami punktów
+        const MIN_DISTANCE = 2 * POINT_RADIUS + 30; 
 
         // Definicje Etykiet dla 15 punktów
         const LABELS = ['1', 'A', '2', 'B', '3', 'C', '4', 'D', '5', 'E', '6', 'F', '7', 'G', '8'];
@@ -136,22 +137,18 @@
         let errorCount = 0;
         let currentPointIndex = 0; 
         let connections = [];      
-        let points = []; // Tablica na losowo generowane punkty
+        let points = []; 
 
         // --- Funkcje Losowania ---
 
-        // Zwraca losową liczbę całkowitą w zakresie [min, max]
         function getRandomInt(min, max) {
             min = Math.ceil(min);
             max = Math.floor(max);
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
-        // Generuje losowe punkty, zapewniając minimalną odległość między nimi
         function generateRandomPoints(count) {
             const randomPoints = [];
-            
-            // Ograniczamy zakres losowania, aby punkty nie były zbyt blisko krawędzi
             const xMin = POINT_RADIUS;
             const xMax = CANVAS_WIDTH - POINT_RADIUS;
             const yMin = POINT_RADIUS;
@@ -162,27 +159,24 @@
                 let isTooClose;
 
                 do {
-                    // Losowanie nowych współrzędnych
                     const x = getRandomInt(xMin, xMax);
                     const y = getRandomInt(yMin, yMax);
                     
                     newPoint = { x: x, y: y, label: LABELS[i] };
                     isTooClose = false;
                     
-                    // Sprawdzenie kolizji z istniejącymi punktami
                     for (const existingPoint of randomPoints) {
                         const distance = Math.sqrt(
                             Math.pow(newPoint.x - existingPoint.x, 2) + 
                             Math.pow(newPoint.y - existingPoint.y, 2)
                         );
                         
-                        // Jeśli odległość jest mniejsza niż wymagane minimum
                         if (distance < MIN_DISTANCE) {
                             isTooClose = true;
                             break;
                         }
                     }
-                } while (isTooClose); // Powtarzaj, jeśli punkt jest za blisko innego
+                } while (isTooClose); 
 
                 randomPoints.push(newPoint);
             }
@@ -217,11 +211,10 @@
         }
 
         // --- Funkcje Rysowania ---
-
+        // (Bez zmian w stosunku do poprzedniej wersji)
         function draw() {
             ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-            // Rysuj połączenia (linie)
             ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-primary');
             ctx.lineWidth = 4;
             ctx.beginPath();
@@ -232,21 +225,17 @@
             ctx.stroke();
             ctx.closePath();
 
-            // Rysuj punkty i ich etykiety
             points.forEach((point, index) => {
                 const isConnected = index < currentPointIndex;
 
-                // Ustaw kolor: Zielony jeśli połączony, Szary jeśli oczekujący
                 ctx.fillStyle = isConnected 
                     ? getComputedStyle(document.documentElement).getPropertyValue('--color-success') 
                     : getComputedStyle(document.documentElement).getPropertyValue('--color-default');
                 
-                // Rysuj okrąg
                 ctx.beginPath();
                 ctx.arc(point.x, point.y, POINT_RADIUS, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Rysuj etykietę (tekst)
                 ctx.fillStyle = 'white'; 
                 ctx.font = `${FONT_SIZE} Arial`;
                 ctx.textAlign = 'center';
@@ -255,12 +244,10 @@
             });
         }
 
-        // Rysowanie finalnej figury po wygranej
         function drawFinalLine() {
             ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT); 
             draw(); 
             
-            // Rysujemy finalną linię (grubszą i czerwoną)
             ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-error'); 
             ctx.lineWidth = 6;
             ctx.beginPath();
@@ -277,7 +264,7 @@
         }
 
 
-        // --- Obsługa Interakcji i Reset ---
+        // --- Obsługa Interakcji z NOWĄ LOGIKĄ BŁĘDÓW ---
 
         function handleInteraction(event) {
             if (event.type === 'touchstart') {
@@ -295,7 +282,6 @@
             const clickX = clientX - rect.left;
             const clickY = clientY - rect.top;
 
-            // Skalowanie współrzędnych do wewnętrznego systemu Canvas (600x400)
             const scaleX = CANVAS_WIDTH / rect.width;
             const scaleY = CANVAS_HEIGHT / rect.height;
 
@@ -304,13 +290,12 @@
 
             const expectedPoint = points[currentPointIndex];
             
-            // Oblicz odległość
-            const distance = Math.sqrt(
+            // 1. Sprawdź, czy kliknięto w oczekiwany punkt
+            const distanceToExpected = Math.sqrt(
                 Math.pow(mouseX - expectedPoint.x, 2) + Math.pow(mouseY - expectedPoint.y, 2)
             );
 
-            // Sprawdź trafienie
-            if (distance < POINT_RADIUS) {
+            if (distanceToExpected < POINT_RADIUS) {
                 // POPRAWNE KLIKNIĘCIE
                 if (currentPointIndex === 0 && timerInterval === null) {
                     startTimer();
@@ -323,7 +308,6 @@
 
                 currentPointIndex++;
 
-                // Warunek zwycięstwa
                 if (currentPointIndex === points.length) {
                     stopTimer();
                     const finalTime = timerSpan.textContent;
@@ -339,16 +323,45 @@
                     infoDiv.textContent = `Połączono! Następny: (${points[currentPointIndex].label})`;
                     draw();
                 }
+                return; // Zakończ funkcję po poprawnym kliknięciu
+            } 
+            
+            // 2. Jeśli nie kliknięto poprawnie, sprawdź, czy kliknięto jakikolwiek inny punkt
+            let clickedWrongPoint = false;
+            if (currentPointIndex > 0 || timerInterval !== null) { 
+                // Sprawdzamy tylko, jeśli gra już się rozpoczęła
 
-            } else if (currentPointIndex > 0 || timerInterval !== null) {
-                // NIEPOPRAWNE KLIKNIĘCIE (liczymy błędy tylko po starcie gry)
+                for(let i = 0; i < points.length; i++) {
+                    const currentPoint = points[i];
+                    
+                    // Pomijamy już połączone punkty i oczekiwany punkt
+                    if (i < currentPointIndex) continue; 
+                    if (i === currentPointIndex) continue;
+
+                    const distance = Math.sqrt(
+                        Math.pow(mouseX - currentPoint.x, 2) + Math.pow(mouseY - currentPoint.y, 2)
+                    );
+
+                    if (distance < POINT_RADIUS) {
+                        clickedWrongPoint = true;
+                        break;
+                    }
+                }
+            }
+
+
+            // 3. Jeśli kliknięto w ZŁY SYMBOL (a gra się już rozpoczęła) - nalicz błąd
+            if (clickedWrongPoint) {
                 errorCount++;
                 errorsSpan.textContent = errorCount;
-                infoDiv.textContent = `Błąd! Oczekiwany: (${expectedPoint.label}). Błędy: ${errorCount}`;
+                infoDiv.textContent = `BŁĄD! Kliknięto zły symbol. Oczekiwany: (${expectedPoint.label}). Błędy: ${errorCount}`;
+            } 
+            // 4. W przeciwnym razie (kliknięto puste tło) - zignoruj
+            else if (currentPointIndex > 0 || timerInterval !== null) {
+                 infoDiv.textContent = `Puste tło. Kliknij symbol (${expectedPoint.label})`;
             }
         }
         
-        // Funkcja resetująca i rozpoczynająca nową grę
         function resetGame() {
             // Reset stanu
             stopTimer();
@@ -368,7 +381,7 @@
             // Przerysowanie
             draw();
             
-            // Ponowne włączenie słuchaczy (na wypadek, gdyby zostały usunięte w przyszłości)
+            // Ponowne włączenie słuchaczy
             canvas.removeEventListener('click', handleInteraction);
             canvas.removeEventListener('touchstart', handleInteraction);
             canvas.addEventListener('click', handleInteraction);
@@ -376,7 +389,7 @@
         }
 
         // INICJALIZACJA
-        resetGame(); // Uruchomienie gry po raz pierwszy
+        resetGame(); 
     </script>
 
 </body>
