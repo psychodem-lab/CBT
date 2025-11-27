@@ -4,255 +4,307 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biblioteka Psychoedukacyjna</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="shortcut icon" type="image/png" href="cbt.png" />
     <style>
-        /* Styl bazowy */
+        /* --- ZMIENNE KOLORYSTYCZNE --- */
+        :root {
+            --bg-body: #f1f8e9;       /* Bardzo jasna, ciepła zieleń */
+            --bg-card: #ffffff;
+            --primary: #2e7d32;       /* Głęboka leśna zieleń (tekst nagłówków) */
+            --accent: #66bb6a;        /* Żywsza zieleń (akcenty) */
+            --accent-light: #e8f5e9;  /* Tło elementów (bardzo jasne) */
+            --text-main: #37474f;     /* Ciemny szary wpadający w grafit (czytelniejszy niż czarny) */
+            --shadow: rgba(46, 125, 50, 0.1); /* Delikatny zielony cień */
+        }
+
+        /* --- STYL BAZOWY --- */
         body { 
             font-family: 'Inter', sans-serif; 
-            line-height: 1.6; 
-            margin: 20px; 
-            background-color: #e3f2fd; /* Bardzo jasny błękit (light blue) */
-            color: #1a237e; /* Głęboki granat, kontrastowy i czytelny */
+            line-height: 1.7; 
+            margin: 0; 
+            padding: 20px; 
+            background-color: var(--bg-body);
+            color: var(--text-main);
         }
         
         .container { 
-            max-width: 800px; 
-            margin: 0 auto; 
-            background-color: #ffffff; 
-            padding: 30px; 
-            border-radius: 15px; 
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); 
-            margin-bottom: 40px; 
+            max-width: 850px; 
+            margin: 40px auto; 
+            background-color: var(--bg-card); 
+            padding: 40px; 
+            border-radius: 24px; /* Bardziej zaokrąglone rogi (nowoczesny styl) */
+            box-shadow: 0 10px 30px var(--shadow); 
         }
         
         h1 { 
-            color: #0d47a1; /* Głęboki, wyraźny niebieski */
+            color: var(--primary); 
             text-align: center; 
-            margin-bottom: 10px; 
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 5px;
         }
 
         .subtitle {
             text-align: center;
-            color: #1976d2; /* Średnio-ciemny niebieski */
-            margin-bottom: 30px;
+            color: #546e7a;
+            margin-bottom: 40px;
             font-weight: 300;
+            font-size: 1.1em;
         }
 
-        /* --- NAWIGACJA --- */
+        /* --- NOWOCZESNA NAWIGACJA (Flexbox) --- */
         .nav-bar {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 15px;
-            border-bottom: 2px solid #90caf9;
-            background-color: #bbdefb;
-            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; /* Pozwala przyciskom spaść niżej na telefonie */
+            gap: 10px;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eceff1;
         }
+
         .nav-link {
             text-decoration: none;
-            color: #0d47a1;
-            font-weight: bold;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.9em;
             padding: 10px 20px;
-            border-radius: 20px;
-            background-color: #e3f2fd;
-            transition: background-color 0.3s;
+            border-radius: 50px; /* Styl kapsułki */
+            background-color: var(--accent-light);
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
         }
+
         .nav-link:hover {
-            background-color: #90caf9;
-            color: #1a237e;
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-2px); /* Lekkie uniesienie */
+            box-shadow: 0 4px 10px var(--shadow);
         }
 
-
-        /* --- STYLIZE DLA SEKCJI PSYCHOEDUKACJI --- */
+        /* --- STYLE KART (DETAILS) --- */
         details {
-            margin-bottom: 15px;
-            border: 1px solid #90caf9; /* Jasnoniebieska ramka */
-            border-radius: 8px;
-            background-color: #f7fbff; 
-            transition: all 0.3s ease-in-out;
+            margin-bottom: 20px;
+            background-color: #fff; 
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            overflow: hidden; /* Ważne dla animacji rogów */
+            transition: all 0.3s ease;
+        }
+
+        details:hover {
+            border-color: var(--accent);
         }
 
         details[open] {
-            background-color: #bbdefb; /* Jasnoniebieski po otwarciu */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px var(--shadow);
+            background-color: #fafafa;
         }
         
         summary {
-            font-size: 1.15em;
-            font-weight: bold;
-            padding: 15px 20px;
+            font-size: 1.1em;
+            font-weight: 600;
+            padding: 20px;
             cursor: pointer;
-            color: #1a237e; 
+            color: var(--primary); 
             list-style: none; 
-            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
         }
 
-        summary::marker { display: none; }
+        summary::-webkit-details-marker { display: none; } /* Ukrycie domyślnego trójkąta w starszych przeglądarkach */
 
+        /* Nowoczesna strzałka robiona CSSem */
         summary::after {
-            content: '▶'; 
-            position: absolute;
-            right: 15px;
-            transition: transform 0.3s;
-            color: #0d47a1; 
-            font-size: 0.8em;
+            content: '❯'; 
+            font-size: 0.9em;
+            transition: transform 0.3s ease;
+            color: var(--accent);
         }
 
         details[open] summary::after {
-            content: '▼'; 
+            transform: rotate(90deg); /* Obrót strzałki */
         }
         
         .content {
-            padding: 10px 20px 20px 20px;
-            border-top: 1px dashed #90caf9;
+            padding: 0 25px 25px 25px;
+            color: #455a64;
+            animation: fadeIn 0.5s ease;
         }
 
-        .content p {
-            margin-top: 5px;
-            margin-bottom: 15px;
+        /* Animacja pojawiania się tekstu */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
+        /* --- STYLIZACJA TREŚCI --- */
         .key-term {
-            font-weight: bold;
-            color: #1976d2; 
+            font-weight: 700;
+            color: var(--primary);
+            background-color: var(--accent-light); /* Marker effect */
+            padding: 2px 6px;
+            border-radius: 4px;
         }
         
         .example-list {
-            list-style-type: square;
-            margin-left: 20px;
+            list-style-type: none; /* Reset domyślnych kropek */
             padding-left: 0;
-            font-size: 0.95em;
-            color: #1a237e;
         }
 
-        /* Media Print */
+        .example-list li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 8px;
+        }
+
+        .example-list li::before {
+            content: '•';
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.5em;
+            position: absolute;
+            left: 0;
+            top: -5px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        /* --- STOPKA --- */
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #90a4ae;
+            font-size: 0.9em;
+        }
+
+        /* --- MEDIA PRINT --- */
         @media print {
-            .nav-bar { display: none; }
-            body { background-color: white !important; color: black !important; }
-            .container { box-shadow: none; }
-            h1, .subtitle { color: black !important; }
-            details { border: 1px solid #ccc; margin-bottom: 10px; background-color: white !important; }
-            details summary { color: black !important; background-color: #eee; }
+            body { background-color: white !important; color: black !important; padding: 0; }
+            .nav-bar, footer { display: none; }
+            .container { box-shadow: none; margin: 0; border: none; width: 100%; max-width: 100%; }
+            details { border: 1px solid #ddd; page-break-inside: avoid; }
             summary::after { display: none; }
         }
     </style>
 </head>
 <body>
+
     <div class="container">
         <h1>📚 Biblioteka Psychoedukacyjna</h1>        
-         <div class="nav-bar">
-            <!-- Link do treningu oddechowego -->
-            <a href="oddech.html" class="nav-link">spokojny oddech</a>
-        </div>
-        <div class="nav-bar">
-            <!-- Link do drugiej strony, Kwestionariusza Myśli Automatycznych -->
-            <a href="tabela.html" class="nav-link">restrukturyzacja</a>
-        </div>
-         <div class="nav-bar">
-            <a href="abc.html" class="nav-link">ABC</a>
-        </div><div class="nav-bar">
-            <a href="reakcja.html" class="nav-link">reakcja</a>
-        </div><div class="nav-bar">
-            <a href="kropki.html" class="nav-link">kropki</a>
-        </div></div>
-          
+        <p class="subtitle">Zrozum mechanizmy swojego umysłu</p>
 
-        <!-- MECHANIZMY PSYCHOEDUKACYJNE -->
-        
-        <!-- MECHANIZM 1: SPIRALA LĘKU / ATAK PANIKI -->
+        <div class="nav-bar">
+            <a href="oddech.html" class="nav-link">Spokojny oddech</a>
+            <a href="tabela.html" class="nav-link">Restrukturyzacja</a>
+            <a href="abc.html" class="nav-link">Model ABC</a>
+            <a href="reakcja.html" class="nav-link">Reakcja</a>
+            <a href="kropki.html" class="nav-link">Kropki</a>
+        </div>
+          
         <details>
-            <summary>Czym jest Spirala Lęku i Jak Ją Przerwać?</summary>
+            <summary>Czym jest Spirala Lęku i jak ją przerwać?</summary>
             <div class="content">
                 <p>
-                    <span class="key-term">Spirala Lęku (lub Błędne Koło Lęku)</span> to samonapędzający się mechanizm, w którym objawy fizyczne lęku prowadzą do lękowych myśli, co z kolei nasila objawy fizyczne, tworząc pętlę. Jest to typowe w atakach paniki.
+                    <span class="key-term">Spirala Lęku</span> (lub Błędne Koło Lęku) to samonapędzający się mechanizm, w którym objawy fizyczne lęku prowadzą do lękowych myśli, co z kolei nasila objawy fizyczne.
                 </p>
                 <p><strong>Jak to działa:</strong></p>
-                <ol class="example-list">
+                <ul class="example-list">
                     <li><span class="key-term">Wyzwalacz:</span> Zaczynasz myśleć o czymś stresującym.</li>
                     <li><span class="key-term">Objaw Fizyczny:</span> Serce zaczyna szybciej bić, czujesz duszności.</li>
                     <li><span class="key-term">Myśl Katastroficzna:</span> "Mam zawał", "Zaraz zemdleję", "Tracę kontrolę".</li>
                     <li><span class="key-term">Wzrost Lęku:</span> Ta myśl dramatycznie nasila Twój lęk.</li>
                     <li><span class="key-term">Nasila Objaw:</span> Lęk powoduje jeszcze szybsze bicie serca. Pętla się zamyka.</li>
-                </ol>
-                <p>
-                    <strong>Cel:</strong> Przerwać połączenie między objawem fizycznym a katastroficzną interpretacją, np. poprzez techniki oddechowe lub ugruntowania.
+                </ul>
+                <p style="margin-top: 15px; border-left: 4px solid var(--accent); padding-left: 10px; font-style: italic;">
+                    <strong>Cel:</strong> Przerwać połączenie między objawem fizycznym a katastroficzną interpretacją, np. poprzez techniki oddechowe lub ugruntowanie.
                 </p>
             </div>
         </details>
 
-        <!-- MECHANIZM 2: ZNIEKSZTAŁCENIA POZNAWCZE (Błędy Myślenia) -->
         <details>
-            <summary>Zniekształcenia Poznawcze – 10 Typowych Błędów Myślenia</summary>
+            <summary>Zniekształcenia Poznawcze – Błędy Myślenia</summary>
             <div class="content">
                 <p>
-                    <span class="key-term">Zniekształcenia poznawcze</span> to nawykowe, nieobiektywne sposoby interpretowania informacji, które prowadzą do negatywnych emocji. Zrozumienie ich to pierwszy krok do ich kwestionowania.
+                    <span class="key-term">Zniekształcenia poznawcze</span> to nawykowe, nieobiektywne sposoby interpretowania informacji.
                 </p>
-                <p><strong>Przykłady:</strong></p>
+                <p><strong>Typowe przykłady:</strong></p>
                 <ul class="example-list">
-                    <li><span class="key-term">Myślenie Dychotomiczne (Czarne/Białe):</span> Widzisz tylko skrajności (albo jestem idealny, albo beznadziejny).</li>
-                    <li><span class="key-term">Filtr Mentalny:</span> Skupiasz się tylko na negatywnych detalach, ignorując pozytywne.</li>
-                    <li><span class="key-term">Czytanie w Myślach:</span> Zakładasz, że wiesz, co myślą inni, bez dowodów.</li>
-                    <li><span class="key-term">Wróżenie:</span> Przepowiadasz negatywne scenariusze, jakby były faktem.</li>
-                    <li><span class="key-term">Nadmierne Uogólnienie:</span> Wyciągasz ogólny, negatywny wniosek na podstawie pojedynczego zdarzenia.</li>
+                    <li><span class="key-term">Myślenie czarno-białe:</span> Widzisz tylko skrajności (albo sukces, albo porażka).</li>
+                    <li><span class="key-term">Filtr Mentalny:</span> Skupiasz się tylko na negatywach.</li>
+                    <li><span class="key-term">Czytanie w Myślach:</span> Zakładasz, że wiesz, co myślą inni (zazwyczaj źle o Tobie).</li>
+                    <li><span class="key-term">Katastrofizacja:</span> Przewidujesz najgorszy możliwy scenariusz.</li>
+                    <li><span class="key-term">Nadmierne Uogólnienie:</span> "Zawsze mi nie wychodzi" na podstawie jednej sytuacji.</li>
                 </ul>
             </div>
         </details>
         
-        <!-- MECHANIZM 3: UNIKANIE vs EKSPOZYCJA -->
         <details>
-            <summary>Unikanie, a Terapia Ekspozycyjna (Jak Pokonać Lęk)</summary>
+            <summary>Unikanie a Terapia Ekspozycyjna</summary>
             <div class="content">
                 <p>
-                    <span class="key-term">Unikanie</span> jest najczęstszą strategią radzenia sobie z lękiem. Chwilowo zmniejsza dyskomfort, ale długoterminowo wzmacnia lęk i utwierdza mózg w przekonaniu, że sytuacja jest faktycznie niebezpieczna.
+                    <span class="key-term">Unikanie</span> chwilowo zmniejsza lęk, ale długoterminowo go karmi. Mózg uczy się, że unikanie jest jedynym sposobem na przetrwanie.
                 </p>
                 <p>
-                    <span class="key-term">Ekspozycja</span> to technika, w której stopniowo i bezpiecznie konfrontujesz się z sytuacjami, których się boisz. Kluczem jest pozostanie w sytuacji wystarczająco długo, aby mózg nauczył się, że: 1) lęk jest nieprzyjemny, ale nie niebezpieczny, 2) lęk sam spada (habituacja), 3) katastrofa nie następuje.
+                    <span class="key-term">Ekspozycja</span> to bezpieczna konfrontacja z lękiem. Pozwala mózgowi nauczyć się procesu <strong>habituacji</strong> (naturalnego wygaszania emocji).
                 </p>
                 <p>
-                    <strong>Wskazówka:</strong> Zbuduj "hierarchię lęku" – listę rzeczy, których się boisz, od najmniej do najbardziej lękotwórczych, i zacznij od tej najłatwiejszej.
+                    <strong>Wskazówka:</strong> Zbuduj "drabinę lęku" – zacznij od sytuacji wywołującej mały dyskomfort, a nie od razu od najtrudniejszego zadania.
                 </p>
             </div>
         </details>
 
-        <!-- MECHANIZM 4: ROLA MYŚLI a ROLA FAKTÓW -->
         <details>
-            <summary>Myśl to Nie Fakt - Rozróżnianie Subiektywnej Oceny</summary>
+            <summary>Myśl to nie Fakt</summary>
             <div class="content">
                 <p>
-                    Jedną z podstawowych umiejętności terapeutycznych jest oddzielenie myśli od faktów.
+                    Kluczowa umiejętność: oddzielenie myśli od rzeczywistości.
                 </p>
                 <ul class="example-list">
-                    <li><span class="key-term">Fakt:</span> Coś, co można udowodnić i co jest obiektywne ("Temperatura wynosi 20°C").</li>
-                    <li><span class="key-term">Myśl:</span> Subiektywna interpretacja, opinia lub osąd ("Jest mi za ciepło/za zimno").</li>
+                    <li><span class="key-term">Fakt:</span> Obiektywny, udowadnialny ("Temperatura wynosi 20°C").</li>
+                    <li><span class="key-term">Myśl:</span> Subiektywna ocena ("Jest tu zimno i nieprzyjemnie").</li>
                 </ul>
                 <p>
-                    Jeśli często używasz słów takich jak "zawsze", "nigdy", "muszę" lub "powinienem", prawdopodobnie mylisz myśli z faktami. Pamiętaj: kiedy mówisz "Jestem porażką", mówisz Myśl. Prawidłowe stwierdzenie to: "Mam myśl, że jestem porażką". To proste przeformułowanie daje Ci przestrzeń na dystans i kwestionowanie.
+                    Zamiast mówić: "Jestem beznadziejny" (stwierdzenie faktu), powiedz: <span class="key-term">"Mam myśl, że jestem beznadziejny"</span>. To tworzy zdrowy dystans.
                 </p>
-            </div>
-        </details>
-         <details>
-            <summary>Emocje</summary>
-            <div class="content">
-                <p>
-                    Emocje to informacje dla nas i dla innych o tym co się z nami dzieje.
-                </p>
-                <ul class="example-list">
-                    <li><span class="key-term">Radość:</span> Informuje, że zyskaliśmy lub możemy zyskać coś co jest dla nas WAŻNE.</li>
-                    <li><span class="key-term">Smutek:</span> Informuje, że straciliśmy lub możemy stracić coś co jest dla nas WAŻNE.</li>
-                    <li><span class="key-term">Złość:</span> Informuje o naszych POTRZEBACH. Coś co mi się nie podoba i chciałbym to zmienić.</li>
-                    <li><span class="key-term">Strach:</span> OSTRZEGA przed niebezpieczeństwem.</li>
-                </ul>
-                <center><img src="3.png" alt="emocje" style="height: 400px;"></center>  
             </div>
         </details>
 
-        <p class="subtitle" style="margin-top: 40px; color: #1a237e;">
-            Od decyzji, które podejmujesz teraz zależy Twoja przyszłość.
+        <details>
+            <summary>Emocje – informacje o potrzebach</summary>
+            <div class="content">
+                <p>
+                    Emocje to drogowskazy, a nie wrogowie.
+                </p>
+                <ul class="example-list">
+                    <li><span class="key-term">Radość:</span> Zyskaliśmy coś ważnego.</li>
+                    <li><span class="key-term">Smutek:</span> Straciliśmy coś ważnego. Potrzebujemy ukojenia.</li>
+                    <li><span class="key-term">Złość:</span> Nasze granice zostały naruszone. Potrzebujemy zmiany.</li>
+                    <li><span class="key-term">Strach:</span> Ostrzeżenie przed zagrożeniem. Potrzebujemy bezpieczeństwa.</li>
+                </ul>
+                <div style="text-align: center;">
+                    <img src="3.png" alt="Koło emocji" style="max-height: 350px;">
+                </div>
+            </div>
+        </details>
+
+        <p class="subtitle" style="margin-top: 60px; font-size: 1em; color: var(--primary);">
+            Od decyzji, które podejmujesz teraz, zależy Twoja przyszłość.
         </p>
     </div>
-    <center>
- <footer>
-        <p>&reg; 2025 Psychodem</p>
-    </footer>        
-    </center>
+
+    <footer>
+        <p>&copy; 2025 Psychodem | Biblioteka CBT</p>
+    </footer>       
+
 </body>
 </html>
