@@ -39,16 +39,17 @@
         }
 
         /* --- STYL LOGO --- */
-        .logo-wrapper {
-            text-align: center;
-            margin-bottom: 20px;
+.logo-wrapper a {
+            text-decoration: none;
+            border: none;
         }
 
         .logo-wrapper img {
-            max-height: 100px; /* Ograniczenie wysokości, żeby logo nie było gigantyczne */
+            max-height: 100px; 
             width: auto;
             display: inline-block;
-            margin-top: 0; /* Reset marginesu z ogólnego stylu img */
+            margin-top: 0; 
+            border: 0;
         }
         
         h1 { 
@@ -213,12 +214,13 @@
 </head>
 <body>
 
-    <div class="container">
-        <div class="logo-wrapper">
-            <img src="logo.png" alt="Logo Psychodem">
+    <div class="logo-wrapper">
+            <a href="index.html" title="Powrót do strony głównej">
+                <img src="logo.png" alt="Psychodem">
+            </a>
         </div>
 
-        <h1>📚 Biblioteka Psychoedukacyjna</h1>        
+        <h1>Biblioteka Psychoedukacyjna</h1>        
         <p class="subtitle">Zrozum mechanizmy swojego umysłu</p>
 
         <div class="nav-bar">
