@@ -11,7 +11,7 @@
             font-family: 'Inter', sans-serif; 
             line-height: 1.6; 
             margin: 20px; 
-            background-color: #e3f2fd; /* Bardzo jasny błękit (light blue) */
+            background-color: #FAFAFA
             color: #1a237e; /* Głęboki granat, kontrastowy i czytelny */
         }
         
@@ -24,6 +24,24 @@
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); 
             margin-bottom: 40px; 
         }
+
+          .logo-wrapper {
+            text-align: center; 
+            margin-bottom: 20px; 
+        }
+.logo-wrapper a {
+            text-decoration: none;
+            border: none;
+        }
+
+        .logo-wrapper img {
+            max-height: 100px; 
+            width: auto;
+            display: inline-block;
+            margin-top: 0; 
+            border: 0;
+        }
+
         
         h1 { 
             color: #0d47a1; /* Głęboki, wyraźny niebieski */
@@ -188,14 +206,13 @@
     </style>
 </head>
 <body>
+     <div class="logo-wrapper">
+            <a href="index.html" title="Powrót do strony głównej">
+                <img src="logo.png" alt="Psychodem">
+            </a>
     <div class="container">
-        <h1>🧠 Tabela Myśli Automatycznych</h1>
+        <h1>Tabela Myśli Automatycznych</h1>
         <p class="subtitle">Siedmiostopniowy proces analizy i kwestionowania negatywnych myśli w nurcie CBT.</p>
-        
-        <div class="nav-bar">
-            <!-- W Canvas, ten link powinien przenieść użytkownika do drugiego pliku, jeśli zostanie otwarty w trybie podglądu lub w oddzielnym oknie. -->
-            <a href="index.html" class="nav-link">Wróć do 📚 Biblioteki Psychoedukacyjnej</a>
-        </div>
 
         <!-- KWestionariusz MYŚLI AUTOMATYCZNYCH (Formularz) -->
         <div class="kma-section">
