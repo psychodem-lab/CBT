@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zasoby i Literatura | Biblioteka Psychologiczna</title>
+    <style>
+        /* Paleta kolorów: #4CAF50 (Główny Zielony), #E8F5E9 (Jasny Zielony Box), #1B5E20 (Ciemniejszy Tekst) */
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            color: #333;
+        }
+
+        /* --- Nagłówek --- */
+        header {
+            background-color: #4CAF50; /* Zielony */
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .logo-wrapper a {
+            text-decoration: none;
+            border: none;
+        }
+        .logo-wrapper img {
+            max-height: 100px; 
+            width: auto;
+            display: inline-block;
+            margin-top: 0; 
+            border: 0;
+        }
+
+        /* --- Kontener Główny --- */
+        .container {
+            width: 85%; /* Lekko zwiększamy szerokość dla lepszego układu */
+            margin: 20px auto;
+            padding: 20px;
+        }
+        
+        /* --- Nagłówki Sekcji --- */
+        h2 {
+            color: #4CAF50; /* Zielony */
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 5px;
+            text-align: center;
+            margin-top: 40px; /* Dystans między sekcjami */
+        }
+        h2:first-of-type {
+            margin-top: 0;
+        }
+
+        /* --- Style Elementów Listy (Linków i Książek) --- */
+        ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center;
+        }
+        ul li {
+            background-color: #E8F5E9; /* Jasny zielony box */
+            margin: 15px; 
+            padding: 20px;
+            width: 300px; 
+            text-align: left; 
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Wyrównanie do góry boxu */
+        }
+        ul li:hover {
+            transform: translateY(-5px); 
+        }
+
+        /* --- Linki Zewnętrzne --- */
+        .resource-title {
+            text-decoration: none;
+            color: #1B5E20; 
+            font-weight: bold;
+            display: block;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        /* --- Literatura --- */
+        .book-title {
+            color: #1B5E20;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+        .author {
+            font-style: italic;
+            color: #4CAF50;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .description {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        /* --- Link Powrotny --- */
+        .back-link {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .back-link a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 15px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            display: inline-block;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .back-link a:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        /* --- Stopka --- */
+        footer {
+            background-color: #388E3C; 
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 30px; 
+            font-size: 0.9em;
+            width: 100%;
+        }
+
+        /* --- Responsywność --- */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%; 
+                margin: 10px auto;
+            }
+            ul li {
+                width: 90%; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-wrapper">
+            <a href="index.html" title="Powrót do strony głównej">
+                <img src="logo.png" alt="Logo Psychodem">
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <h2 id="linki">🔗 Polecane Linki do Zaufanych Źródeł</h2>
+
+        <ul>
+            <li>
+                <a href="https://www.nfz.gov.pl/" target="_blank" class="resource-title">Narodowy Fundusz Zdrowia (NFZ)</a>
+                <p class="description">Oficjalne informacje o leczeniu, programach profilaktycznych i dostępności placówek.</p>
+            </li>
+            <li>
+                <a href="https://ptp.org.pl/" target="_blank" class="resource-title">Polskie Towarzystwo Psychologiczne (PTP)</a>
+                <p class="description">Związek psychologów dbający o standardy zawodowe i etykę w Polsce.</p>
+            </li>
+            <li>
+                <a href="https://www.who.int/mental-health" target="_blank" class="resource-title">Światowa Organizacja Zdrowia (WHO)</a>
+                <p class="description">Globalne dane, standardy i wytyczne dotyczące zdrowia psychicznego na świecie.</p>
+            </li>
+            <li>
+                <a href="https://kryzys.org/" target="_blank" class="resource-title">Kryzys.org (Telefon zaufania)</a>
+                <p class="description">Pomoc w kryzysie i kontakty do ważnych telefonów zaufania w Polsce.</p>
+            </li>
+        </ul>
+        
+        <h2 id="literatura">📚 Polecana Literatura i Książki CBT</h2>
+
+        <ul>
+            <li>
+                <span class="book-title">Umysł ponad nastrojem. Zmień nastrój dzięki Terapii Poznawczo-Behawioralnej</span>
+                <span class="author">D. Greenberger, C. Padesky</span>
+                <p class="description">Praktyczny podręcznik do samodzielnej pracy, uczy stosowania technik CBT do radzenia sobie z lękiem i depresją.</p>
+            </li>
+            <li>
+                <span class="book-title">Pułapki myślenia. O myśleniu szybkim i wolnym</span>
+                <span class="author">D. Kahneman</span>
+                <p class="description">Klasyka psychologii behawioralnej. Wyjaśnia, jak działają nasze błędy poznawcze i heurystyki, wpływając na decyzje.</p>
+            </li>
+            <li>
+                <span class="book-title">W pułapce. Jak sobie radzić z pięcioma życiowymi pułapkami</span>
+                <span class="author">J. Young, J. Klosko</span>
+                <p class="description">Wprowadzenie do Terapii Schematów, wyjaśniające głęboko zakorzenione wzorce emocjonalne.</p>
+            </li>
+            <li>
+                <span class="book-title">Zrozumieć lęk. Techniki Terapii Poznawczo-Behawioralnej</span>
+                <span class="author">D. Burns</span>
+                <p class="description">Szczegółowe techniki do pracy nad lękiem społecznym, paniką i ogólnym stresem.</p>
+            </li>
+        </ul>
+
+        <div class="back-link">
+            <a href="index.html">&leftarrow; Wróć do Strony Głównej</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&reg; 2025 Psychodem | Biblioteka CBT</p>
+    </footer>    
+</body>
+</html>
