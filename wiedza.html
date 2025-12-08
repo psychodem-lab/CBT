@@ -21,7 +21,8 @@
             color: white;
             padding: 5px 10px;
             text-align: center;
-            width: 85%;
+            max-width: 1200px; /* Maksymalna szerokość nagłówka */
+            margin: 0 auto; 
         }
         .logo-wrapper a {
             text-decoration: none;
@@ -35,10 +36,16 @@
             border: 0;
         }
 
-        /* --- Kontener Główny --- */
+        /* --- Główny kontener strony do wyśrodkowania treści --- */
+        .main-content-wrapper {
+            max-width: 1200px; /* Maksymalna szerokość dla całej treści */
+            margin: 0 auto; /* Wyśrodkowanie */
+            padding: 20px 0;
+        }
+
+        /* --- Kontener Główny (wewnątrz main-content-wrapper) --- */
         .container {
-            width: 100%; /* Lekko zwiększamy szerokość dla lepszego układu */
-            margin: 20px auto;
+            width: 100%;
             padding: 20px;
         }
         
@@ -49,12 +56,13 @@
             padding-bottom: 5px;
             text-align: center;
             margin-top: 40px; /* Dystans między sekcjami */
+            font-weight: 500;
         }
         h2:first-of-type {
             margin-top: 0;
         }
 
-        /* --- Style Elementów Listy (Linków i Książek) --- */
+        /* --- Style Elementów Listy (Linków, Książek, Artykułów) --- */
         ul {
             list-style-type: none;
             padding: 0;
@@ -79,7 +87,7 @@
             transform: translateY(-5px); 
         }
 
-        /* --- Linki Zewnętrzne --- */
+        /* --- Linki Zewnętrzne (resource-title) --- */
         .resource-title {
             text-decoration: none;
             color: #1B5E20; 
@@ -89,7 +97,7 @@
             margin-bottom: 5px;
         }
 
-        /* --- Literatura --- */
+        /* --- Literatura (book-title) --- */
         .book-title {
             color: #1B5E20;
             font-weight: bold;
@@ -102,50 +110,50 @@
             margin-bottom: 10px;
             display: block;
         }
+
+        /* --- Artykuły (article-link i article-date) --- */
+        .article-link {
+            text-decoration: none;
+            color: #1B5E20; 
+            font-weight: bold;
+            display: block;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+        .article-date {
+            font-size: 0.85em;
+            color: #4CAF50;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
         .description {
             font-size: 0.9em;
             color: #555;
         }
 
-        /* --- Link Powrotny --- */
-        .back-link {
-            text-align: center;
-            margin-top: 40px;
-        }
-        .back-link a {
-            color: #4CAF50;
-            text-decoration: none;
-            font-weight: bold;
-            padding: 10px 15px;
-            border: 2px solid #4CAF50;
-            border-radius: 5px;
-            display: inline-block;
-            transition: background-color 0.2s, color 0.2s;
-        }
-        .back-link a:hover {
-            background-color: #4CAF50;
-            color: white;
-        }
-        
         /* --- Stopka --- */
         footer {
             background-color: #388E3C; 
             color: white;
             text-align: center;
             padding: 5px 10px;
-            margin-top: 30px; 
             font-size: 0.9em;
-            width: 85%;
+            max-width: 1200px;
+            margin: 30px auto 0 auto;
         }
 
         /* --- Responsywność --- */
         @media (max-width: 768px) {
             .container {
-                width: 100%; 
-                margin: 10px auto;
+                padding: 10px;
             }
             ul li {
-                width: 90%; 
+                width: 100%; 
+                margin: 10px 0;
+            }
+            header, footer, .main-content-wrapper {
+                max-width: 100%;
             }
         }
     </style>
@@ -160,32 +168,56 @@
         </div>
     </header>
 
-    <div class="container">
+    <div class="main-content-wrapper">
+        <div class="container">
         
-        <h2 id="linki">🔗 Polecane Linki do Zaufanych Źródeł</h2>
+            <h2 id="linki">🔗 Polecane Linki do Zaufanych Źródeł</h2>
 
-        <ul>
-            <li>
-                <a href="https://www.pttpb.pl/" target="_blank" class="resource-title">Polskie Towarzystwo Terapii Poznawczej i Behawioralnej(PTTPB)</a>
-                <p class="description">Towarzystwo psychoterapeutó dbający o standardy zawodowe i etykę w Polsce.</p>
-            </li>
-            <li>
-                <a href="https://116sos.pl" target="_blank" class="resource-title">Telefon Zaufania</a>
-                <p class="description">Pomoc psychologiczna dostępna całodobowo</p>
-            </li>
+            <ul>
+                <li>
+                    <a href="https://www.pttpb.pl/" target="_blank" class="resource-title">Polskie Towarzystwo Terapii Poznawczej i Behawioralnej(PTTPB)</a>
+                    <p class="description">Towarzystwo psychoterapeutó dbający o standardy zawodowe i etykę w Polsce.</p>
+                </li>
+                <li>
+                    <a href="https://116sos.pl" target="_blank" class="resource-title">Telefon Zaufania</a>
+                    <p class="description">Pomoc psychologiczna dostępna całodobowo</p>
+                </li>
+            </ul>
         
-        <h2 id="literatura">📚 Polecana Literatura i Książki CBT</h2>
+            <h2 id="literatura">📚 Polecana Literatura i Książki CBT</h2>
 
-        <ul>
-            <li>
-                <span class="book-title">Umysł ponad nastrojem. Zmień nastrój dzięki Terapii Poznawczo-Behawioralnej</span>
-                <span class="author">D. Greenberger, C. Padesky</span>
-                <p class="description">Praktyczny podręcznik do nauki stosowania technik CBT do radzenia sobie z lękiem i depresją.</p>
+            <ul>
+                <li>
+                    <span class="book-title">Umysł ponad nastrojem. Zmień nastrój dzięki Terapii Poznawczo-Behawioralnej</span>
+                    <span class="author">D. Greenberger, C. Padesky</span>
+                    <p class="description">Praktyczny podręcznik do nauki stosowania technik CBT do radzenia sobie z lękiem i depresją.</p>
+                </li>
+            </ul>
 
+            <h2 id="artykuly">📝 Polecane Artykuły i Wpisy</h2>
+
+            <ul>
+                <li>
+                    <a href="[LINK DO PIERWSZEGO ARTYKUŁU]" target="_blank" class="article-link">Jak działa CBT? Podstawowe założenia terapii poznawczo-behawioralnej</a>
+                    <span class="article-date">Opublikowano: 10.11.2025</span>
+                    <p class="description">Wprowadzenie do trójkąta poznawczego, czyli jak myśli, emocje i zachowania wpływają na siebie nawzajem.</p>
+                </li>
+                <li>
+                    <a href="[LINK DO DRUGIEGO ARTYKUŁU]" target="_blank" class="article-link">Technika STOP: Błyskawiczna pomoc w sytuacjach kryzysowych</a>
+                    <span class="article-date">Opublikowano: 15.11.2025</span>
+                    <p class="description">Praktyczne zastosowanie prostego narzędzia do zatrzymywania automatycznych, negatywnych myśli.</p>
+                </li>
+                <li>
+                    <a href="[LINK DO KOLEJNEGO ARTYKUŁU]" target="_blank" class="article-link">[Tytuł Twojego Nowego Artykułu]</a>
+                    <span class="article-date">Opublikowano: [Data]</span>
+                    <p class="description">[Krótki opis, streszczenie lub zajawka artykułu].</p>
+                </li>
+            </ul>
+            </div>
     </div>
 
     <footer>
-        <p>&reg; 2025 Psychodem | Biblioteka CBT</p>
+        <p>&copy; 2025 Psychodem | Biblioteka CBT</p>
     </footer>    
 </body>
 </html>
