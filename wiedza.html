@@ -21,7 +21,7 @@
             color: white;
             padding: 5px 10px;
             text-align: center;
-            max-width: 1200px; /* Maksymalna szerokość nagłówka */
+            max-width: 1200px;
             margin: 0 auto; 
         }
         .logo-wrapper a {
@@ -38,8 +38,8 @@
 
         /* --- Główny kontener strony do wyśrodkowania treści --- */
         .main-content-wrapper {
-            max-width: 1200px; /* Maksymalna szerokość dla całej treści */
-            margin: 0 auto; /* Wyśrodkowanie */
+            max-width: 1200px;
+            margin: 0 auto; 
             padding: 20px 0;
         }
 
@@ -51,11 +51,11 @@
         
         /* --- Nagłówki Sekcji --- */
         h2 {
-            color: #4CAF50; /* Zielony */
+            color: #4CAF50;
             border-bottom: 2px solid #4CAF50;
             padding-bottom: 5px;
             text-align: center;
-            margin-top: 40px; /* Dystans między sekcjami */
+            margin-top: 40px;
             font-weight: 500;
         }
         h2:first-of-type {
@@ -71,7 +71,7 @@
             justify-content: center;
         }
         ul li {
-            background-color: #E8F5E9; /* Jasny zielony box */
+            background-color: #E8F5E9;
             margin: 15px; 
             padding: 20px;
             width: 300px; 
@@ -81,7 +81,7 @@
             transition: transform 0.2s;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Wyrównanie do góry boxu */
+            justify-content: flex-start;
         }
         ul li:hover {
             transform: translateY(-5px); 
@@ -111,20 +111,37 @@
             display: block;
         }
 
-        /* --- Artykuły (article-link i article-date) --- */
-        .article-link {
+        /* --- Artykuły (toggle-article i article-date) --- */
+        .toggle-article {
+            cursor: pointer;
             text-decoration: none;
             color: #1B5E20; 
             font-weight: bold;
             display: block;
             font-size: 1.2em;
             margin-bottom: 5px;
+            user-select: none;
+        }
+        .toggle-article:hover {
+            color: #4CAF50; 
         }
         .article-date {
             font-size: 0.85em;
             color: #4CAF50;
             margin-bottom: 10px;
             display: block;
+        }
+
+        /* KLUCZOWE STYLE DLA UKRYWANIA/POKAZYWANIA TREŚCI */
+        .article-content {
+            max-height: 0; /* Ukrywa treść */
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out, padding-top 0.4s ease-in-out;
+            padding-top: 0;
+        }
+        .article-content.show {
+            max-height: 500px; /* Wartość wystarczająco duża, by pomieścić treść */
+            padding-top: 10px;
         }
         
         .description {
@@ -194,30 +211,67 @@
                 </li>
             </ul>
 
-            <h2 id="artykuly">📝 Polecane Artykuły i Wpisy</h2>
+            <h2 id="artykuly">📝 Polecane Artykuły i Wpisy (Kliknij, aby rozwinąć)</h2>
 
             <ul>
                 <li>
-                    <a href="[LINK DO PIERWSZEGO ARTYKUŁU]" target="_blank" class="article-link">Jak działa CBT? Podstawowe założenia terapii poznawczo-behawioralnej</a>
+                    <span class="toggle-article">Jak działa CBT? Podstawowe założenia terapii poznawczo-behawioralnej</span>
                     <span class="article-date">Opublikowano: 10.11.2025</span>
-                    <p class="description">Wprowadzenie do trójkąta poznawczego, czyli jak myśli, emocje i zachowania wpływają na siebie nawzajem.</p>
+                    
+                    <div class="article-content">
+                        <p class="description">Wprowadzenie do trójkąta poznawczego, czyli jak myśli, emocje i zachowania wpływają na siebie nawzajem. Terapia Poznawczo-Behawioralna (CBT) to forma psychoterapii, która koncentruje się na zmianie destrukcyjnych wzorców myślenia i zachowań. Zakłada, że emocje nie są wywołane samymi wydarzeniami, ale tym, jak te wydarzenia interpretujemy.</p>
+                        <p class="description">Więcej informacji znajdziesz na: <a href="[LINK DO ARTYKUŁU 1]" target="_blank">Czytaj dalej...</a></p>
+                    </div>
                 </li>
+                
                 <li>
-                    <a href="[LINK DO DRUGIEGO ARTYKUŁU]" target="_blank" class="article-link">Technika STOP: Błyskawiczna pomoc w sytuacjach kryzysowych</a>
+                    <span class="toggle-article">Technika STOP: Błyskawiczna pomoc w sytuacjach kryzysowych</span>
                     <span class="article-date">Opublikowano: 15.11.2025</span>
-                    <p class="description">Praktyczne zastosowanie prostego narzędzia do zatrzymywania automatycznych, negatywnych myśli.</p>
+                    
+                    <div class="article-content">
+                        <p class="description">Praktyczne zastosowanie prostego narzędzia do zatrzymywania automatycznych, negatywnych myśli. Technika STOP to akronim oznaczający: **S**top (Zatrzymaj się), **T**ake a breath (Weź oddech), **O**bserve (Obserwuj), **P**roceed (Kontynuuj). Jest to szybka metoda uziemienia w chwili silnego wzburzenia emocjonalnego, często stosowana w DBT.</p>
+                        <p class="description">Więcej informacji znajdziesz na: <a href="[LINK DO ARTYKUŁU 2]" target="_blank">Czytaj dalej...</a></p>
+                    </div>
                 </li>
+                
                 <li>
-                    <a href="[LINK DO KOLEJNEGO ARTYKUŁU]" target="_blank" class="article-link">[Tytuł Twojego Nowego Artykułu]</a>
+                    <span class="toggle-article">[Tytuł Twojego Nowego Artykułu]</span>
                     <span class="article-date">Opublikowano: [Data]</span>
-                    <p class="description">[Krótki opis, streszczenie lub zajawka artykułu].</p>
+                    <div class="article-content">
+                        <p class="description">[Wprowadź tutaj pełną treść artykułu. Może to być dłuższy tekst, podzielony na akapity, lub krótki wstęp.]</p>
+                        <p class="description">Więcej informacji znajdziesz na: <a href="[LINK ZEWNĘTRZNY]" target="_blank">Czytaj dalej...</a></p>
+                    </div>
                 </li>
             </ul>
-            </div>
+
+        </div>
     </div>
 
     <footer>
         <p>&copy; 2025 Psychodem | Biblioteka CBT</p>
     </footer>    
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pobierz wszystkie elementy, które mają klasę 'toggle-article' (czyli klikalne tytuły)
+            const toggles = document.querySelectorAll('.toggle-article');
+
+            toggles.forEach(toggle => {
+                // Dodaj nasłuchiwanie zdarzenia kliknięcia do każdego tytułu
+                toggle.addEventListener('click', function() {
+                    // Znajdź najbliższego brata (następny element, który jest 'article-content')
+                    const content = this.nextElementSibling.nextElementSibling;
+                    
+                    if (content.classList.contains('show')) {
+                        // Jeśli treść jest widoczna, ukryj ją
+                        content.classList.remove('show');
+                    } else {
+                        // Jeśli treść jest ukryta, pokaż ją
+                        content.classList.add('show');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
