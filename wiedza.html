@@ -75,11 +75,10 @@
             margin: 15px; 
             padding: 20px;
             
-            /* Zmiany dla responsywności */
+            /* Domyślne style dla książek/artykułów */
             min-width: 300px;
             flex-grow: 1;    
             max-width: 350px; 
-            /* Koniec zmian */
             
             text-align: left; 
             border-radius: 8px;
@@ -93,16 +92,31 @@
             transform: translateY(-5px); 
         }
 
-        /* --- Linki Zewnętrzne (resource-title) --- */
-        .resource-title {
-            text-decoration: none;
-            color: #1B5E20; 
-            font-weight: bold;
-            display: block;
-            font-size: 1.2em;
-            margin-bottom: 5px;
+        /* --- STYLE SPECJALNE DLA SEKCJI LINKÓW (IKONY) --- */
+        .link-list li {
+            padding: 15px; 
+            min-width: 150px; /* Mniejsza minimalna szerokość dla karty ikony */
+            max-width: 200px; /* Maksymalna szerokość karty ikony */
+            text-align: center; /* Wyśrodkowanie treści w karcie */
+            justify-content: space-between; /* Wyrównanie w dół dla podpisu */
+            height: auto; 
         }
-
+        .resource-icon {
+            max-width: 60px; /* Rozmiar ikony/logo */
+            height: auto;
+            margin: 0 auto 10px auto; /* Wyśrodkowanie i margines dolny */
+            display: block;
+            border-radius: 5px;
+        }
+        .link-list .resource-title {
+            font-size: 1em; /* Mniejsza czcionka, bardziej pod podpis */
+            margin-top: auto; 
+            margin-bottom: 0;
+        }
+        .link-list .description {
+            display: none; /* Ukrywamy opis dla ikon */
+        }
+        
         /* --- Literatura (book-title) --- */
         .book-title {
             color: #1B5E20;
@@ -140,13 +154,13 @@
 
         /* KLUCZOWE STYLE DLA ROZWIJANIA/UKRYWANIA TREŚCI */
         .article-content {
-            max-height: 0; /* Ukrywa treść */
+            max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s ease-in-out, padding-top 0.4s ease-in-out;
             padding-top: 0;
         }
         .article-content.show {
-            max-height: 1000px; /* Wystarczająco duża wysokość dla pełnej treści na każdym urządzeniu */
+            max-height: 1000px;
             padding-top: 10px;
         }
         
@@ -179,11 +193,27 @@
                 padding: 0;
             }
             
-            /* Kontenery artykułów/książek zajmują pełną szerokość */
-            ul li {
+            /* Styl dla list książek i artykułów - pełna szerokość na małych ekranach */
+            ul:not(.link-list) li {
                 width: 100%; 
-                min-width: unset; /* Usuwamy ograniczenie minimalnej szerokości */
+                min-width: unset; 
                 margin: 10px 0;
+            }
+
+            /* Styl dla listy linków (ikon) - dwa w rzędzie lub jeden */
+            .link-list li {
+                width: 45%; 
+                max-width: unset;
+                min-width: 100px;
+                margin: 10px 5px;
+            }
+            
+            /* Na bardzo małych ekranach (poniżej 480px) wracamy do pełnej szerokości */
+            @media (max-width: 480px) {
+                .link-list li {
+                    width: 95%; 
+                    margin: 10px 0;
+                }
             }
         }
     </style>
@@ -203,14 +233,13 @@
         
             <h2 id="linki">🔗 Polecane Linki do Zaufanych Źródeł</h2>
 
-            <ul>
+            <ul class="link-list"> <li>
+                    <img src="logo-pttpb.png" alt="Logo PTTPB" class="resource-icon">
+                    <a href="https://www.pttpb.pl/" target="_blank" class="resource-title">PTTPB</a>
+                    </li>
                 <li>
-                    <a href="https://www.pttpb.pl/" target="_blank" class="resource-title">Polskie Towarzystwo Terapii Poznawczej i Behawioralnej(PTTPB)</a>
-                    <p class="description">Towarzystwo psychoterapeutó dbający o standardy zawodowe i etykę w Polsce.</p>
-                </li>
-                <li>
+                    <img src="icon-telefon.png" alt="Ikona Telefonu Zaufania" class="resource-icon">
                     <a href="https://116sos.pl" target="_blank" class="resource-title">Telefon Zaufania</a>
-                    <p class="description">Pomoc psychologiczna dostępna całodobowo</p>
                 </li>
             </ul>
         
@@ -232,7 +261,7 @@
                     <span class="article-date">Opublikowano: 10.11.2025</span>
                     
                     <div class="article-content">
-                        <p class="description">Wprowadzenie do trójkąta poznawczego, czyli jak myśli, emocje i zachowania wpływają na siebie nawzajem. Terapia Poznawczo-Behawioralna (CBT) to forma psychoterapii, która koncentruje się na zmianie destrukcyjnych wzorców myślenia i zachowań. Zakłada, że emocje nie są wywołane samymi wydarzeniami, ale tym, jak te wydarzenia interpretujemy.</p>
+                        <p class="description">Wprowadzenie do trójkąta poznawczego, czyli jak myśli, emocje i zachowania wpływają na siebie nawzajem. Terapia Poznawczo-Behawioralna (CBT) koncentruje się na zmianie destrukcyjnych wzorców myślenia. Zakłada, że emocje nie są wywołane samymi wydarzeniami, ale tym, jak te wydarzenia interpretujemy.</p>
                         <p class="description">Więcej informacji znajdziesz na: <a href="[LINK DO ARTYKUŁU 1]" target="_blank">Czytaj dalej...</a></p>
                     </div>
                 </li>
@@ -242,17 +271,8 @@
                     <span class="article-date">Opublikowano: 15.11.2025</span>
                     
                     <div class="article-content">
-                        <p class="description">Praktyczne zastosowanie prostego narzędzia do zatrzymywania automatycznych, negatywnych myśli. Technika STOP to akronim oznaczający: **S**top (Zatrzymaj się), **T**ake a breath (Weź oddech), **O**bserve (Obserwuj), **P**roceed (Kontynuuj). Jest to szybka metoda uziemienia w chwili silnego wzburzenia emocjonalnego, często stosowana w DBT.</p>
+                        <p class="description">Praktyczne zastosowanie prostego narzędzia do zatrzymywania automatycznych, negatywnych myśli. Technika STOP to akronim oznaczający: **S**top, **T**ake a breath, **O**bserve, **P**roceed. Jest to szybka metoda uziemienia w chwili silnego wzburzenia emocjonalnego, często stosowana w DBT.</p>
                         <p class="description">Więcej informacji znajdziesz na: <a href="[LINK DO ARTYKUŁU 2]" target="_blank">Czytaj dalej...</a></p>
-                    </div>
-                </li>
-                
-                <li>
-                    <span class="toggle-article">[Tytuł Twojego Nowego Artykułu]</span>
-                    <span class="article-date">Opublikowano: [Data]</span>
-                    <div class="article-content">
-                        <p class="description">[Wprowadź tutaj pełną treść artykułu, którą chcesz pokazać po kliknięciu.]</p>
-                        <p class="description">Więcej informacji znajdziesz na: <a href="[LINK ZEWNĘTRZNY]" target="_blank">Czytaj dalej...</a></p>
                     </div>
                 </li>
             </ul>
@@ -261,25 +281,21 @@
     </div>
 
     <footer>
-        <p>&copy; 2025 Psychodem | Biblioteka CBT</p>
+        <p>&reg; 2025 Psychodem | Biblioteka CBT</p>
     </footer>    
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Pobieranie wszystkich klikalnych tytułów
             const toggles = document.querySelectorAll('.toggle-article');
 
             toggles.forEach(toggle => {
                 toggle.addEventListener('click', function() {
-                    // "this" to kliknięty element .toggle-article
-                    // W tej strukturze, treść (.article-content) jest dwa elementy dalej (po .article-date)
+                    // Znajduje element .article-content (jest dwa elementy dalej)
                     const content = this.nextElementSibling.nextElementSibling;
                     
                     if (content.classList.contains('show')) {
-                        // Ukryj
                         content.classList.remove('show');
                     } else {
-                        // Pokaż
                         content.classList.add('show');
                     }
                 });
