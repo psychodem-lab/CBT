@@ -74,7 +74,13 @@
             background-color: #E8F5E9;
             margin: 15px; 
             padding: 20px;
-            width: 300px; 
+            
+            /* Zmiany dla responsywności */
+            min-width: 300px;
+            flex-grow: 1;    
+            max-width: 350px; 
+            /* Koniec zmian */
+            
             text-align: left; 
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -132,7 +138,7 @@
             display: block;
         }
 
-        /* KLUCZOWE STYLE DLA UKRYWANIA/POKAZYWANIA TREŚCI */
+        /* KLUCZOWE STYLE DLA ROZWIJANIA/UKRYWANIA TREŚCI */
         .article-content {
             max-height: 0; /* Ukrywa treść */
             overflow: hidden;
@@ -140,7 +146,7 @@
             padding-top: 0;
         }
         .article-content.show {
-            max-height: 500px; /* Wartość wystarczająco duża, by pomieścić treść */
+            max-height: 1000px; /* Wystarczająco duża wysokość dla pełnej treści na każdym urządzeniu */
             padding-top: 10px;
         }
         
@@ -160,17 +166,24 @@
             margin: 30px auto 0 auto;
         }
 
-        /* --- Responsywność --- */
+        /* --- Responsywność (dla telefonów i tabletów) --- */
         @media (max-width: 768px) {
-            .container {
-                padding: 10px;
+            /* Zapewnienie marginesów na krawędziach ekranu */
+            .main-content-wrapper, header, footer {
+                max-width: 100%;
+                padding-left: 10px;
+                padding-right: 10px;
             }
+            
+            .container {
+                padding: 0;
+            }
+            
+            /* Kontenery artykułów/książek zajmują pełną szerokość */
             ul li {
                 width: 100%; 
+                min-width: unset; /* Usuwamy ograniczenie minimalnej szerokości */
                 margin: 10px 0;
-            }
-            header, footer, .main-content-wrapper {
-                max-width: 100%;
             }
         }
     </style>
@@ -238,7 +251,7 @@
                     <span class="toggle-article">[Tytuł Twojego Nowego Artykułu]</span>
                     <span class="article-date">Opublikowano: [Data]</span>
                     <div class="article-content">
-                        <p class="description">[Wprowadź tutaj pełną treść artykułu. Może to być dłuższy tekst, podzielony na akapity, lub krótki wstęp.]</p>
+                        <p class="description">[Wprowadź tutaj pełną treść artykułu, którą chcesz pokazać po kliknięciu.]</p>
                         <p class="description">Więcej informacji znajdziesz na: <a href="[LINK ZEWNĘTRZNY]" target="_blank">Czytaj dalej...</a></p>
                     </div>
                 </li>
@@ -253,20 +266,20 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Pobierz wszystkie elementy, które mają klasę 'toggle-article' (czyli klikalne tytuły)
+            // Pobieranie wszystkich klikalnych tytułów
             const toggles = document.querySelectorAll('.toggle-article');
 
             toggles.forEach(toggle => {
-                // Dodaj nasłuchiwanie zdarzenia kliknięcia do każdego tytułu
                 toggle.addEventListener('click', function() {
-                    // Znajdź najbliższego brata (następny element, który jest 'article-content')
+                    // "this" to kliknięty element .toggle-article
+                    // W tej strukturze, treść (.article-content) jest dwa elementy dalej (po .article-date)
                     const content = this.nextElementSibling.nextElementSibling;
                     
                     if (content.classList.contains('show')) {
-                        // Jeśli treść jest widoczna, ukryj ją
+                        // Ukryj
                         content.classList.remove('show');
                     } else {
-                        // Jeśli treść jest ukryta, pokaż ją
+                        // Pokaż
                         content.classList.add('show');
                     }
                 });
