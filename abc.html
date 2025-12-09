@@ -4,18 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Model 5 Obszarów (CBT) - Responsywny</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
-
+        /* --- Zmienne Kolorów --- */
         :root {
-            --col-situation: #6c757d; /* Szary */
-            --col-thoughts: #007bff;  /* Niebieski */
-            --col-emotions: #e83e8c;  /* Różowy */
-            --col-body: #28a745;      /* Zielony */
-            --col-behavior: #fd7e14;  /* Pomarańczowy */
+            --col-situation: #6c757d; 
+            --col-thoughts: #007bff; 
+            --col-emotions: #e83e8c; 
+            --col-body: #28a745;      
+            --col-behavior: #fd7e14;  
             --bg-color: #f4f6f8;
+            --main-width: 900px;
         }
 
+        /* --- Globalne i Podstawowe Style --- */
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
@@ -25,71 +27,32 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-        }
-        
-        .logo-wrapper {
-            text-align: center; 
-            margin-bottom: 20px; 
-        }
-
-        .logo-wrapper a {
-            text-decoration: none;
-            border: none;
-        }
-
-        .logo-wrapper img {
-            max-height: 100px; 
-            width: auto;
-            display: inline-block;
-            margin-top: 0; 
-            border: 0;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 20px;
             color: #333;
         }
         
+        header { text-align: center; margin-bottom: 20px; }
         h1 { margin: 0; font-size: 24px; }
         p.subtitle { margin: 5px 0 0; color: #666; font-size: 14px; }
 
-        /* --- STYLISTYKA PASKU NAWIGACYJNEGO --- */
-        .nav-bar {
-            margin-bottom: 20px; 
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
-            width: 100%;
-            max-width: 900px;
-            text-align: center;
-        }
-        
-        .nav-bar a.nav-link {
-            text-decoration: none;
-            color: #007bff;
-            font-weight: 600;
-            padding: 5px 10px;
-            border-radius: 5px;
-            transition: color 0.2s;
-        }
-        
-        .nav-bar a.nav-link:hover {
-            color: #0056b3;
-        }
+        /* Style Logo i Nawigacji */
+        .logo-wrapper { text-align: center; margin-bottom: 20px; }
+        .logo-wrapper img { max-height: 80px; width: auto; display: inline-block; border: 0; }
+        .nav-bar { margin: 0 0 20px; border-bottom: 1px solid #ddd; padding-bottom: 10px; width: 100%; max-width: var(--main-width); text-align: center; }
+        .nav-bar a { text-decoration: none; color: var(--col-thoughts); font-weight: 600; padding: 5px 10px; transition: color 0.2s; }
 
-        /* --- DEKLARACJA STYLÓW DLA DESKTOPU (Default) --- */
-        
+        /* --- DEKLARACJA STYLÓW DLA DESKTOPU (Układ Absolutny) --- */
         .diagram-wrapper {
             position: relative;
-            width: 900px;
-            height: 680px; 
+            width: var(--main-width);
+            height: 680px; /* Stała wysokość tylko dla wizualizacji diagramu na ekranie */
             background: white;
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            /* Zabezpieczenie przed ucinaniem w CSS - nadpisane w @media print */
         }
 
         .card {
-            position: absolute; /* Domyślne dla desktopu */
+            position: absolute; 
             width: 250px;
             height: 150px;
             background: #fff;
@@ -104,7 +67,7 @@
             z-index: 10;
         }
 
-        .card:hover, .card:focus-within {
+        .card:hover {
             transform: translateY(-3px);
             box-shadow: 0 12px 20px rgba(0,0,0,0.15);
             z-index: 20;
@@ -116,29 +79,23 @@
             text-transform: uppercase;
             letter-spacing: 1.2px;
             font-weight: 700;
-            pointer-events: none;
         }
 
         .card-content {
             flex-grow: 1;
             outline: none;
-            font-size: 14px;
+            font-size: 15px; /* Stały font, aby nie kolidował ze skryptem */
             color: #333;
-            overflow: hidden; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
             line-height: 1.4;
+            overflow: hidden; /* Ucinanie na ekranie, aby zachować układ desktopowy */
         }
 
         .card-content[data-placeholder]:empty:before {
             content: attr(data-placeholder);
             color: #aaa;
             font-style: italic;
-            pointer-events: none;
         }
-
+        
         /* --- POZYCJONOWANIE DESKTOP --- */
         .card-situation { top: 40px; left: 50%; transform: translateX(-50%); border-color: var(--col-situation); }
         .card-situation h3 { color: var(--col-situation); }
@@ -155,8 +112,7 @@
         .card-emotions { top: 500px; left: 50%; transform: translateX(-50%); border-color: var(--col-emotions); width: 260px; }
         .card-emotions h3 { color: var(--col-emotions); }
 
-        .actions { margin-top: 20px; }
-        button {
+        .actions button {
             background-color: #333;
             color: white;
             border: none;
@@ -167,66 +123,19 @@
             font-family: inherit;
             transition: background 0.3s;
         }
-        button:hover { background-color: #555; }
-
-        /* --- MEDIA QUERY DLA DRUKOWANIA --- */
-        @media print {
-            body { 
-                background: white; 
-                padding: 0; 
-                align-items: flex-start;
-            }
-            .logo-wrapper, .actions, header p { 
-                display: none; 
-            }
-            .diagram-wrapper { 
-                box-shadow: none; 
-                border: 1px solid #ddd; 
-                height: auto !important; 
-                padding-bottom: 50px;
-                width: 700px;
-                margin: 0 auto;
-            }
-
-            /* Zapewnienie, że wszystkie karty przejdą na tryb statyczny, aby uniknąć nakładania się */
-            .card {
-                position: static !important;
-                margin: 20px auto 10px auto; 
-                transform: none !important;
-                height: auto !important;
-                page-break-inside: avoid; /* Unikaj łamania karty na dwie strony */
-            }
-
-            /* KLUCZOWE ULEPSZENIA DLA MYŚLI AUTOMATYCZNYCH (ZAPOBIEGANIE UCIĘCIU) */
-            .card-thoughts {
-                height: auto !important; /* Usuń stałą wysokość 160px */
-                width: 90% !important; /* Daj maksymalnie dużo szerokości na wydruku */
-                min-height: 250px; /* Zwiększ minimalną wysokość, aby zyskać więcej miejsca */
-            }
-
-            /* Poprawa wyglądu pól edytowalnych na wydruku */
-            .card-content[contenteditable="true"] {
-                min-height: 50px; 
-                height: auto !important; 
-                border: 1px solid #000; /* Wyraźna ramka do pisania */
-                text-align: left !important; 
-                padding: 10px;
-                overflow: visible !important; /* KLUCZOWE: Zapobiegaj ucinaniu w druku */
-                display: block; 
-            }
-        }
+        .actions button:hover { background-color: #555; }
 
         /* --- MEDIA QUERY DLA URZĄDZEŃ MOBILNYCH (max-width: 768px) --- */
         @media screen and (max-width: 768px) {
             
             body { padding: 10px; }
             header { margin-bottom: 10px; }
+            .nav-bar { max-width: 100%; }
 
-            /* 1. Kontener (Przygotowanie do Stackingu) */
+            /* Kontener (Tryb Lista/Stackowanie) */
             .diagram-wrapper {
                 width: 100%; 
-                min-height: auto;
-                height: auto !important; 
+                height: auto; 
                 box-shadow: none; 
                 background: none;
                 padding: 0;
@@ -236,29 +145,74 @@
                 gap: 15px; 
             }
 
-            /* 2. Karty (Zmiana Pozycjonowania i Rozmiaru) */
+            /* Karty (Pełna szerokość) */
             .card {
-                position: static !important; 
+                position: static !important; /* KLUCZOWE: Zablokuj pozycjonowanie absolutne */
                 width: 95% !important; 
+                height: auto; /* Wysokość dopasowuje się do treści */
+                min-height: 100px; 
                 margin: 0;
                 transform: none !important; 
-                min-height: 100px; 
-                height: auto; 
                 box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
-                border-radius: 12px;
-                padding: 15px;
             }
 
-            /* 3. Usuwamy transformacje z hovera na mobile, żeby uniknąć błędów */
-            .card:hover, .card:focus-within {
-                transform: none;
+            .card-content {
+                overflow: hidden; /* Zachowujemy dla estetyki mobilnej */
             }
 
-            /* 4. Resetujemy style szerokości/kolorów specyficzne dla pozycji desktopowej */
+            /* Resetowanie niestandardowych szerokości */
             .card-thoughts, .card-emotions {
                 width: 95% !important; 
-                left: auto !important;
-                right: auto !important;
+            }
+        }
+
+        /* --- MEDIA QUERY DLA DRUKOWANIA (@media print) --- */
+        @media print {
+            body { 
+                background: white; 
+                padding: 0; 
+                align-items: flex-start;
+            }
+            .logo-wrapper, .actions, header p, .nav-bar { 
+                display: none; /* Ukryj niepotrzebne elementy */
+            }
+            
+            .diagram-wrapper { 
+                box-shadow: none; 
+                border: 1px solid #ddd; 
+                height: auto !important; /* KLUCZOWE: Wymuś automatyczną wysokość */
+                padding-bottom: 50px;
+                width: 90%; /* Daj więcej miejsca na papierze */
+                margin: 0 auto;
+            }
+
+            /* Wymuś, aby wszystkie karty były ułożone w stos i rosły */
+            .card {
+                position: static !important;
+                margin: 20px auto 10px auto; 
+                transform: none !important;
+                width: 90% !important;
+                height: auto !important; /* Wymuś automatyczną wysokość dla WSZYSTKICH kart */
+                box-shadow: none;
+                page-break-inside: avoid; /* Zapobiega łamaniu pojedynczej karty na dwie strony */
+                border: 1px solid #ccc; /* Dodaj ramkę, żeby pola były widoczne */
+            }
+            
+            /* Gwarancja, że treść wewnątrz rośnie i jest widoczna */
+            .card-content[contenteditable="true"] {
+                min-height: 50px; 
+                height: auto !important; 
+                text-align: left !important; 
+                padding: 10px;
+                overflow: visible !important; /* KLUCZOWE: ZAPOBIEGANIE UCIĘCIU TEKSTU */
+                display: block; 
+                font-size: 12pt; /* Stały, czytelny font do druku */
+            }
+
+            /* Nadpisanie ramki i tła Myśli w trybie drukowania */
+            .card-thoughts {
+                border-left: 6px solid var(--col-thoughts);
+                background-color: #fff;
             }
         }
     </style>
@@ -274,8 +228,9 @@
         <p class="subtitle">Wypełnij, aby zrozumieć powiązania między sytuacją a Twoimi reakcjami.</p>
     </header>
     <div class="nav-bar">
-        <a href="Biblioteka.html" class="nav-link">Narzędziownik</a>
+        <a href="index.html" class="nav-link">Strona główna</a>
     </div>
+    
     <div class="diagram-wrapper">
         
         <div class="card card-situation">
@@ -309,70 +264,5 @@
         <button onclick="window.print()">Drukuj / Zapisz jako PDF</button>
     </div>
 
-    <script>
-        // --- Skrypt dopasowujący rozmiar tekstu ---
-        const contents = document.querySelectorAll('.card-content');
-
-        contents.forEach(el => {
-            const adjustFont = () => {
-                // SPRAWDZENIE: Wykonuj auto-dopasowanie tylko na ekranie, NIE podczas drukowania
-                if (window.matchMedia("screen").matches) {
-                    let size = 14; 
-                    el.style.fontSize = size + 'px';
-                    
-                    // Zmniejszaj tekst jeśli nie mieści się w pudełku
-                    while (el.scrollHeight > el.clientHeight && size > 9) {
-                        size--;
-                        el.style.fontSize = size + 'px';
-                    }
-                } else {
-                    // W trybie druku użyj stałego, czytelnego rozmiaru i pozwól na rozszerzenie
-                    el.style.fontSize = '12pt'; 
-                    el.style.overflow = 'visible';
-                }
-            };
-
-            el.addEventListener('input', adjustFont);
-            
-            // Obsługa wklejania (czyszczenie formatowania)
-            el.addEventListener('paste', (e) => {
-                e.preventDefault();
-                const text = (e.clipboardData || window.clipboardData).getData('text');
-                document.execCommand("insertHTML", false, text);
-                adjustFont();
-            });
-            
-            // Nasłuchiwanie na zdarzenie beforeprint (specyficzne dla przeglądarek)
-            window.addEventListener('beforeprint', () => {
-                contents.forEach(el => {
-                    el.style.fontSize = '12pt'; // Ustaw stałą czcionkę przed drukowaniem
-                    el.style.overflow = 'visible'; // Upewnij się, że nie jest ucinane
-                });
-            });
-
-            // Nasłuchiwanie na zdarzenie po drukowaniu (przywrócenie)
-            window.addEventListener('afterprint', () => {
-                contents.forEach(el => {
-                    el.style.fontSize = '14px';
-                    el.style.overflow = 'hidden';
-                    const event = new Event('input');
-                    el.dispatchEvent(event); // Wymuś powrót do dopasowania na ekranie
-                });
-            });
-            
-            // Initial adjustment
-            adjustFont();
-        });
-        
-        // Ponowne dopasowanie przy zmianie orientacji/rozmiaru okna
-        window.addEventListener('resize', () => {
-            contents.forEach(el => {
-                el.style.fontSize = '14px'; 
-                const event = new Event('input');
-                el.dispatchEvent(event);
-            });
-        });
-    </script>
-
-</body>
+    </body>
 </html>
