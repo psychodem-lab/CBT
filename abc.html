@@ -124,7 +124,7 @@
             outline: none;
             font-size: 14px;
             color: #333;
-            overflow: hidden; /* Ucinanie tekstu, gdy jest za długi - kontrolowane przez JS */
+            overflow: hidden; 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -174,7 +174,7 @@
             body { 
                 background: white; 
                 padding: 0; 
-                align-items: flex-start; /* Ułatwia przeglądarce zarządzanie długą treścią */
+                align-items: flex-start;
             }
             .logo-wrapper, .actions, header p { 
                 display: none; 
@@ -182,37 +182,37 @@
             .diagram-wrapper { 
                 box-shadow: none; 
                 border: 1px solid #ddd; 
-                height: auto !important; /* Zezwól na rozszerzanie! */
+                height: auto !important; 
                 padding-bottom: 50px;
-                width: 700px; /* Zmniejsz szerokość dla lepszej czytelności wydruku */
+                width: 700px;
                 margin: 0 auto;
             }
 
-            /* KLUCZOWE ULEPSZENIA DLA MYŚLI AUTOMATYCZNYCH (ZAPOBIEGANIE UCIĘCIU) */
-            .card-thoughts {
-                height: auto !important; /* Usuń stałą wysokość 160px */
-                width: 350px !important; /* Większa szerokość na wydruku */
-                position: static !important; /* Przełącz na pozycjonowanie statyczne */
-                margin: 20px auto; /* Wyśrodkowanie na wydruku */
-                transform: none !important; 
-            }
-            
-            /* Poprawa wyglądu pól edytowalnych na wydruku */
-            .card-content[contenteditable="true"] {
-                min-height: 50px; 
-                border: 1px solid #ccc; /* Wyraźna ramka do pisania */
-                text-align: left !important; 
-                padding: 10px;
-                overflow: visible !important; /* KLUCZOWE: Zapobiegaj ucinaniu w druku */
-                display: block; /* Ułatwia przepływ tekstu */
-            }
-            
-            /* Zapewnienie, że wszystkie karty przejdą na tryb statyczny, aby zapobiec nakładaniu się w druku, gdy 'Myśli' się rozszerzą */
+            /* Zapewnienie, że wszystkie karty przejdą na tryb statyczny, aby uniknąć nakładania się */
             .card {
                 position: static !important;
                 margin: 20px auto 10px auto; 
                 transform: none !important;
                 height: auto !important;
+                page-break-inside: avoid; /* Unikaj łamania karty na dwie strony */
+            }
+
+            /* KLUCZOWE ULEPSZENIA DLA MYŚLI AUTOMATYCZNYCH (ZAPOBIEGANIE UCIĘCIU) */
+            .card-thoughts {
+                height: auto !important; /* Usuń stałą wysokość 160px */
+                width: 90% !important; /* Daj maksymalnie dużo szerokości na wydruku */
+                min-height: 250px; /* Zwiększ minimalną wysokość, aby zyskać więcej miejsca */
+            }
+
+            /* Poprawa wyglądu pól edytowalnych na wydruku */
+            .card-content[contenteditable="true"] {
+                min-height: 50px; 
+                height: auto !important; 
+                border: 1px solid #000; /* Wyraźna ramka do pisania */
+                text-align: left !important; 
+                padding: 10px;
+                overflow: visible !important; /* KLUCZOWE: Zapobiegaj ucinaniu w druku */
+                display: block; 
             }
         }
 
@@ -274,7 +274,7 @@
         <p class="subtitle">Wypełnij, aby zrozumieć powiązania między sytuacją a Twoimi reakcjami.</p>
     </header>
     <div class="nav-bar">
-        <a href="Biblioteka.html" class="nav-link">Biblioteka</a>
+        <a href="index.html" class="nav-link">Strona główna</a>
     </div>
     <div class="diagram-wrapper">
         
@@ -315,15 +315,20 @@
 
         contents.forEach(el => {
             const adjustFont = () => {
-                let size = 14; 
-                el.style.fontSize = size + 'px';
-                
-                // Zmniejszaj tekst jeśli nie mieści się w pudełku (tylko na ekranie!)
+                // SPRAWDZENIE: Wykonuj auto-dopasowanie tylko na ekranie, NIE podczas drukowania
                 if (window.matchMedia("screen").matches) {
+                    let size = 14; 
+                    el.style.fontSize = size + 'px';
+                    
+                    // Zmniejszaj tekst jeśli nie mieści się w pudełku
                     while (el.scrollHeight > el.clientHeight && size > 9) {
                         size--;
                         el.style.fontSize = size + 'px';
                     }
+                } else {
+                    // W trybie druku użyj stałego, czytelnego rozmiaru i pozwól na rozszerzenie
+                    el.style.fontSize = '12pt'; 
+                    el.style.overflow = 'visible';
                 }
             };
 
@@ -337,15 +342,32 @@
                 adjustFont();
             });
             
-            // Initial adjustment (ważne przy responsywności)
+            // Nasłuchiwanie na zdarzenie beforeprint (specyficzne dla przeglądarek)
+            window.addEventListener('beforeprint', () => {
+                contents.forEach(el => {
+                    el.style.fontSize = '12pt'; // Ustaw stałą czcionkę przed drukowaniem
+                    el.style.overflow = 'visible'; // Upewnij się, że nie jest ucinane
+                });
+            });
+
+            // Nasłuchiwanie na zdarzenie po drukowaniu (przywrócenie)
+            window.addEventListener('afterprint', () => {
+                contents.forEach(el => {
+                    el.style.fontSize = '14px';
+                    el.style.overflow = 'hidden';
+                    const event = new Event('input');
+                    el.dispatchEvent(event); // Wymuś powrót do dopasowania na ekranie
+                });
+            });
+            
+            // Initial adjustment
             adjustFont();
         });
         
         // Ponowne dopasowanie przy zmianie orientacji/rozmiaru okna
         window.addEventListener('resize', () => {
             contents.forEach(el => {
-                el.style.fontSize = '14px'; // Reset przed ponownym obliczeniem
-                // Uruchomienie zdarzenia 'input' by wymusić ponowne dopasowanie
+                el.style.fontSize = '14px'; 
                 const event = new Event('input');
                 el.dispatchEvent(event);
             });
