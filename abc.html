@@ -26,11 +26,13 @@
             align-items: center;
             min-height: 100vh;
         }
-          .logo-wrapper {
+        
+        .logo-wrapper {
             text-align: center; 
             margin-bottom: 20px; 
         }
-.logo-wrapper a {
+
+        .logo-wrapper a {
             text-decoration: none;
             border: none;
         }
@@ -43,7 +45,6 @@
             border: 0;
         }
 
-
         header {
             text-align: center;
             margin-bottom: 20px;
@@ -52,6 +53,29 @@
         
         h1 { margin: 0; font-size: 24px; }
         p.subtitle { margin: 5px 0 0; color: #666; font-size: 14px; }
+
+        /* --- STYLISTYKA PASKU NAWIGACYJNEGO --- */
+        .nav-bar {
+            margin-bottom: 20px; 
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+        }
+        
+        .nav-bar a.nav-link {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: color 0.2s;
+        }
+        
+        .nav-bar a.nav-link:hover {
+            color: #0056b3;
+        }
 
         /* --- DEKLARACJA STYLÓW DLA DESKTOPU (Default) --- */
         
@@ -62,7 +86,6 @@
             background: white;
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            /* Ustawienie domyślne dla desktopu */
         }
 
         .card {
@@ -101,7 +124,7 @@
             outline: none;
             font-size: 14px;
             color: #333;
-            overflow: hidden;
+            overflow: hidden; /* Ucinanie tekstu, gdy jest za długi - kontrolowane przez JS */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -146,10 +169,51 @@
         }
         button:hover { background-color: #555; }
 
+        /* --- MEDIA QUERY DLA DRUKOWANIA --- */
         @media print {
-            body { background: white; padding: 0; }
-            .diagram-wrapper { box-shadow: none; border: 1px solid #ddd; height: auto; padding-bottom: 50px;}
-            .actions, header p { display: none; }
+            body { 
+                background: white; 
+                padding: 0; 
+                align-items: flex-start; /* Ułatwia przeglądarce zarządzanie długą treścią */
+            }
+            .logo-wrapper, .actions, header p { 
+                display: none; 
+            }
+            .diagram-wrapper { 
+                box-shadow: none; 
+                border: 1px solid #ddd; 
+                height: auto !important; /* Zezwól na rozszerzanie! */
+                padding-bottom: 50px;
+                width: 700px; /* Zmniejsz szerokość dla lepszej czytelności wydruku */
+                margin: 0 auto;
+            }
+
+            /* KLUCZOWE ULEPSZENIA DLA MYŚLI AUTOMATYCZNYCH (ZAPOBIEGANIE UCIĘCIU) */
+            .card-thoughts {
+                height: auto !important; /* Usuń stałą wysokość 160px */
+                width: 350px !important; /* Większa szerokość na wydruku */
+                position: static !important; /* Przełącz na pozycjonowanie statyczne */
+                margin: 20px auto; /* Wyśrodkowanie na wydruku */
+                transform: none !important; 
+            }
+            
+            /* Poprawa wyglądu pól edytowalnych na wydruku */
+            .card-content[contenteditable="true"] {
+                min-height: 50px; 
+                border: 1px solid #ccc; /* Wyraźna ramka do pisania */
+                text-align: left !important; 
+                padding: 10px;
+                overflow: visible !important; /* KLUCZOWE: Zapobiegaj ucinaniu w druku */
+                display: block; /* Ułatwia przepływ tekstu */
+            }
+            
+            /* Zapewnienie, że wszystkie karty przejdą na tryb statyczny, aby zapobiec nakładaniu się w druku, gdy 'Myśli' się rozszerzą */
+            .card {
+                position: static !important;
+                margin: 20px auto 10px auto; 
+                transform: none !important;
+                height: auto !important;
+            }
         }
 
         /* --- MEDIA QUERY DLA URZĄDZEŃ MOBILNYCH (max-width: 768px) --- */
@@ -160,29 +224,27 @@
 
             /* 1. Kontener (Przygotowanie do Stackingu) */
             .diagram-wrapper {
-                width: 100%; /* Pełna szerokość */
+                width: 100%; 
                 min-height: auto;
-                height: auto !important; /* Usuń stałą wysokość */
+                height: auto !important; 
                 box-shadow: none; 
                 background: none;
                 padding: 0;
-                
-                /* Użyj Flexbox do ułożenia kart w stos */
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                gap: 15px; /* Odstępy między kartami */
+                gap: 15px; 
             }
 
             /* 2. Karty (Zmiana Pozycjonowania i Rozmiaru) */
             .card {
-                position: static !important; /* KLUCZOWE: zablokuj pozycjonowanie absolutne */
-                width: 95% !important; /* Prawie pełna szerokość wewnątrz kontenera */
+                position: static !important; 
+                width: 95% !important; 
                 margin: 0;
-                transform: none !important; /* Usuń wszystkie transformacje */
-                min-height: 100px; /* Minimalna wysokość, by zawartość była widoczna */
-                height: auto; /* Wysokość dopasowuje się do treści */
-                box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Delikatniejszy cień */
+                transform: none !important; 
+                min-height: 100px; 
+                height: auto; 
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
                 border-radius: 12px;
                 padding: 15px;
             }
@@ -194,51 +256,51 @@
 
             /* 4. Resetujemy style szerokości/kolorów specyficzne dla pozycji desktopowej */
             .card-thoughts, .card-emotions {
-                width: 95% !important; /* Zapewnienie pełnej szerokości */
+                width: 95% !important; 
                 left: auto !important;
                 right: auto !important;
             }
-
         }
     </style>
 </head>
 <body>
- <div class="logo-wrapper">
-            <a href="index.html" title="Powrót do strony głównej">
-                <img src="logo.png" alt="Psychodem">
-            </a></div>
+    <div class="logo-wrapper">
+        <a href="index.html" title="Powrót do strony głównej">
+            <img src="logo.png" alt="Psychodem">
+        </a>
+    </div>
     <header>
         <h1>Model 5 Obszarów (CBT)</h1>
         <p class="subtitle">Wypełnij, aby zrozumieć powiązania między sytuacją a Twoimi reakcjami.</p>
     </header>
- <div class="nav-bar">
-            <a href="index.html" class="nav-link">Strona główna</a>
-        </div> <br>
+    <div class="nav-bar">
+        <a href="index.html" class="nav-link">Strona główna</a>
+    </div>
     <div class="diagram-wrapper">
         
         <div class="card card-situation">
             <h3>Sytuacja / Bodziec</h3>
-            <div class="card-content" contenteditable="true" data-placeholder="Co się stało? Gdzie byłeś? Z kim? (Tylko fakty)"></div>
+            <div class="card-content" contenteditable="true" data-placeholder="Co się stało? Gdzie byłeś? Z kim? (Tylko fakty)" role="textbox"></div>
         </div>
 
         <div class="card card-thoughts">
             <h3>Myśli Automatyczne</h3>
-            <div class="card-content" contenteditable="true" data-placeholder="Co przemknęło Ci przez głowę? Jak to zinterpretowałeś?"></div>
+            <div class="card-content" contenteditable="true" data-placeholder="Co przemknęło Ci przez głowę? Jak to zinterpretowałeś?" role="textbox"></div>
         </div>
 
         <div class="card card-behavior">
             <h3>Zachowanie</h3>
-            <div class="card-content" contenteditable="true" data-placeholder="Co zrobiłeś? Czego uniknąłeś?"></div>
+            <div class="card-content" contenteditable="true" data-placeholder="Co zrobiłeś? Czego uniknąłeś?" role="textbox"></div>
         </div>
 
         <div class="card card-body">
             <h3>Reakcje z Ciała</h3>
-            <div class="card-content" contenteditable="true" data-placeholder="Co poczułeś w ciele? (serce, oddech, napięcie)"></div>
+            <div class="card-content" contenteditable="true" data-placeholder="Co poczułeś w ciele? (serce, oddech, napięcie)" role="textbox"></div>
         </div>
 
         <div class="card card-emotions">
             <h3>Emocje</h3>
-            <div class="card-content" contenteditable="true" data-placeholder="Nazwij emocje (np. lęk, smutek, złość)."></div>
+            <div class="card-content" contenteditable="true" data-placeholder="Nazwij emocje (np. lęk, smutek, złość)." role="textbox"></div>
         </div>
 
     </div>
@@ -256,10 +318,12 @@
                 let size = 14; 
                 el.style.fontSize = size + 'px';
                 
-                // Zmniejszaj tekst jeśli nie mieści się w pudełku
-                while (el.scrollHeight > el.clientHeight && size > 9) {
-                    size--;
-                    el.style.fontSize = size + 'px';
+                // Zmniejszaj tekst jeśli nie mieści się w pudełku (tylko na ekranie!)
+                if (window.matchMedia("screen").matches) {
+                    while (el.scrollHeight > el.clientHeight && size > 9) {
+                        size--;
+                        el.style.fontSize = size + 'px';
+                    }
                 }
             };
 
@@ -279,8 +343,9 @@
         
         // Ponowne dopasowanie przy zmianie orientacji/rozmiaru okna
         window.addEventListener('resize', () => {
-             contents.forEach(el => {
+            contents.forEach(el => {
                 el.style.fontSize = '14px'; // Reset przed ponownym obliczeniem
+                // Uruchomienie zdarzenia 'input' by wymusić ponowne dopasowanie
                 const event = new Event('input');
                 el.dispatchEvent(event);
             });
