@@ -91,6 +91,48 @@
             transform: translateY(-5px); 
         }
 
+        /* --- STYLI DLA SEKCJI PLAKATÓW (NOWE) --- */
+        .poster-gallery {
+            /* Nadpisujemy domyślne style <ul> dla tej sekcji */
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 0 20px;
+        }
+
+        .poster-item {
+            display: block; /* Sprawia, że link jest blokiem */
+            text-decoration: none;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            background-color: #FAFAFA;
+            margin: 0; /* Usuwamy marginesy z <ul> li */
+        }
+        
+        .poster-item:hover {
+            transform: translateY(-5px); 
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        .poster-thumbnail {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .poster-title-box {
+            padding: 10px;
+            margin: 0;
+            text-align: center;
+            font-weight: bold;
+            color: #1B5E20;
+            background-color: #E8F5E9; /* Jasny zielony dla tła tytułu */
+        }
+
         /* --- STYLE SPECJALNE DLA SEKCJI LINKÓW (IKONY) --- */
         .link-list li {
             padding: 15px; 
@@ -202,6 +244,12 @@
                     margin: 10px 0;
                 }
             }
+
+            /* Dla plakatów również pełna szerokość */
+            .poster-gallery {
+                grid-template-columns: 1fr;
+                padding: 0 10px;
+            }
         }
     </style>
 </head>
@@ -218,6 +266,26 @@
     <div class="main-content-wrapper">
         <div class="container">
         
+            <h2 id="plakaty">🖼️ Plakaty Psychoedukacyjne</h2>
+            
+            <div class="poster-gallery">
+                
+                <a href="sciezka/do/PELNY_PLAKAT_TECHNIKA_STOP.png" target="_blank" class="poster-item">
+                    <img src="sciezka/do/mini/MINIATURA_PLAKAT_STOP.jpg" alt="Miniatura plakatu Technika STOP" class="poster-thumbnail">
+                    <p class="poster-title-box">Technika STOP</p>
+                </a>
+
+                <a href="sciezka/do/PELNY_PLAKAT_KOLA_EMOCJI.pdf" target="_blank" class="poster-item">
+                    <img src="sciezka/do/mini/MINIATURA_PLAKAT_KOLA_EMOCJI.jpg" alt="Miniatura plakatu Koło Emocji" class="poster-thumbnail">
+                    <p class="poster-title-box">Koło Emocji (PDF)</p>
+                </a>
+                
+                <a href="sciezka/do/PELNY_PLAKAT_TRIADA_POZNAWCZA.png" target="_blank" class="poster-item">
+                    <img src="sciezka/do/mini/MINIATURA_PLAKAT_TRIADA_POZNAWCZA.jpg" alt="Miniatura plakatu Triada Poznawcza" class="poster-thumbnail">
+                    <p class="poster-title-box">Triada Poznawcza</p>
+                </a>
+                
+            </div>
             <h2 id="linki">🔗 Polecane Linki do Zaufanych Źródeł</h2>
 
             <ul class="link-list"> <li>
