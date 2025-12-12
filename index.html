@@ -9,13 +9,12 @@
         /* Paleta kolorów: #4CAF50 (Główny Zielony), #E8F5E9 (Jasny Zielony), #1B5E20 (Ciemny Tekst) */
         
         body {
-            /* Nowa czcionka, bardziej miękka i nowoczesna */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             margin: 0;
             padding: 0;
-            background-color: #F7FBF7; /* Bardzo delikatnie zielone/kremowe tło, nie czysta biel */
+            background-color: #F7FBF7; 
             color: #333;
-            line-height: 1.7; /* Lepszy odstęp między liniami dla czytelności */
+            line-height: 1.7;
         }
 
         /* --- Nagłówek i Logo --- */
@@ -26,36 +25,35 @@
             text-align: center;
             width: 100%; 
             box-sizing: border-box;
-            /* Lżejszy cień pod nagłówkiem */
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
         }
         .logo-wrapper img {
-            max-height: 90px; /* Nieco mniejsze logo */
+            max-height: 90px;
             transition: transform 0.3s ease-in-out;
         }
         .logo-wrapper a:hover img {
-            transform: scale(1.05); /* Efekt lekkiego powiększenia przy najechaniu */
+            transform: scale(1.05); 
         }
         h1 {
             margin-top: 10px;
-            font-size: 2.3em; /* Nieco mniejszy nagłówek */
+            font-size: 2.3em;
         }
 
         /* --- Kontener Główny --- */
         .container {
-            width: 85%; /* Minimalnie szerszy kontener */
-            max-width: 1100px; /* Ograniczenie maksymalnej szerokości */
-            margin: 40px auto; /* Większy odstęp na górze i dole */
+            width: 85%; 
+            max-width: 1100px;
+            margin: 40px auto;
             padding: 20px;
         }
         
         /* --- Nagłówki Sekcji --- */
         h2 {
-            color: #1B5E20; /* Ciemniejsza zieleń, większy kontrast */
-            border-bottom: 3px solid #E8F5E9; /* Grubsza, ale jaśniejsza linia */
-            padding-bottom: 10px; /* Większy odstęp pod linią */
+            color: #1B5E20; 
+            border-bottom: 3px solid #E8F5E9; 
+            padding-bottom: 10px;
             font-size: 1.8em;
-            margin-top: 50px; /* Większy odstęp */
+            margin-top: 50px;
             margin-bottom: 25px;
         }
 
@@ -63,93 +61,184 @@
         .accordion-item {
             border: none;
             margin-bottom: 15px;
-            border-radius: 12px; /* Większe zaokrąglenie */
+            border-radius: 12px;
             overflow: hidden; 
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05); /* Bardzo delikatny cień */
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05); 
         }
         .accordion-header {
             background-color: #E8F5E9;
             color: #1B5E20;
-            padding: 18px 25px; /* Większy padding */
-            font-size: 1.1em;
+            padding: 18px 25px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             font-weight: 600;
+            transition: background-color 0.3s;
+            font-size: 1.1em;
         }
         .accordion-header:hover {
             background-color: #d8ead9;
         }
         .accordion-header.active {
-            background-color: #4CAF50; /* Zmiana koloru aktywnego nagłówka na główny zielony */
+            background-color: #4CAF50; 
             color: white;
         }
+        .accordion-header span {
+            font-size: 1.2em;
+            transition: transform 0.3s;
+            color: #1B5E20; /* Kolor plusa */
+        }
         .accordion-header.active span {
-            color: white; /* Upewnienie się, że + jest biały na zielonym tle */
+            transform: rotate(45deg); 
+            color: white; /* Kolor plusa na aktywnym tle */
         }
         .accordion-content {
             padding: 0 25px;
-            border-top: 2px solid #E8F5E9; /* Lekka separacja wizualna */
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            border-top: 2px solid #E8F5E9; 
         }
         .accordion-content.show {
+            max-height: 1000px; /* Zwiększona wartość dla bezpieczeństwa */
             padding: 25px;
+        }
+        .psychologist-details {
+            display: flex;
+            align-items: flex-start; /* Zmienione na flex-start dla lepszego wyrównania tekstu */
+            padding-bottom: 10px;
         }
         .psychologist-details img {
             width: 90px;
             height: 90px;
-            border: 3px solid #4CAF50; /* Grubsza ramka */
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 3px solid #4CAF50; 
+            flex-shrink: 0;
         }
         .psychologist-text strong {
-            color: #4CAF50; /* Wyróżnienie specjalizacji */
+            color: #4CAF50;
         }
+        
+        /* === NOWE STYLE POKAŻ/UKRYJ WEWNĄTRZ === */
+        .read-more-content {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #E8F5E9;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .read-more-content.expanded {
+            max-height: 500px;
+        }
+        .read-more-button {
+            display: inline-block;
+            color: #4CAF50;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            border: none;
+            background: none;
+            padding: 0;
+            text-decoration: underline;
+            transition: color 0.3s;
+        }
+        .read-more-button:hover {
+            color: #1B5E20;
+        }
+        /* ======================================= */
 
         /* --- Sekcja Biblioteka (CTA) --- */
         .cta-section {
-            padding: 50px 30px; /* Większy padding */
+            padding: 50px 30px; 
             background-color: #E8F5E9; 
-            border-radius: 15px; /* Duże zaokrąglenie */
+            border-radius: 15px; 
             box-shadow: 0 8px 15px rgba(0,0,0,0.1);
         }
+        .cta-section p {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            color: #1B5E20;
+        }
         .cta-button {
-            padding: 18px 35px; /* Większy przycisk */
-            border-radius: 8px; /* Większe zaokrąglenie przycisku */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Subtelny cień dla przycisku */
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 18px 35px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-size: 1.2em;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
         }
         .cta-button:hover {
             background-color: #388E3C; 
-            transform: translateY(-3px); /* Większy efekt uniesienia */
+            transform: translateY(-3px);
         }
 
         /* --- Sekcja Kontakt --- */
         .contact-info {
-            gap: 20px; /* Odstęp między elementami flex */
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            text-align: center;
+            gap: 20px;
         }
         .contact-item {
             flex-basis: 30%; 
-            padding: 20px; /* Większy padding */
+            margin: 0; 
+            padding: 20px;
             border: 1px solid #E8F5E9;
-            border-radius: 10px; /* Zaokrąglenie */
+            border-radius: 10px; 
             transition: background-color 0.3s;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
         .contact-item:hover {
-            background-color: #F7FBF7; /* Podświetlenie przy najechaniu */
+            background-color: #F7FBF7;
         }
         .contact-item strong {
-            color: #4CAF50; /* Zielony kolor dla nagłówków kontaktowych */
+            display: block;
+            color: #4CAF50;
+            font-size: 1.1em;
+            margin-bottom: 5px;
         }
 
         /* --- Stopka --- */
         footer {
             background-color: #388E3C; 
-            padding: 25px; /* Większy padding */
-            margin-top: 50px; /* Większy odstęp */
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 50px; 
+            font-size: 0.9em;
+            width: 100%;
         }
 
         /* --- Responsywność --- */
         @media (max-width: 800px) {
             .container {
                 width: 100%;
-                padding: 20px 5%;
+                padding: 20px 5%; 
             }
-            /* ... reszta stylów responsywnych bez zmian ... */
+            h1 {
+                font-size: 2em;
+            }
+            .contact-item {
+                flex-basis: 100%; 
+            }
+            .psychologist-details {
+                flex-direction: column;
+                text-align: center;
+            }
+            .psychologist-details img {
+                margin-bottom: 15px;
+                margin-right: 0;
+            }
         }
     </style>
 </head>
@@ -173,17 +262,22 @@
             
             <div class="accordion-item">
                 <div class="accordion-header" onclick="toggleAccordion(this)">
-                    Natalia Demeńczuk - Psycholog, Psychoterapeuta CBT w trakcie certyfikacji
+                    Dr Anna Kowalska - Psycholog Kliniczny, CBT
                     <span>+</span>
                 </div>
                 <div class="accordion-content">
                     <div class="psychologist-details">
-                        <img src="natalia.jpg" alt="Natalia Demeńczuk">
+                        <img src="anna.jpg" alt="Zdjęcie Dr Anny Kowalskiej">
                         <div class="psychologist-text">
                             <p><strong>Specjalizacja:</strong> Terapia lęku, depresja, zaburzenia odżywiania.</p>
-                            <p><strong>O mnie:</strong> Natalia Demeńczuk, mgr psycholog, w trakcie szkolenia psychoterapeutycznego.
+                            <p><strong>O mnie (Krótko):</strong> Jestem certyfikowanym specjalistą psychologii klinicznej. W swojej praktyce koncentruję się na skutecznym stosowaniu technik poznawczo-behawioralnych, pomagając dorosłym i młodzieży.</p>
+                            
+                            <button class="read-more-button" onclick="toggleReadMore(this)">Pokaż Pełny Opis</button>
 
-Ukończyłam jednolite studia magisterskie w 2015 r. na specjalności kliniczno-sądowej. Dodatkowo kontynuowałam kształcenie na studiach podyplomowych w zakresie „Psychogeriatrii z elementami neuropsychologii” w Medycznym Centrum Kształcenia Podyplomowego Uniwersytetu Jagiellońskiego. Jestem członkinią Polskiego Towarzystwa Terapii Poznawczej i Behawioralnej. Obecnie doskonalę swoje kompetencje w trakcie uczęszczania do szkoły psychoterapii poznawczo-behawioralnej SP USWPS. Posiadam wieloletnie doświadczenie w pracy z różnymi grupami wiekowymi zarówno w terapii grupowej, jak i indywidualnej. Moje podejście opiera się na empiryzmie i empatycznej profesjonalnej współpracy, tworząc bezpieczną przestrzeń dla rozwiązywania trudności związanych m.in. z lękiem, depresją, zaburzeniami adaptacyjnymi, radzeniem sobie ze stresem i innymi trudnościami natury psychologicznej. W roli psychologa skupiam się na pomocy w odkrywaniu nowych sposobów myślenia i adaptacyjnych strategii radzenia sobie z problemami. Współpracuję z otwartością, kładąc nacisk na psychoedukację i korzystając z empirycznie potwierdzonych metod. Przez ostatnie lata zdobywałam doświadczenie w różnych placówkach pomocy psychologicznej, świadcząc wsparcie indywidualne, pracując w środowisku, angażując się w prace z rodzinami pacjentów oraz prowadząc zajęcia grupowe. Moje holistyczne podejście i zaangażowanie pozwalają dostosować terapię do indywidualnych potrzeb każdego klienta. W wolnym czasie rozwijam zainteresowania kinem, fantastyką naukową, malarstwem i ogrodnictwem. </p>
+                            <div class="read-more-content">
+                                <p><strong>Dłuższy opis/Edukacja:</strong> Ukończyłam wydział psychologii na Uniwersytecie Warszawskim oraz czteroletnią szkołę psychoterapii. Stale podnoszę swoje kwalifikacje, biorąc udział w konferencjach i szkoleniach z zakresu terapii III fali, w tym ACT i DBT. Moim celem jest wspieranie Cię w odkrywaniu Twoich mocnych stron i osiąganiu trwałych zmian w życiu.</p>
+                                <p><strong>Dodatkowe informacje:</strong> Pracuję pod stałą superwizją.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -191,15 +285,22 @@ Ukończyłam jednolite studia magisterskie w 2015 r. na specjalności kliniczno-
 
             <div class="accordion-item">
                 <div class="accordion-header" onclick="toggleAccordion(this)">
-                    Łukasz Demeńczuk- Psycholog, Psychoterapeuta CBT
+                    Mgr Jan Nowak - Psychoterapeuta CBT, seksuolog
                     <span>+</span>
                 </div>
                 <div class="accordion-content">
                     <div class="psychologist-details">
                         <img src="jan.jpg" alt="Zdjęcie Mgr Jana Nowaka">
                         <div class="psychologist-text">
-                            <p><strong>Specjalizacja:</strong> Terapia dzieci, nastolatków i młodych dorosłych, zaburzenia lękowe, OCD.</p>
-                            <p><strong>O mnie:</strong> </p>
+                            <p><strong>Specjalizacja:</strong> Terapia par, seksuologia, praca z kryzysami życiowymi.</p>
+                            <p><strong>O mnie (Krótko):</strong> Prowadzę terapię indywidualną i par, wykorzystując metody CBT oraz Terapii Schematów. Pomagam w odbudowie relacji, komunikacji i radzeniu sobie ze stresem.</p>
+
+                            <button class="read-more-button" onclick="toggleReadMore(this)">Pokaż Pełny Opis</button>
+
+                            <div class="read-more-content">
+                                <p><strong>Dłuższy opis/Edukacja:</strong> Jestem absolwentem SWPS i członkiem Polskiego Towarzystwa Terapii Poznawczo-Behawioralnej. Posiadam wieloletnie doświadczenie w pracy z osobami dorosłymi, szczególnie w obszarze zaburzeń lękowych i problemów w sferze intymnej. Dbam o bezpieczną i pełną zaufania atmosferę.</p>
+                                <p><strong>Dodatkowe informacje:</strong> Konsultacje w języku polskim i angielskim.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -237,20 +338,49 @@ Ukończyłam jednolite studia magisterskie w 2015 r. na specjalności kliniczno-
     </footer>
 
     <script>
+        /**
+         * Funkcja przełączająca widoczność treści w głównej harmonijce (accordion).
+         * Zamyka wszystkie inne elementy.
+         */
         function toggleAccordion(header) {
             const content = header.nextElementSibling;
             const isActive = header.classList.contains('active');
 
-            // 1. Zamknij wszystkie otwarte harmonijki w sekcji
+            // Zamykanie wszystkich innych harmonijek
             document.querySelectorAll('.accordion-header').forEach(h => {
                 h.classList.remove('active');
                 h.nextElementSibling.classList.remove('show');
+                
+                // Opcjonalnie: Zresetuj wewnętrzne przyciski "Pokaż więcej"
+                const readMoreButton = h.nextElementSibling.querySelector('.read-more-button');
+                const readMoreContent = h.nextElementSibling.querySelector('.read-more-content');
+                if (readMoreButton && readMoreContent) {
+                     readMoreContent.classList.remove('expanded');
+                     readMoreButton.textContent = 'Pokaż Pełny Opis';
+                }
             });
 
-            // 2. Jeśli ten element nie był wcześniej aktywny, otwórz go
+            // Otwieranie klikniętej harmonijki
             if (!isActive) {
                 header.classList.add('active');
                 content.classList.add('show');
+            }
+        }
+
+        /**
+         * NOWA FUNKCJA: Przełączająca widoczność sekcji 'O mnie' (Pokaż więcej).
+         * Działa wewnątrz otwartej harmonijki.
+         */
+        function toggleReadMore(button) {
+            const content = button.nextElementSibling; // To jest div.read-more-content
+            
+            // Zmieniamy tekst na przycisku i przełączamy klasę 'expanded'
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                button.textContent = 'Pokaż Pełny Opis';
+            } else {
+                content.classList.add('expanded');
+                button.textContent = 'Ukryj Opis';
             }
         }
     </script>
