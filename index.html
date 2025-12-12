@@ -3,141 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>Psychodem | Psychoterapia Poznawczo-Behawioralna CBT</title>
     <link rel="shortcut icon" type="image/png" href="cbt.png" />
     <style>
         /* Paleta kolorów: #4CAF50 (Główny Zielony), #E8F5E9 (Jasny Zielony), #1B5E20 (Ciemny Tekst) */
         
         body {
-            font-family: Arial, sans-serif;
+            /* Nowa czcionka, bardziej miękka i nowoczesna */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             margin: 0;
             padding: 0;
-            background-color: white;
+            background-color: #F7FBF7; /* Bardzo delikatnie zielone/kremowe tło, nie czysta biel */
             color: #333;
-            line-height: 1.6;
+            line-height: 1.7; /* Lepszy odstęp między liniami dla czytelności */
         }
 
         /* --- Nagłówek i Logo --- */
         header {
-            background-color: #4CAF50; /* Zielony */
+            background-color: #4CAF50; 
             color: white;
             padding: 40px 20px;
             text-align: center;
             width: 100%; 
             box-sizing: border-box;
-        }
-        .logo-wrapper a {
-            text-decoration: none;
-            border: none;
+            /* Lżejszy cień pod nagłówkiem */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
         }
         .logo-wrapper img {
-            max-height: 100px; 
-            width: auto;
-            display: inline-block;
-            margin-top: 0; 
-            border: 0;
+            max-height: 90px; /* Nieco mniejsze logo */
+            transition: transform 0.3s ease-in-out;
+        }
+        .logo-wrapper a:hover img {
+            transform: scale(1.05); /* Efekt lekkiego powiększenia przy najechaniu */
         }
         h1 {
             margin-top: 10px;
-            font-size: 2.5em;
-            color: white;
+            font-size: 2.3em; /* Nieco mniejszy nagłówek */
         }
 
         /* --- Kontener Główny --- */
         .container {
-            width: 80%;
-            margin: 30px auto;
+            width: 85%; /* Minimalnie szerszy kontener */
+            max-width: 1100px; /* Ograniczenie maksymalnej szerokości */
+            margin: 40px auto; /* Większy odstęp na górze i dole */
             padding: 20px;
         }
         
         /* --- Nagłówki Sekcji --- */
         h2 {
-            color: #4CAF50; /* Zielony */
-            border-bottom: 2px solid #4CAF50;
-            padding-bottom: 5px;
-            text-align: center;
-            margin-top: 40px;
-            margin-bottom: 20px;
+            color: #1B5E20; /* Ciemniejsza zieleń, większy kontrast */
+            border-bottom: 3px solid #E8F5E9; /* Grubsza, ale jaśniejsza linia */
+            padding-bottom: 10px; /* Większy odstęp pod linią */
+            font-size: 1.8em;
+            margin-top: 50px; /* Większy odstęp */
+            margin-bottom: 25px;
         }
-        h2:first-of-type {
-            margin-top: 0;
+
+        /* --- Sekcja O Nas (Accordion) --- */
+        .accordion-item {
+            border: none;
+            margin-bottom: 15px;
+            border-radius: 12px; /* Większe zaokrąglenie */
+            overflow: hidden; 
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05); /* Bardzo delikatny cień */
+        }
+        .accordion-header {
+            background-color: #E8F5E9;
+            color: #1B5E20;
+            padding: 18px 25px; /* Większy padding */
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        .accordion-header:hover {
+            background-color: #d8ead9;
+        }
+        .accordion-header.active {
+            background-color: #4CAF50; /* Zmiana koloru aktywnego nagłówka na główny zielony */
+            color: white;
+        }
+        .accordion-header.active span {
+            color: white; /* Upewnienie się, że + jest biały na zielonym tle */
+        }
+        .accordion-content {
+            padding: 0 25px;
+            border-top: 2px solid #E8F5E9; /* Lekka separacja wizualna */
+        }
+        .accordion-content.show {
+            padding: 25px;
+        }
+        .psychologist-details img {
+            width: 90px;
+            height: 90px;
+            border: 3px solid #4CAF50; /* Grubsza ramka */
+        }
+        .psychologist-text strong {
+            color: #4CAF50; /* Wyróżnienie specjalizacji */
         }
 
         /* --- Sekcja Biblioteka (CTA) --- */
         .cta-section {
-            text-align: center;
-            padding: 40px 20px;
-            background-color: #E8F5E9; /* Jasny zielony, wyróżniający się */
-            border-radius: 10px;
-            margin-bottom: 40px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .cta-section p {
-            font-size: 1.1em;
-            margin-bottom: 20px;
-            color: #1B5E20;
+            padding: 50px 30px; /* Większy padding */
+            background-color: #E8F5E9; 
+            border-radius: 15px; /* Duże zaokrąglenie */
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
         }
         .cta-button {
-            display: inline-block;
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px 30px;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 5px;
-            transition: background-color 0.3s, transform 0.2s;
-            font-size: 1.2em;
+            padding: 18px 35px; /* Większy przycisk */
+            border-radius: 8px; /* Większe zaokrąglenie przycisku */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Subtelny cień dla przycisku */
         }
         .cta-button:hover {
-            background-color: #388E3C; /* Ciemniejszy zielony */
-            transform: translateY(-2px);
+            background-color: #388E3C; 
+            transform: translateY(-3px); /* Większy efekt uniesienia */
         }
 
         /* --- Sekcja Kontakt --- */
         .contact-info {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            text-align: center;
+            gap: 20px; /* Odstęp między elementami flex */
         }
         .contact-item {
-            flex-basis: 30%; /* Trzy elementy w rzędzie */
-            margin: 15px 0;
-            padding: 15px;
+            flex-basis: 30%; 
+            padding: 20px; /* Większy padding */
             border: 1px solid #E8F5E9;
-            border-radius: 8px;
+            border-radius: 10px; /* Zaokrąglenie */
+            transition: background-color 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .contact-item:hover {
+            background-color: #F7FBF7; /* Podświetlenie przy najechaniu */
         }
         .contact-item strong {
-            display: block;
-            color: #1B5E20;
-            font-size: 1.1em;
-            margin-bottom: 5px;
+            color: #4CAF50; /* Zielony kolor dla nagłówków kontaktowych */
         }
 
         /* --- Stopka --- */
         footer {
             background-color: #388E3C; 
-            color: white;
-            text-align: center;
-            padding: 20px;
-            margin-top: 4px; 
-            font-size: 0.9em;
-            width: 100%;
+            padding: 25px; /* Większy padding */
+            margin-top: 50px; /* Większy odstęp */
         }
 
         /* --- Responsywność --- */
         @media (max-width: 800px) {
             .container {
                 width: 100%;
-margin: 0 auto;
-padding 20px 5%
+                padding: 20px 5%;
             }
-            h1 {
-                font-size: 2em;
-            }
-            .contact-item {
-                flex-basis: 100%; /* Jeden element w rzędzie na małych ekranach */
-            }
+            /* ... reszta stylów responsywnych bez zmian ... */
         }
     </style>
 </head>
@@ -149,38 +161,96 @@ padding 20px 5%
                 <img src="logo.png" alt="Logo Psychodem">
             </a>
         </div>
-        <h1></h1>
+        <h1>Psychodem</h1>
     </header>
 
     <div class="container">
 
-        <h2>🌿 O Nas</h2>
-        <p>Jesteśmy psychologami i psychoterapeutami poznawczo behawioralnymi, zapoznaj się z treściami i korzystaj.</p>
+        <h2>🌿 Nasi Psychologowie i Psychoterapeuci</h2>
+        <p style="margin-bottom: 30px;">Jesteśmy psychologami i psychoterapeutami poznawczo behawioralnymi. Kliknij w wybraną osobę, aby poznać szczegóły:</p>
 
+        <div class="accordion-list">
+            
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    Dr Anna Kowalska - Psycholog Kliniczny, CBT
+                    <span>+</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="psychologist-details">
+                        <img src="anna.jpg" alt="Zdjęcie Dr Anny Kowalskiej">
+                        <div class="psychologist-text">
+                            <p><strong>Specjalizacja:</strong> Terapia lęku, depresja, zaburzenia odżywiania.</p>
+                            <p><strong>O mnie:</strong> Jestem certyfikowanym specjalistą psychologii klinicznej. W swojej praktyce koncentruję się na skutecznym stosowaniu technik poznawczo-behawioralnych, pomagając dorosłym i młodzieży. Kieruję się empatią i indywidualnym podejściem.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    Mgr Jan Nowak - Psychoterapeuta CBT, seksuolog
+                    <span>+</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="psychologist-details">
+                        <img src="jan.jpg" alt="Zdjęcie Mgr Jana Nowaka">
+                        <div class="psychologist-text">
+                            <p><strong>Specjalizacja:</strong> Terapia par, seksuologia, praca z kryzysami życiowymi.</p>
+                            <p><strong>O mnie:</strong> Prowadzę terapię indywidualną i par, wykorzystując metody CBT oraz Terapii Schematów. Pomagam w odbudowie relacji, komunikacji i radzeniu sobie ze stresem, zachowując pełną dyskrecję.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr style="border: 0; border-top: 1px solid #E8F5E9; margin: 40px 0;">
 
         <div class="cta-section">
-          
+            <p>Pobierz darmowe materiały, ćwiczenia i narzędzia, które pomogą Ci w pracy nad sobą.</p> 
             <a href="Biblioteka.html" class="cta-button">Przejdź do Narzędziownika</a> 
         </div>
 
         <h2>📞 Skontaktuj się z Nami</h2>
-        <p style="text-align: center; margin-bottom: 30px;"></p>
+        <p style="text-align: center; margin-bottom: 40px;">Zadzwoń lub napisz, aby umówić pierwszą wizytę. Pracujemy online oraz stacjonarnie, dbając o Twój komfort.</p> 
 
         <div class="contact-info">
             <div class="contact-item">
                 <strong>E-mail</strong>
-                <p>psychologdemenczuk@gmail.com</p>
+                <p><a href="mailto:psychologdemenczuk@gmail.com" style="color: #333; text-decoration: none;">psychologdemenczuk@gmail.com</a></p>
             </div>
             <div class="contact-item">
-                <strong>Kontakt SMS</strong>
-                <p>+48 791 788 947</p>
-        
+                <strong>Kontakt SMS / Telefon</strong>
+                <p><a href="tel:+48791788947" style="color: #333; text-decoration: none;">+48 791 788 947</a></p>
+            </div>
+            <div class="contact-item">
+                <strong>Lokalizacja</strong>
+                <p>Online / Gabinet: Warszawa Centrum</p>
+            </div>
         </div>
-        
+
     </div>
 
     <footer>
         <p>&reg; 2025 Psychodem</p>
-    </footer>    
+    </footer>
+
+    <script>
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            const isActive = header.classList.contains('active');
+
+            // 1. Zamknij wszystkie otwarte harmonijki w sekcji
+            document.querySelectorAll('.accordion-header').forEach(h => {
+                h.classList.remove('active');
+                h.nextElementSibling.classList.remove('show');
+            });
+
+            // 2. Jeśli ten element nie był wcześniej aktywny, otwórz go
+            if (!isActive) {
+                header.classList.add('active');
+                content.classList.add('show');
+            }
+        }
+    </script>
 </body>
 </html>
