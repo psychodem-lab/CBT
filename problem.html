@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" type="image/png" href="cbt.png" />
-    <title>Rozwiązywanie Problemów - CBT</title>
+    <title>Rozwiązywanie Problemów</title>
     
     <style>
-        /* Styl bazowy zgodny z Twoim projektem */
+        /* Twoja stylistyka bazowa */
         body { 
             font-family: 'Inter', sans-serif; 
             line-height: 1.6; 
@@ -17,7 +17,7 @@
         }
         
         .container { 
-            max-width: 800px; 
+            max-width: 850px; 
             margin: 0 auto; 
             background-color: #ffffff; 
             padding: 30px; 
@@ -26,162 +26,171 @@
             margin-bottom: 40px; 
         }
 
-        .logo-wrapper {
-            text-align: center; 
-            margin-bottom: 20px; 
-        }
-        .logo-wrapper img {
-            max-height: 100px; 
-            width: auto;
-        }
-
-        h1 { 
-            color: #0d47a1; 
-            text-align: center; 
-            margin-bottom: 10px; 
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #1976d2;
-            margin-bottom: 30px;
-            font-weight: 300;
-        }
-
-        /* Sekcje formularza */
-        .form-section { 
-            margin-bottom: 25px; 
-            padding: 15px; 
-            border-left: 5px solid #1e88e5; 
-            background-color: #f9f9f9; 
-            border-radius: 5px; 
-        }
-
-        .form-section label { 
-            display: block; 
-            font-weight: bold; 
-            margin-bottom: 8px; 
-            color: #1e88e5; 
-        }
+        .logo-wrapper { text-align: center; margin-bottom: 20px; }
+        .logo-wrapper img { max-height: 80px; width: auto; }
         
-        .form-section textarea { 
+        h1 { color: #0d47a1; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Stylizacja kroków */
+        .step-container { margin-bottom: 30px; }
+        
+        .step-title {
+            background-color: #bbdefb;
+            color: #0d47a1;
+            padding: 10px 15px;
+            border-radius: 8px 8px 0 0;
+            font-weight: bold;
+            border-left: 5px solid #1e88e5;
+        }
+
+        .step-content {
+            padding: 20px;
+            border: 1px solid #e3f2fd;
+            border-top: none;
+            background-color: #fcfcfc;
+            border-radius: 0 0 8px 8px;
+        }
+
+        textarea { 
             width: 100%; 
-            padding: 10px; 
+            padding: 12px; 
             border: 1px solid #ccc; 
             border-radius: 5px; 
             box-sizing: border-box; 
             resize: vertical; 
-            min-height: 80px; 
+            font-family: inherit;
         }
 
-        .description {
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 5px;
-            font-style: italic;
+        /* Stylizacja tabel */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background-color: white;
         }
 
-        /* Specyficzne kolory dla kroków rozwiązywania problemów */
-        .step-define { border-left-color: #0288d1; }
-        .step-brainstorm { border-left-color: #ff9800; } /* Pomarańczowy dla kreatywności */
-        .step-analysis { border-left-color: #9c27b0; }  /* Fioletowy dla analizy */
-        .step-plan { border-left-color: #4caf50; }      /* Zielony dla działania */
+        th { background-color: #e3f2fd; color: #0d47a1; padding: 10px; text-align: left; border: 1px solid #bbdefb; }
+        td { border: 1px solid #bbdefb; padding: 0; }
+        td textarea { border: none; border-radius: 0; min-height: 60px; display: block; }
 
-        .grid-2col { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 20px; 
-        }
-
-        /* Przyciski */
-        .action-buttons { 
-            text-align: center; 
-            margin-top: 30px; 
-        }
+        .action-buttons { text-align: center; margin-top: 30px; }
+        .print-btn { background-color: #4caf50; color: white; padding: 12px 25px; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .clear-btn { background-color: #e53935; color: white; padding: 12px 25px; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; margin-left: 10px; }
         
-        .action-buttons button { 
-            padding: 12px 25px; 
-            margin: 0 10px; 
-            border: none; 
-            border-radius: 25px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            transition: 0.3s;
-        }
-        
-        .print-btn { background-color: #4caf50; color: white; }
-        .clear-btn { background-color: #e53935; color: white; }
-
-        @media (max-width: 650px) {
-            .grid-2col { grid-template-columns: 1fr; }
-        }
+        .print-btn:hover { background-color: #43a047; }
 
         @media print {
             .action-buttons, .logo-wrapper { display: none; }
+            .container { box-shadow: none; width: 100%; margin: 0; padding: 0; }
             body { background-color: white; }
-            .container { box-shadow: none; border: 1px solid #eee; }
+            textarea { border: 1px solid #eee; }
         }
     </style>
 </head>
 <body>
 
     <div class="logo-wrapper">
-        <a href="index.html">
-            <img src="logo.png" alt="Psychodem">
-        </a>
+        <a href="index.html"><img src="logo.png" alt="Logo"></a>
     </div>
 
     <div class="container">
         <h1>Rozwiązywanie Problemów</h1>
-        <p class="subtitle">Strukturalne podejście poznawczo-behawioralne</p>
 
-        <form id="problemSolvingForm">
-
-            <div class="form-section step-define">
-                <label for="problem-definition">1. Zdefiniuj problem</label>
-                <textarea id="problem-definition" placeholder="Opisz problem tak konkretnie, jak to możliwe. Unikaj ogólników."></textarea>
-                <div class="description">Zamiast "Moje życie to chaos", napisz: "Mam zbyt wiele zadań w pracy i nie wiem, od czego zacząć".</div>
-            </div>
-
-            <div class="form-section step-brainstorm">
-                <label for="brainstorming">2. Burza mózgów (Wszystkie możliwe rozwiązania)</label>
-                <textarea id="brainstorming" placeholder="Wypisz wszystko, co przyjdzie Ci do głowy. Nie oceniaj ich na tym etapie."></textarea>
-                <div class="description">Liczy się ilość, nie jakość. Nawet nierealne pomysły mogą naprowadzić Cię na coś dobrego.</div>
-            </div>
-
-            <div class="grid-2col">
-                <div class="form-section step-analysis">
-                    <label for="pros-cons">3. Analiza Zysków i Strat</label>
-                    <textarea id="pros-cons" placeholder="Wybierz 2-3 najlepsze pomysły i oceń ich plusy oraz minusy."></textarea>
-                </div>
-
-                <div class="form-section step-analysis">
-                    <label for="chosen-solution">4. Wybór najlepszego rozwiązania</label>
-                    <textarea id="chosen-solution" placeholder="Które rozwiązanie jest najbardziej realne do wdrożenia 'na już'?"></textarea>
+        <form id="cbt-problem-solving">
+            
+            <div class="step-container">
+                <div class="step-title">Krok 1. Zdefiniuj problem</div>
+                <div class="step-content">
+                    <p>Krótko i w prostych słowach napisz, co przeszkadza Ci zrealizować Twój cel.</p>
+                    <textarea placeholder="Wpisz tutaj opis problemu..."></textarea>
                 </div>
             </div>
 
-            <div class="form-section step-plan">
-                <label for="action-plan">5. Plan działania (Metoda małych kroków)</label>
-                <textarea id="action-plan" placeholder="Krok 1... Krok 2... Krok 3..."></textarea>
-                <div class="description">Rozbij rozwiązanie na tak małe etapy, aby ich wykonanie wydawało się bardzo łatwe.</div>
+            <div class="step-container">
+                <div class="step-title">Krok 2. Burza mózgów – generowanie rozwiązań</div>
+                <div class="step-content">
+                    <p>Zapisz wszystkie możliwe rozwiązania powyższego problemu jakie przychodzą Ci do głowy.</p>
+                    <textarea placeholder="1. ...&#10;2. ...&#10;3. ..." style="min-height: 120px;"></textarea>
+                </div>
             </div>
 
-            <div class="form-section">
-                <label for="evaluation">6. Weryfikacja (Wypełnij po realizacji planu)</label>
-                <textarea id="evaluation" placeholder="Co zadziałało? Co wymaga poprawy?"></textarea>
+            <div class="step-container">
+                <div class="step-title">Krok 3. Analiza mocnych/słabych stron</div>
+                <div class="step-content">
+                    <p>Z powyższych rozwiązań wybierz 2-3 najlepsze, a następnie przeanalizuj ich mocne i słabe strony.</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 34%;">Rozwiązanie</th>
+                                <th style="width: 33%;">Mocne strony</th>
+                                <th style="width: 33%;">Słabe strony</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><textarea></textarea></td>
+                                <td><textarea></textarea></td>
+                                <td><textarea></textarea></td>
+                            </tr>
+                            <tr>
+                                <td><textarea></textarea></td>
+                                <td><textarea></textarea></td>
+                                <td><textarea></textarea></td>
+                            </tr>
+                            <tr>
+                                <td><textarea></textarea></td>
+                                <td><textarea></textarea></td>
+                                <td><textarea></textarea></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="step-container">
+                <div class="step-title">Krok 4. Wybór rozwiązania</div>
+                <div class="step-content">
+                    <p>Na bazie powyższej analizy wybierz jedno rozwiązanie, które wcielisz w życie.</p>
+                    <textarea placeholder="Wybrane rozwiązanie to..."></textarea>
+                </div>
+            </div>
+
+            <div class="step-container">
+                <div class="step-title">Krok 5. Plan wdrożenia</div>
+                <div class="step-content">
+                    <label><strong>Jakie kroki wykonasz, aby wdrożyć wybrane przez Ciebie rozwiązanie?</strong></label>
+                    <textarea placeholder="Krok 1, Krok 2..." style="margin-bottom: 15px;"></textarea>
+                    
+                    <label><strong>Kiedy zaczniesz je wdrażać?</strong></label>
+                    <textarea placeholder="Data/Czas..." style="margin-bottom: 15px; min-height: 40px;"></textarea>
+
+                    <table style="margin-top: 10px;">
+                        <thead>
+                            <tr>
+                                <th style="width: 50%;">Na jakie przeszkody możesz trafić?</th>
+                                <th style="width: 50%;">Jak je pokonasz?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><textarea></textarea></td>
+                                <td><textarea></textarea></td>
+                            </tr>
+                            <tr>
+                                <td><textarea></textarea></td>
+                                <td><textarea></textarea></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="action-buttons">
-                <button type="button" class="print-btn" onclick="window.print()">🖨️ Drukuj Plan Działania</button>
-                <button type="reset" class="clear-btn">🗑️ Wyczyść formularz</button>
+                <button type="button" class="print-btn" onclick="window.print()">🖨️ Drukuj Arkusz</button>
+                <button type="reset" class="clear-btn">🗑️ Wyczyść wszystko</button>
             </div>
+
         </form>
-
-        <p class="description" style="text-align: center; margin-top: 20px;">
-            Pamiętaj: Rozwiązywanie problemów to umiejętność, którą trenujesz jak mięśnie. Im częściej to robisz, tym staje się to prostsze.
-        </p>
     </div>
-
 </body>
 </html>
