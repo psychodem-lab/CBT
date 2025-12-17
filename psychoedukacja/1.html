@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" href="cbt.png" />
+    <title>Restrukturyzacja Myślenia</title>
+    
+    <style>
+        /* --- STYLIZACJA BAZOWA --- */
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            line-height: 1.6; 
+            margin: 0; 
+            padding: 20px;
+            background-color: #f0f4f8;
+            color: #1a237e;
+        }
+        
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            background-color: #ffffff; 
+            padding: 40px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); 
+        }
+
+        .logo-wrapper {
+            text-align: center; 
+            margin-bottom: 30px; 
+        }
+
+        .logo-wrapper img {
+            max-height: 80px; 
+            width: auto;
+            border: 0;
+        }
+
+        h1 { 
+            color: #0d47a1; 
+            text-align: center; 
+            margin-top: 0;
+            font-size: 2rem;
+        }
+
+        /* --- SEKCJE FORMULARZA --- */
+        .form-section { 
+            margin-bottom: 25px; 
+            padding: 20px; 
+            border-left: 6px solid #1e88e5; 
+            background-color: #fcfdfe; 
+            border-radius: 8px; 
+        }
+
+        .form-section label { 
+            display: block; 
+            font-weight: 700; 
+            margin-bottom: 5px; 
+            color: #0d47a1; 
+            font-size: 1.1rem;
+        }
+        
+        .description {
+            font-size: 0.9rem;
+            color: #546e7a;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+
+        .form-section textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ced4da; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            resize: vertical; 
+            min-height: 100px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        /* --- SIATKA I KOLORY --- */
+        .kma-steps { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+            margin-bottom: 25px;
+        }
+
+        .thought-section { border-left-color: #fb8c00; background-color: #fffaf3; }
+        .evidence-for { border-left-color: #43a047; background-color: #f1f8e9; }
+        .evidence-against { border-left-color: #1e88e5; background-color: #e3f2fd; }
+        .alternative-thought { border-left-color: #8e24aa; background-color: #f3e5f5; }
+
+        /* --- PRZYCISKI --- */
+        .action-buttons { 
+            text-align: center; 
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .btn {
+            padding: 14px 30px; 
+            margin: 5px; 
+            border: none; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .print-btn { background-color: #2e7d32; color: white; }
+        .print-btn:hover { background-color: #1b5e20; transform: translateY(-2px); }
+
+        .clear-btn { background-color: #cfd8dc; color: #455a64; }
+        .clear-btn:hover { background-color: #b0bec5; }
+
+        /* --- SYGNATURA CZASOWA --- */
+        .print-only {
+            display: none;
+        }
+
+        /* --- RESPONSYWNOŚĆ --- */
+        @media (max-width: 768px) {
+            .kma-steps { grid-template-columns: 1fr; }
+            .container { padding: 20px; }
+        }
+        
+        /* --- STYLE DRUKOWANIA --- */
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; max-width: 100%; width: 100%; padding: 0; }
+            .action-buttons, .logo-wrapper, .clear-btn { display: none; }
+            
+            .form-section { 
+                page-break-inside: avoid; 
+                border: 1px solid #eee; 
+                border-left: 5px solid #333;
+                margin-bottom: 15px;
+                background-color: white !important;
+            }
+            
+            textarea { 
+                border: none; 
+                padding: 0; 
+                overflow: hidden;
+                background: transparent;
+            }
+
+            .print-only {
+                display: block;
+                text-align: right;
+                font-size: 0.8rem;
+                color: #555;
+                margin-top: 30px;
+                border-top: 1px solid #ddd;
+                padding-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo-wrapper">
+        <a href="index.html" title="Powrót do strony głównej">
+            <img src="logo.png" alt="Psychodem">
+        </a>
+    </div>
+
+    <div class="container">
+        <h1>Restrukturyzacja Poznawcza</h1>
+        
+        <form id="kmaForm">
+            <div class="form-section">
+                <label for="situation">1. Sytuacja</label>
+                <div class="description">Co się wydarzyło? Opisz fakty (kto, co, gdzie, kiedy).</div>
+                <textarea id="situation" placeholder="Opisz sytuację..."></textarea>
+            </div>
+
+            <div class="form-section">
+                <label for="emotions">2. Emocje i ich nasilenie (0-100%)</label>
+                <div class="description">Co czułeś w tej chwili? Nazwij emocje i oceń ich siłę.</div>
+                <textarea id="emotions" placeholder="Np. Lęk (80%), Smutek (40%)"></textarea>
+            </div>
+
+            <div class="form-section thought-section">
+                <label for="automatic-thought">3. Myśl Automatyczna</label>
+                <div class="description">Jaka myśl lub obraz pojawił się w Twojej głowie?</div>
+                <textarea id="automatic-thought" placeholder="Np. 'Zawsze wszystko psuję.'"></textarea>
+            </div>
+
+            <div class="kma-steps">
+                <div class="form-section evidence-for">
+                    <label for="evidence-for">4. Dowody ZA myślą</label>
+                    <div class="description">Co potwierdza tę myśl?</div>
+                    <textarea id="evidence-for" placeholder="Fakty wspierające myśl..."></textarea>
+                </div>
+
+                <div class="form-section evidence-against">
+                    <label for="evidence-against">5. Dowody PRZECIW myśli</label>
+                    <div class="description">Co przeczy tej myśli?</div>
+                    <textarea id="evidence-against" placeholder="Fakty podważające myśl..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-section alternative-thought">
+                <label for="alternative-thought">6. Zrównoważona perspektywa</label>
+                <div class="description">Nowa, bardziej realistyczna myśl.</div>
+                <textarea id="alternative-thought" placeholder="Sformułuj alternatywne wyjaśnienie..."></textarea>
+            </div>
+            
+            <div class="form-section">
+                <label for="re-rate-emotions">7. Ponowna ocena emocji (0-100%)</label>
+                <div class="description">Jak czujesz się teraz, po analizie faktów?</div>
+                <textarea id="re-rate-emotions" placeholder="Np. Lęk (30%)"></textarea>
+            </div>
+
+            <div class="action-buttons">
+                <button type="button" class="btn print-btn" onclick="printWithTimestamp()">🖨️ Drukuj / Zapisz jako PDF</button>
+                <button type="reset" class="btn clear-btn">🗑️ Wyczyść formularz</button>
+            </div>
+        </form>
+
+        <div id="print-timestamp" class="print-only">
+            Dokument wygenerowano: <span id="current-date"></span> | www.psychodem.pl
+        </div>
+
+        <p style="text-align: center; color: #7f8c8d; font-size: 0.85rem; margin-top: 20px;" class="no-print">
+            Dane nie są przesyłane na serwer. Pamiętaj o zapisaniu swojej pracy.
+        </p>
+    </div>
+
+    <script>
+        function printWithTimestamp() {
+            const now = new Date();
+            
+            // Formatowanie daty i godziny dla polskiego użytkownika
+            const dateStr = now.toLocaleDateString('pl-PL');
+            const timeStr = now.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+            const fullTimestamp = `${dateStr}, ${timeStr}`;
+            
+            // Wstawienie daty do stopki wydruku
+            document.getElementById('current-date').innerText = fullTimestamp;
+            
+            // Tymczasowa zmiana tytułu strony dla nazwy pliku PDF
+            const originalTitle = document.title;
+            const fileDate = dateStr.replace(/\./g, '-');
+            document.title = `Restrukturyzacja_${fileDate}_${timeStr.replace(':', '-')}`;
+            
+            // Wywołanie okna drukowania
+            window.print();
+            
+            // Przywrócenie oryginalnego tytułu po otwarciu okna druku
+            setTimeout(() => {
+                document.title = originalTitle;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
