@@ -237,30 +237,40 @@
     </div>
 
     <script>
-        function printWithTimestamp() {
-            const now = new Date();
-            
-            // Formatowanie daty i godziny dla polskiego użytkownika
-            const dateStr = now.toLocaleDateString('pl-PL');
-            const timeStr = now.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
-            const fullTimestamp = `${dateStr}, ${timeStr}`;
-            
-            // Wstawienie daty do stopki wydruku
-            document.getElementById('current-date').innerText = fullTimestamp;
-            
-            // Tymczasowa zmiana tytułu strony dla nazwy pliku PDF
-            const originalTitle = document.title;
-            const fileDate = dateStr.replace(/\./g, '-');
-            document.title = `Restrukturyzacja_${fileDate}_${timeStr.replace(':', '-')}`;
-            
-            // Wywołanie okna drukowania
+    function printWithTimestamp() {
+        const now = new Date();
+        
+        // 1. Przygotowanie formatu daty do nazwy pliku (np. 2025-12-17_13-45)
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        
+        const timestampForFile = `${year}-${month}-${day}_${hours}-${minutes}`;
+        const timestampForDisplay = `${day}.${month}.${year}, ${hours}:${minutes}`;
+        
+        // 2. Wstawienie daty do stopki wydruku na stronie
+        const dateElement = document.getElementById('current-date');
+        if (dateElement) {
+            dateElement.innerText = timestampForDisplay;
+        }
+        
+        // 3. Zmiana tytułu strony (to on staje się nazwą pliku PDF)
+        const originalTitle = document.title;
+        document.title = `Restrukturyzacja_${timestampForFile}`;
+        
+        // 4. KLUCZOWE: Krótkie opóźnienie, aby przeglądarka "zauważyła" zmianę tytułu
+        setTimeout(() => {
             window.print();
             
-            // Przywrócenie oryginalnego tytułu po otwarciu okna druku
+            // 5. Przywrócenie oryginalnego tytułu po wywołaniu okna (z opóźnieniem)
             setTimeout(() => {
                 document.title = originalTitle;
-            }, 1000);
-        }
-    </script>
+            }, 2000);
+        }, 250); // 250ms wystarczy dla większości przeglądarek
+    }
+</script>
+
 </body>
 </html>
