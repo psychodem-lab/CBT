@@ -101,7 +101,7 @@
             border-top: 2px solid #E8F5E9; 
         }
         .accordion-content.show {
-            max-height: 1000px; /* Zwiększona wartość dla bezpieczeństwa */
+            max-height: none; /* Zwiększona wartość dla bezpieczeństwa */
             padding: 25px;
         }
         .psychologist-details {
@@ -122,18 +122,24 @@
             color: #4CAF50;
         }
         
-        /* === NOWE STYLE POKAŻ/UKRYJ WEWNĄTRZ === */
-        .read-more-content {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px dashed #E8F5E9;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-in-out;
-        }
-        .read-more-content.expanded {
-            max-height: 500px;
-        }
+        /* === NOWE STYLE POKAŻ/UKRYJ WEWNĄTRZ === */ 
+.read-more-content {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed #E8F5E9;
+    
+    /* Zamiast max-height, używamy display, aby tekst zawsze się mieścił */
+    display: none; 
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.read-more-content.expanded {
+    display: block;
+    opacity: 1;
+    /* Usuwamy limit wysokości, więc telefon wyświetli tyle tekstu, ile trzeba */
+    max-height: none; 
+}
         .read-more-button {
             display: inline-block;
             color: #4CAF50;
