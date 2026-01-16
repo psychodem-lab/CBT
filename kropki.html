@@ -3,128 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Psychodem - TMT Clinical</title>
+    <title>Psychodem - TMT Clinical (No Hints)</title>
     <style>
-        /* --- ZMIENNE STYLÓW --- */
         :root {
             --color-primary: #4f46e5;       
-            --color-primary-hover: #4338ca; 
             --color-success: #10b981;       
             --color-default: #94a3b8;       
             --color-error: #ef4444;         
-            
             --bg-body: #f1f5f9;             
             --bg-card: #ffffff;             
             --text-main: #1e293b;           
             --text-muted: #64748b;          
-            
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
             --radius: 12px;
         }
 
-        * { box-sizing: border-box; }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             background-color: var(--bg-body);
             color: var(--text-main);
             margin: 0;
             padding: 20px;
-            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: background-color 0.3s;
         }
 
-        /* --- TRYB PACJENTA (Pełny ekran) --- */
-        /* Ukrywa wszystko co zbędne, gdy klasa .patient-mode jest aktywna na body */
         body.patient-mode {
-            background-color: #f8fafc; /* Czyste tło dla pacjenta */
-            padding: 0;
+            background-color: #ffffff;
             justify-content: center;
-            overflow: hidden; /* Blokada przewijania */
+            overflow: hidden;
+            padding: 0;
         }
 
-        body.patient-mode header,
-        body.patient-mode #admin-panel,
-        body.patient-mode #results-card {
+        body.patient-mode header, body.patient-mode #admin-panel, body.patient-mode #results-card {
             display: none !important;
         }
 
-        body.patient-mode #game-wrapper {
-            box-shadow: none;
-            background: transparent;
-            padding: 0;
-            max-width: none;
-        }
-        
-        body.patient-mode canvas {
-            box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1);
-            border: 1px solid #e2e8f0;
-        }
-
-        /* --- UI GLÓWNE --- */
-        .container {
-            max-width: 800px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* Karta Administratora */
         .card {
             background-color: var(--bg-card);
             border-radius: var(--radius);
             box-shadow: var(--shadow-md);
             padding: 25px;
             text-align: center;
+            width: 100%;
+            max-width: 800px;
         }
 
-        .logo-wrapper img {
-            max-height: 60px;
-            width: auto;
-            margin-bottom: 10px;
-        }
-
-        h1 { margin: 10px 0 5px; font-size: 1.5rem; }
-        p.subtitle { color: var(--text-muted); margin: 0 0 20px; font-size: 0.9rem; }
-
-        /* Formularze */
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        select, button {
-            padding: 12px 20px;
-            border-radius: 8px;
-            border: 1px solid #cbd5e1;
-            font-size: 1rem;
-            outline: none;
-            cursor: pointer;
-        }
-
+        .logo-wrapper img { max-height: 60px; margin-bottom: 10px; }
+        h1 { margin: 10px 0; font-size: 1.5rem; }
+        
+        .controls { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
+        select, button { padding: 12px 20px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1rem; cursor: pointer; }
+        
         button.primary-btn {
             background-color: var(--color-primary);
             color: white;
             border: none;
             font-weight: 600;
-            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3);
-            transition: transform 0.1s;
-        }
-        button.primary-btn:hover { background-color: var(--color-primary-hover); }
-        button.primary-btn:active { transform: translateY(1px); }
-
-        /* Płótno Gry */
-        #game-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         canvas {
@@ -132,341 +68,116 @@
             border-radius: var(--radius);
             cursor: crosshair;
             touch-action: none;
-            /* Domyślnie lekki cień w trybie admina */
             box-shadow: var(--shadow-md);
-        }
-
-        /* --- WYNIKI I NORMY --- */
-        #results-card {
-            display: none; /* Ukryte domyślnie */
-            text-align: left;
-            animation: fadeIn 0.5s;
-            border-left: 5px solid var(--color-primary);
-        }
-
-        .result-header {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .norm-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 0.9rem;
-        }
-        
-        .norm-table th, .norm-table td {
-            padding: 10px;
-            border-bottom: 1px solid #e2e8f0;
-            text-align: left;
-        }
-        
-        .norm-table th { background-color: #f8fafc; color: var(--text-muted); }
-        
-        .highlight-row { background-color: #ecfdf5; font-weight: bold; } /* Zielony pasek dla wyniku pacjenta */
-        .highlight-row-bad { background-color: #fef2f2; font-weight: bold; } /* Czerwony pasek */
-
-        .btn-restart {
             margin-top: 20px;
-            background-color: var(--text-main);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
         }
 
-        /* Komunikaty w grze */
-        #game-info {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px 20px;
-            border-radius: 20px;
-            box-shadow: var(--shadow-md);
-            pointer-events: none;
-            font-weight: 600;
-            color: var(--color-primary);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        body.patient-mode #game-info { opacity: 1; } /* Pokaż info tylko w trybie gry */
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #results-card { display: none; margin-top: 20px; text-align: left; }
+        .norm-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .norm-table th, .norm-table td { padding: 10px; border-bottom: 1px solid #e2e8f0; text-align: left; font-size: 0.9rem; }
+        .highlight-row { background-color: #ecfdf5; font-weight: bold; }
+        .highlight-row-bad { background-color: #fef2f2; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        
-        <header>
-            <div class="logo-wrapper">
-                <a href="#"><img src="logo.png" alt="Logo"></a>
-            </div>
-            <h1>Test Łączenia Punktów (TMT)</h1>
-            <p class="subtitle">Wybierz wersję testu i przygotuj pacjenta.</p>
-        </header>
+    <header>
+        <div class="logo-wrapper"><img src="logo.png" alt="Logo"></div>
+        <h1>Test Łączenia Punktów (TMT)</h1>
+    </header>
 
-        <div id="admin-panel" class="card">
-            <div class="controls">
-                <select id="levelSelect">
-                    <option value="A">Wersja A (Tylko liczby: 1-25)</option>
-                    <option value="B">Wersja B (Naprzemiennie: 1-A...)</option>
-                </select>
-                <button class="primary-btn" onclick="startTest()">Rozpocznij Test (Pełny ekran)</button>
-            </div>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">
-                Po kliknięciu "Rozpocznij", zegar i interfejs zostaną ukryte. <br>
-                Zegar startuje po kliknięciu pierwszego punktu. Test kończy się po połączeniu ostatniego.
-            </p>
+    <div id="admin-panel" class="card">
+        <div class="controls">
+            <select id="levelSelect">
+                <option value="A">Wersja A (Liczby 1-25)</option>
+                <option value="B">Wersja B (1-A-2-B...)</option>
+            </select>
+            <button class="primary-btn" onclick="startTest()">Rozpocznij Test</button>
         </div>
-
-        <div id="results-card" class="card">
-            <div class="result-header">
-                <span>Wynik Pacjenta</span>
-                <span id="final-time-display" style="color: var(--color-primary); font-size: 1.4rem;">00:00</span>
-            </div>
-            <div id="interpretation-text"></div>
-            
-            <table class="norm-table">
-                <thead>
-                    <tr>
-                        <th>Interpretacja</th>
-                        <th>Wersja A (Czas)</th>
-                        <th>Wersja B (Czas)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr id="row-norm">
-                        <td>🟢 Norma (Zdrowi dorośli)</td>
-                        <td>&lt; 40 sek.</td>
-                        <td>&lt; 60 sek.</td>
-                    </tr>
-                    <tr id="row-low">
-                        <td>🟠 Wynik obniżony / Do obserwacji</td>
-                        <td>41 - 90 sek.</td>
-                        <td>61 - 180 sek.</td>
-                    </tr>
-                    <tr id="row-clinical">
-                        <td>🔴 Wynik kliniczny (Możliwe zaburzenia)</td>
-                        <td>&gt; 90 sek.</td>
-                        <td>&gt; 180 sek.</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div style="margin-top: 15px; font-size: 0.85rem; color: var(--text-muted); text-align: left;">
-                <em>*Normy orientacyjne wg Talarowska et al. (2012). Wynik wymaga interpretacji psychologa. Liczba błędów w teście: <span id="error-display-count">0</span>.</em>
-            </div>
-
-            <button class="btn-restart" onclick="location.reload()">Resetuj / Nowy Pacjent</button>
-        </div>
-
-        <div id="game-wrapper">
-            <canvas id="gameCanvas" width="800" height="600"></canvas>
-        </div>
-
+        <p style="color: var(--text-muted); font-size: 0.85rem;">Brak podpowiedzi wizualnych w trakcie testu.</p>
     </div>
 
+    <div id="results-card" class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <strong style="font-size:1.2rem;">Wynik końcowy</strong>
+            <span id="final-time-display" style="color: var(--color-primary); font-size: 1.5rem; font-weight:bold;">00:00</span>
+        </div>
+        <div id="interpretation-text"></div>
+        <table class="norm-table">
+            <thead><tr><th>Interpretacja</th><th>Wersja A</th><th>Wersja B</th></tr></thead>
+            <tbody>
+                <tr id="row-norm"><td>🟢 Norma</td><td>&lt; 40s</td><td>&lt; 60s</td></tr>
+                <tr id="row-low"><td>🟠 Wynik obniżony</td><td>41-90s</td><td>61-180s</td></tr>
+                <tr id="row-clinical"><td>🔴 Wynik kliniczny</td><td>&gt; 90s</td><td>&gt; 180s</td></tr>
+            </tbody>
+        </table>
+        <p style="font-size:0.8rem; margin-top:10px;">Błędy: <span id="error-display-count">0</span></p>
+        <button style="margin-top:15px; width:100%;" onclick="location.reload()">Nowy test</button>
+    </div>
+
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+
     <script>
-        // --- KONFIGURACJA ---
-        // Zdefiniowane dokładnie wg standardu klinicznego
         const LEVELS = {
-            A: {
-                type: 'A',
-                count: 25,
-                labels: Array.from({ length: 25 }, (_, i) => (i + 1).toString()), // 1..25
-                desc: "1 → 2 → 3 ... → 25"
-            },
-            B: {
-                type: 'B',
-                count: 25,
-                // 13 cyfr (1-13) i 12 liter (A-L). Razem 25.
-                labels: ['1', 'A', '2', 'B', '3', 'C', '4', 'D', '5', 'E', '6', 'F', '7', 'G', '8', 'H', '9', 'I', '10', 'J', '11', 'K', '12', 'L', '13'],
-                desc: "1 → A → 2 → B ... → 13"
-            }
+            A: { labels: Array.from({ length: 25 }, (_, i) => (i + 1).toString()) },
+            B: { labels: ['1', 'A', '2', 'B', '3', 'C', '4', 'D', '5', 'E', '6', 'F', '7', 'G', '8', 'H', '9', 'I', '10', 'J', '11', 'K', '12', 'L', '13'] }
         };
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        const gameInfo = document.getElementById('game-info');
-        
-        // Zmienne stanu
-        let currentLevel = null;
-        let points = [];
-        let connections = [];
-        let currentPointIndex = 0;
-        let startTime = null;
-        let endTime = null;
-        let errorCount = 0;
-        let isRunning = false; // Czy test trwa (tryb pacjenta)
-
-        // Stałe graficzne
-        const POINT_RADIUS = 18;
-        const MIN_DISTANCE = 55; // Minimalny odstęp między punktami
-        
-        // --- FUNKCJE LOGIKI GRY ---
+        let currentLevel, points = [], connections = [], currentPointIndex = 0;
+        let startTime, endTime, errorCount = 0, isRunning = false;
 
         function startTest() {
-            // Pobranie wyboru
             const type = document.getElementById('levelSelect').value;
             currentLevel = LEVELS[type];
-
-            // Reset zmiennych
+            currentLevel.type = type;
             points = generatePoints(currentLevel.labels);
             connections = [];
             currentPointIndex = 0;
             errorCount = 0;
-            startTime = null; // Czas startuje dopiero po 1 kliknięciu
-            endTime = null;
-            
-            // Wejście w tryb pacjenta (ukrycie UI)
+            startTime = null;
             document.body.classList.add('patient-mode');
-            
-            // Reset widoku wyników (jeśli był widoczny)
-            document.getElementById('results-card').style.display = 'none';
-            document.getElementById('admin-panel').style.display = 'none'; // Tymczasowo ukryj, klasa css i tak to robi ale dla pewności
-
-            // Komunikat startowy
-            gameInfo.textContent = `Kliknij start: (${points[0].label})`;
             isRunning = true;
-            
             draw();
         }
 
-        function endTest() {
-            isRunning = false;
-            endTime = Date.now();
-            const totalTimeSeconds = (endTime - startTime) / 1000;
-
-            // Wyjście z trybu pacjenta
-            document.body.classList.remove('patient-mode');
-            document.getElementById('admin-panel').style.display = 'block';
-
-            // Pokaż wyniki
-            showResults(totalTimeSeconds, errorCount, currentLevel.type);
-            
-            // Rysowanie końcowe (linia powrotna lub zamrożenie stanu)
-            draw();
-        }
-
-        function showResults(seconds, errors, type) {
-            const resultsCard = document.getElementById('results-card');
-            const timeDisplay = document.getElementById('final-time-display');
-            const errorDisplay = document.getElementById('error-display-count');
-            const interpText = document.getElementById('interpretation-text');
-            
-            // Formatowanie czasu
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            timeDisplay.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
-            errorDisplay.textContent = errors;
-
-            // Logika Norm (Talarowska et al.)
-            let status = 'norm'; // norm, low, clinical
-            
-            if (type === 'A') {
-                if (seconds <= 40) status = 'norm';
-                else if (seconds <= 90) status = 'low';
-                else status = 'clinical';
-            } else { // Type B
-                if (seconds <= 60) status = 'norm';
-                else if (seconds <= 180) status = 'low';
-                else status = 'clinical';
-            }
-
-            // Podświetlanie tabeli i tekst
-            document.querySelectorAll('.norm-table tr').forEach(tr => {
-                tr.classList.remove('highlight-row', 'highlight-row-bad');
-            });
-
-            if (status === 'norm') {
-                document.getElementById('row-norm').classList.add('highlight-row');
-                interpText.innerHTML = `<span style="color:var(--color-success); font-weight:bold;">Wynik w normie.</span>`;
-            } else if (status === 'low') {
-                document.getElementById('row-low').classList.add('highlight-row-bad');
-                interpText.innerHTML = `<span style="color:orange; font-weight:bold;">Wynik poniżej oczekiwań (sugerowana obserwacja).</span>`;
-            } else {
-                document.getElementById('row-clinical').classList.add('highlight-row-bad');
-                interpText.innerHTML = `<span style="color:var(--color-error); font-weight:bold;">Wynik kliniczny (istotne spowolnienie).</span>`;
-            }
-
-            resultsCard.style.display = 'block';
-            resultsCard.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // --- GENEROWANIE PUNKTÓW (Bez nakładania się) ---
         function generatePoints(labels) {
-            const newPoints = [];
-            const width = canvas.width;
-            const height = canvas.height;
-            const padding = 40;
-
+            const pts = [];
             for (let label of labels) {
-                let point, valid;
-                let attempts = 0;
+                let p, valid, attempts = 0;
                 do {
                     valid = true;
-                    point = {
-                        x: Math.floor(Math.random() * (width - 2 * padding)) + padding,
-                        y: Math.floor(Math.random() * (height - 2 * padding)) + padding,
-                        label: label
-                    };
-
-                    // Sprawdź kolizje
-                    for (let existing of newPoints) {
-                        const dist = Math.hypot(point.x - existing.x, point.y - existing.y);
-                        if (dist < MIN_DISTANCE) {
-                            valid = false;
-                            break;
-                        }
-                    }
+                    p = { x: Math.random() * 720 + 40, y: Math.random() * 520 + 40, label: label };
+                    for (let e of pts) if (Math.hypot(p.x - e.x, p.y - e.y) < 60) valid = false;
                     attempts++;
-                    // Zabezpieczenie przed nieskończoną pętlą (rzadkie)
-                    if (attempts > 500) break; 
-                } while (!valid);
-                newPoints.push(point);
+                } while (!valid && attempts < 1000);
+                pts.push(p);
             }
-            return newPoints;
+            return pts;
         }
 
-        // --- RYSOWANIE ---
         function draw() {
-            // Czyścimy
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Linie
-            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
+            
+            // Linie połączeń
+            ctx.strokeStyle = "#4f46e5";
             ctx.lineWidth = 3;
             ctx.beginPath();
-            connections.forEach(conn => {
-                ctx.moveTo(conn.start.x, conn.start.y);
-                ctx.lineTo(conn.end.x, conn.end.y);
-            });
+            connections.forEach(c => { ctx.moveTo(c.start.x, c.start.y); ctx.lineTo(c.end.x, c.end.y); });
             ctx.stroke();
 
             // Punkty
             points.forEach((p, idx) => {
-                const isConnected = idx < currentPointIndex;
-                const isNext = idx === currentPointIndex;
-
+                const done = idx < currentPointIndex;
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, POINT_RADIUS, 0, Math.PI * 2);
-                
-                // Styl wypełnienia
-                if (isConnected) ctx.fillStyle = '#10b981'; // Zielony
-                else ctx.fillStyle = '#e2e8f0'; // Szary (nieaktywny)
-                
+                ctx.arc(p.x, p.y, 18, 0, Math.PI * 2);
+                ctx.fillStyle = done ? "#10b981" : "#e2e8f0";
                 ctx.fill();
-
-                // Tekst
-                ctx.fillStyle = isConnected ? 'white' : '#1e293b';
+                
+                // BRAK OBRAMOWANIA DLA NASTĘPNEGO PUNKTU (USUNIĘTO STROKE)
+                
+                ctx.fillStyle = done ? "white" : "#1e293b";
                 ctx.font = "bold 16px Arial";
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
@@ -474,76 +185,54 @@
             });
         }
 
-        // --- OBSŁUGA KLIKNIĘĆ ---
-        function handleClick(e) {
-            if (!isRunning) return; // Kliknięcia działają tylko po naciśnięciu Start
-
+        canvas.addEventListener('mousedown', (e) => {
+            if (!isRunning) return;
             const rect = canvas.getBoundingClientRect();
-            // Skalowanie na wypadek gdyby canvas był przeskalowany CSSem
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-
-            const x = (e.clientX - rect.left) * scaleX;
-            const y = (e.clientY - rect.top) * scaleY;
-
-            // Sprawdź czy kliknięto w OCZEKIWANY punkt
+            const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+            const y = (e.clientY - rect.top) * (canvas.height / rect.height);
             const target = points[currentPointIndex];
-            const dist = Math.hypot(x - target.x, y - target.y);
 
-            if (dist < POINT_RADIUS + 10) { // +10 marginesu błędu dla palca/myszy
-                // Poprawne kliknięcie
-                if (currentPointIndex === 0) {
-                    startTime = Date.now(); // Start czasu dopiero teraz!
-                } else {
-                    connections.push({ start: points[currentPointIndex - 1], end: target });
-                    }
-                }
-
+            if (Math.hypot(x - target.x, y - target.y) < 25) {
+                if (currentPointIndex === 0) startTime = Date.now();
+                else connections.push({ start: points[currentPointIndex - 1], end: target });
+                
                 currentPointIndex++;
                 draw();
-
-                // Czy koniec?
-                if (currentPointIndex >= points.length) {
-                    endTest();
+                if (currentPointIndex === points.length) {
+                    isRunning = false;
+                    endTime = Date.now();
+                    finish();
                 }
-            } else {
-                // Sprawdź czy kliknięto w JAKIKOLWIEK INNY (BŁĘDNY) punkt
-                // (Tylko jeśli zegar już ruszył)
-                if (startTime) {
-                    let clickedWrong = false;
-                    for (let i = 0; i < points.length; i++) {
-                        if (i === currentPointIndex) continue; // Pomiń poprawny
-                        if (i < currentPointIndex) continue;   // Pomiń już połączone
-                        
-                        const d = Math.hypot(x - points[i].x, y - points[i].y);
-                        if (d < POINT_RADIUS + 10) {
-                            clickedWrong = true;
-                            break;
-                        }
-                    }
-                    
-                    if (clickedWrong) {
-                        errorCount++;
-                        // Delikatny flash na czerwono (opcjonalnie)
-                        const originalBg = canvas.style.backgroundColor;
-                        canvas.style.backgroundColor = '#fef2f2';
-                        setTimeout(() => canvas.style.backgroundColor = 'white', 200);
-                    }
-                }
+            } else if (startTime) {
+                // Sprawdź czy kliknięto w inny punkt (błąd)
+                points.forEach((p, i) => {
+                    if (i >= currentPointIndex && Math.hypot(x - p.x, y - p.y) < 25) errorCount++;
+                });
             }
+        });
+
+        function finish() {
+            document.body.classList.remove('patient-mode');
+            const total = (endTime - startTime) / 1000;
+            const mins = Math.floor(total / 60);
+            const secs = Math.floor(total % 60);
+            document.getElementById('final-time-display').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+            document.getElementById('error-display-count').textContent = errorCount;
+            
+            let status = 'norm';
+            if (currentLevel.type === 'A') {
+                if (total > 90) status = 'clinical'; else if (total > 40) status = 'low';
+            } else {
+                if (total > 180) status = 'clinical'; else if (total > 60) status = 'low';
+            }
+
+            document.querySelectorAll('.norm-table tr').forEach(r => r.className = '');
+            const rowId = status === 'norm' ? 'row-norm' : (status === 'low' ? 'row-low' : 'row-clinical');
+            document.getElementById(rowId).className = status === 'norm' ? 'highlight-row' : 'highlight-row-bad';
+            
+            document.getElementById('results-card').style.display = 'block';
+            document.getElementById('admin-panel').style.display = 'none';
         }
-
-        // Nasłuchuj mysz i dotyk
-        canvas.addEventListener('mousedown', handleClick);
-        // Zapobieganie podwójnemu wywołaniu na touch devices jest tu uproszczone, 
-        // w prostym modelu mousedown wystarczy, chyba że potrzebny multitouch.
-        
-        // Pierwsze rysowanie (puste)
-        ctx.font = "20px Arial";
-        ctx.fillStyle = "#64748b";
-        ctx.textAlign = "center";
-        ctx.fillText("Wybierz wersję i kliknij Start", canvas.width/2, canvas.height/2);
-
     </script>
 </body>
 </html>
