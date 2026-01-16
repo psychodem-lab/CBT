@@ -270,7 +270,6 @@
 
         <div id="game-wrapper">
             <canvas id="gameCanvas" width="800" height="600"></canvas>
-            <div id="game-info">Połącz punkty w kolejności</div>
         </div>
 
     </div>
@@ -464,13 +463,6 @@
                 if (isConnected) ctx.fillStyle = '#10b981'; // Zielony
                 else ctx.fillStyle = '#e2e8f0'; // Szary (nieaktywny)
                 
-                // Jeśli to następny punkt i gra trwa - lekko wyróżnij obwódką (opcjonalne, subtelne)
-                if (isNext && isRunning) {
-                    ctx.strokeStyle = '#4f46e5';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                }
-                
                 ctx.fill();
 
                 // Tekst
@@ -502,11 +494,8 @@
                 // Poprawne kliknięcie
                 if (currentPointIndex === 0) {
                     startTime = Date.now(); // Start czasu dopiero teraz!
-                    gameInfo.textContent = `Szukaj: ${points[1].label}`;
                 } else {
                     connections.push({ start: points[currentPointIndex - 1], end: target });
-                    if (currentPointIndex < points.length - 1) {
-                         gameInfo.textContent = `Dobrze! Następny: ${points[currentPointIndex + 1].label}`;
                     }
                 }
 
