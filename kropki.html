@@ -3,186 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Połącz Kropki - Ukryj Podpowiedzi</title>
+    <title>Psychodem - Test Uwagi</title>
     <style>
-        /* CSS: Ustawienia dla responsywności i wyglądu */
+        /* --- NOWOCZESNA PALETA KOLORÓW I ZMIENNE --- */
         :root {
-            --color-primary: #007bff; 
-            --color-success: #28a745; 
-            --color-default: #6c757d; 
-            --color-error: #dc3545;
+            /* Nowoczesne odcienie (Indigo, Slate, Emerald, Rose) */
+            --color-primary: #4f46e5;       /* Główny akcent (Indigo) */
+            --color-primary-hover: #4338ca; 
+            --color-success: #10b981;       /* Sukces (Emerald) */
+            --color-default: #94a3b8;       /* Punkty nieaktywne (Slate) */
+            --color-error: #ef4444;         /* Błąd (Rose) */
+            
+            --bg-body: #f8fafc;             /* Bardzo jasne tło strony */
+            --bg-card: #ffffff;             /* Tło kontenera gry */
+            --text-main: #1e293b;           /* Ciemny grafit dla tekstu */
+            --text-muted: #64748b;          /* Szary dla opisów */
+            
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 20px 10px;
-            padding: 0;
-            text-align: center;
         }
+
+        /* --- LAYOUT KARTY --- */
+        .game-container {
+            background-color: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            max-width: 800px;
+            width: 100%;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- NAGŁÓWEK I LOGO --- */
         header {
-            background-color: #f4f4f9;
-            color: white;
-            padding: 5px 10px;
+            margin-bottom: 20px;
             text-align: center;
-            width: 100%; 
-        }
-          .logo-wrapper a {
-            text-decoration: none;
-            border: none;
         }
 
         .logo-wrapper img {
-            max-height: 100px; 
+            max-height: 80px;
             width: auto;
-            display: inline-block;
-            margin-top: 0; 
-            border: 0;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 5px;
+            display: block;
+            margin: 0 auto;
         }
 
-        /* Kontrola Poziomów i Reset */
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 15px 0 5px 0;
+            color: var(--text-main);
+            letter-spacing: -0.025em;
+        }
+
+        #sequenceInfo {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        /* --- KONTROLKI (INPUTY I BUTTONY) --- */
         #controls {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-            width: 90vw;
-            max-width: 600px;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 25px;
+            width: 100%;
         }
 
-        #levelSelect, #resetButton, #hintToggleContainer {
-            padding: 10px;
-            font-size: 1em;
-            border-radius: 5px;
+        select, button {
+            font-family: inherit;
+            font-size: 0.95rem;
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            outline: none;
+            transition: all 0.2s ease;
         }
 
-        #levelSelect {
-            border: 2px solid var(--color-primary);
+        select {
+            background-color: #fff;
+            color: var(--text-main);
+            cursor: pointer;
+            min-width: 200px;
         }
 
-        #resetButton {
+        select:hover, select:focus {
+            border-color: var(--color-primary);
+        }
+
+        button#resetButton {
             background-color: var(--color-primary);
             color: white;
             border: none;
+            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.2s;
+            box-shadow: var(--shadow-sm);
         }
 
-        #resetButton:hover {
-            background-color: #0056b3;
+        button#resetButton:hover {
+            background-color: var(--color-primary-hover);
+            transform: translateY(-1px);
         }
 
-        /* Styl dla opcji ukrywania podpowiedzi */
+        button#resetButton:active {
+            transform: translateY(0);
+        }
+
+        /* Checkbox Container */
         #hintToggleContainer {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background-color: #e9ecef;
-        }
-
-        /* Sekcja Statystyk */
-        #stats {
-            display: flex;
-            justify-content: space-around;
-            width: 90vw;
-            max-width: 600px;
-            margin-bottom: 15px;
-            padding: 10px;
-            background-color: #e9ecef;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            background: #f1f5f9;
+            padding: 8px 12px;
             border-radius: 8px;
         }
 
+        input[type="checkbox"] {
+            accent-color: var(--color-primary);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        /* --- STATYSTYKI --- */
+        #stats {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+            padding: 15px 25px;
+            background-color: #f8fafc; /* Lekko szare tło dla statystyk */
+            border-radius: var(--radius);
+            border: 1px solid #e2e8f0;
+        }
+
         .stat-item {
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #333;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            display: flex;
+            gap: 8px;
         }
 
         .stat-value {
-            color: var(--color-primary);
+            font-family: 'Courier New', monospace; /* Monospace dla cyfr */
+            font-weight: 700;
+            font-size: 1.1rem;
         }
 
-        /* Ustawienie płótna jako responsywnego */
+        #timer { color: var(--color-primary); }
+        #errors { color: var(--color-error); }
+
+        /* --- PŁÓTNO (CANVAS) --- */
         canvas {
-            max-width: 600px; 
-            max-height: 400px;
-            width: 90vw; 
-            height: 60vw; 
-            border: 2px solid var(--color-primary);
+            border-radius: var(--radius);
             background-color: white;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            touch-action: manipulation;
+            box-shadow: var(--shadow-md); /* Cień zamiast obramowania */
+            border: 1px solid #e2e8f0;    /* Bardzo delikatna ramka */
+            cursor: crosshair;
+            touch-action: none;
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
         }
 
+        /* --- KOMUNIKATY --- */
         #info {
-            margin-top: 15px;
-            padding: 10px 20px;
-            font-size: 1.1em;
-            color: #333;
-            font-weight: bold;
+            width: 100%;
+            max-width: 600px;
+            padding: 12px 20px;
+            text-align: center;
+            font-weight: 500;
+            color: var(--text-main);
             background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            min-height: 50px; 
-            visibility: visible; /* Domyślna widoczność */
-            transition: visibility 0.2s, opacity 0.2s;
+            border-left: 4px solid var(--color-primary);
+            border-radius: 4px;
+            box-shadow: var(--shadow-sm);
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
         }
-        
+
         /* Klasa dodawana przez JS do ukrywania */
         .hidden-info {
             visibility: hidden;
             opacity: 0;
         }
+
+        /* RWD */
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 15px;
+            }
+            #controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            #stats {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <header>
-  <div class="logo-wrapper">
-            <a href="index.html" title="Powrót do strony głównej">
-                <img src="logo.png" alt="Logo Psychodem">
-            </a>
-        </div>
-    </header>
 
-    <h1>Połącz Kropki!</h1>
-    <p id="sequenceInfo">Aktualna sekwencja: 1 → 2 → 3 → ...</p>
-    
-    <div id="controls">
-        <select id="levelSelect" onchange="resetGame()">
-            <option value="easy">Łatwy (1 → 20)</option>
-            <option value="medium" selected>Średni (1, A, 2, B, ...)</option>
-            <option value="hard">Trudny (1, A, 2, B, ..., 13)</option>
-        </select>
+    <div class="game-container">
+        <header>
+            <div class="logo-wrapper">
+                <a href="index.html" title="Powrót do strony głównej">
+                    <img src="logo.png" alt="Logo Psychodem">
+                </a>
+            </div>
+            <h1>Połącz Kropki</h1>
+            <p id="sequenceInfo">Aktualna sekwencja: 1 → 2 → 3 → ...</p>
+        </header>
         
-        <div id="hintToggleContainer">
-            <label for="hintToggle">Ukryj podpowiedzi (nazwę następnego punktu i błędy):</label>
-            <input type="checkbox" id="hintToggle" onchange="toggleHints()">
+        <div id="controls">
+            <select id="levelSelect" onchange="resetGame()">
+                <option value="easy">Poziom: Łatwy (1 → 20)</option>
+                <option value="medium" selected>Poziom: Średni (1, A, 2, B...)</option>
+                <option value="hard">Poziom: Trudny (długi)</option>
+            </select>
+            
+            <button id="resetButton" onclick="resetGame()">Nowa Gra (Losuj)</button>
+
+            <div id="hintToggleContainer">
+                <input type="checkbox" id="hintToggle" onchange="toggleHints()">
+                <label for="hintToggle">Ukryj podpowiedzi</label>
+            </div>
         </div>
 
-        <button id="resetButton" onclick="resetGame()">Zacznij nową grę (Losuj punkty)</button>
+        <div id="stats">
+            <div class="stat-item">
+                <span>Czas:</span>
+                <span id="timer" class="stat-value">00:00</span>
+            </div>
+            <div class="stat-item">
+                <span>Błędy:</span>
+                <span id="errors" class="stat-value">0</span>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas" width="600" height="400"></canvas>
+        
+        <div id="info">Wybierz poziom i kliknij (1), aby rozpocząć!</div>
     </div>
-
-    <div id="stats">
-        <div class="stat-item">
-            Czas: <span id="timer" class="stat-value">00:00</span>
-        </div>
-        <div class="stat-item">
-            Błędy: <span id="errors" class="stat-value" style="color: var(--color-error);">0</span>
-        </div>
-    </div>
-
-    <canvas id="gameCanvas" width="600" height="400"></canvas>
-    
-    <div id="info">Wybierz poziom i kliknij (1), aby rozpocząć!</div>
 
     <script>
         // JavaScript: Logika Gry
@@ -200,7 +293,7 @@
         const CANVAS_HEIGHT = canvas.height;
         const POINT_RADIUS = 18;
         const FONT_SIZE = '16px';
-        const MIN_DISTANCE = 2 * POINT_RADIUS + 30; 
+        const MIN_DISTANCE = 2 * POINT_RADIUS + 30;
 
         // --- DEFINICJE POZIOMÓW ---
         const LEVELS = {
@@ -230,7 +323,7 @@
         let errorCount = 0;
         let currentPointIndex = 0; 
         let connections = [];      
-        let points = []; 
+        let points = [];
         let currentLevel = LEVELS['medium'];
 
         // --- Funkcje Ukrywania Podpowiedzi ---
@@ -287,20 +380,17 @@
                     
                     newPoint = { x: x, y: y, label: labels[i] };
                     isTooClose = false;
-                    
                     for (const existingPoint of randomPoints) {
                         const distance = Math.sqrt(
                             Math.pow(newPoint.x - existingPoint.x, 2) + 
                             Math.pow(newPoint.y - existingPoint.y, 2)
                         );
-                        
                         if (distance < MIN_DISTANCE) {
                             isTooClose = true;
                             break;
                         }
                     }
-                } while (isTooClose); 
-
+                } while (isTooClose);
                 randomPoints.push(newPoint);
             }
             return randomPoints;
@@ -332,8 +422,8 @@
         // --- Funkcje Rysowania ---
         function draw() {
             ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-primary');
+            // Zmieniono tylko źródło koloru (teraz pobiera zaktualizowane zmienne CSS)
+            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
             ctx.lineWidth = 4;
             ctx.beginPath();
             connections.forEach(conn => {
@@ -347,15 +437,15 @@
                 const isConnected = index < currentPointIndex;
 
                 ctx.fillStyle = isConnected 
-                    ? getComputedStyle(document.documentElement).getPropertyValue('--color-success') 
-                    : getComputedStyle(document.documentElement).getPropertyValue('--color-default');
-                
+                    ? getComputedStyle(document.documentElement).getPropertyValue('--color-success').trim()
+                    : getComputedStyle(document.documentElement).getPropertyValue('--color-default').trim();
+            
                 ctx.beginPath();
                 ctx.arc(point.x, point.y, POINT_RADIUS, 0, Math.PI * 2);
                 ctx.fill();
 
                 ctx.fillStyle = 'white'; 
-                ctx.font = `${FONT_SIZE} Arial`;
+                ctx.font = `bold ${FONT_SIZE} Arial`; // Dodano 'bold' dla lepszej czytelności na nowych kolorach
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(point.label, point.x, point.y);
@@ -363,10 +453,10 @@
         }
 
         function drawFinalLine() {
-            ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT); 
+            ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
             draw(); 
             
-            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-error'); 
+            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-error').trim(); 
             ctx.lineWidth = 6;
             ctx.beginPath();
             
@@ -377,7 +467,6 @@
                     ctx.lineTo(point.x, point.y);
                 }
             });
-            
             ctx.stroke();
         }
 
@@ -389,13 +478,12 @@
             }
 
             if (timerInterval === null && currentPointIndex === points.length) {
-                return; 
+                return;
             }
 
             const rect = canvas.getBoundingClientRect();
             const clientX = event.touches ? event.touches[0].clientX : event.clientX;
             const clientY = event.touches ? event.touches[0].clientY : event.clientY;
-
             const clickX = clientX - rect.left;
             const clickY = clientY - rect.top;
 
@@ -404,7 +492,6 @@
 
             const mouseX = clickX * scaleX;
             const mouseY = clickY * scaleY;
-
             const expectedPoint = points[currentPointIndex];
             
             // 1. Sprawdź, czy kliknięto w oczekiwany punkt
@@ -424,14 +511,13 @@
                 }
 
                 currentPointIndex++;
-
                 if (currentPointIndex === points.length) {
                     stopTimer();
                     const finalTime = timerSpan.textContent;
                     
                     const finalMessage = `
-                        <strong>GRATULACJE! Wszystkie punkty połączone! 🥳</strong><br>
-                        Twój czas: <span style="color: var(--color-primary);">${finalTime}</span> | 
+                        <strong style="color:var(--color-success)">GRATULACJE! Wszystkie punkty połączone! 🥳</strong><br>
+                        Twój czas: <span style="color: var(--color-primary);">${finalTime}</span> |
                         Liczba błędów: <span style="color: var(--color-error);">${errorCount}</span>
                     `;
                     updateInfoDisplay(finalMessage, true); // Zawsze pokazuj na koniec
@@ -449,15 +535,13 @@
             if (currentPointIndex > 0 || timerInterval !== null) { 
                 for(let i = 0; i < points.length; i++) {
                     const currentPoint = points[i];
-                    
                     // Pomijamy już połączone punkty i oczekiwany punkt
-                    if (i < currentPointIndex) continue; 
+                    if (i < currentPointIndex) continue;
                     if (i === currentPointIndex) continue;
 
                     const distance = Math.sqrt(
                         Math.pow(mouseX - currentPoint.x, 2) + Math.pow(mouseY - currentPoint.y, 2)
                     );
-
                     if (distance < POINT_RADIUS) {
                         clickedWrongPoint = true;
                         break;
@@ -491,17 +575,13 @@
             errorCount = 0;
             currentPointIndex = 0;
             connections = [];
-
             // Generowanie nowych punktów dla wybranego poziomu
             points = generateRandomPoints();
-
             // Aktualizacja informacji o sekwencji
             sequenceInfo.textContent = `Aktualna sekwencja: ${currentLevel.desc}`;
-
             // Reset wyświetlania
             timerSpan.textContent = '00:00';
             errorsSpan.textContent = '0';
-            
             // Ustawienie początkowego komunikatu
             const startMessage = `Kliknij punkt startowy (${points[0].label}), aby rozpocząć!`;
             updateInfoDisplay(startMessage, true); // Zawsze pokazuj początkowy komunikat
@@ -509,7 +589,6 @@
 
             // Przerysowanie
             draw();
-            
             // Ponowne włączenie słuchaczy
             canvas.removeEventListener('click', handleInteraction);
             canvas.removeEventListener('touchstart', handleInteraction);
@@ -518,7 +597,7 @@
         }
 
         // INICJALIZACJA GRY
-        resetGame(); 
+        resetGame();
     </script>
 
 </body>
