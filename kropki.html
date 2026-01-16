@@ -3,30 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Psychodem - Test Uwagi</title>
+    <title>Psychodem - TMT Clinical</title>
     <style>
-        /* --- NOWOCZESNA PALETA KOLORÓW I ZMIENNE --- */
+        /* --- ZMIENNE STYLÓW --- */
         :root {
-            /* Nowoczesne odcienie (Indigo, Slate, Emerald, Rose) */
-            --color-primary: #4f46e5;       /* Główny akcent (Indigo) */
+            --color-primary: #4f46e5;       
             --color-primary-hover: #4338ca; 
-            --color-success: #10b981;       /* Sukces (Emerald) */
-            --color-default: #94a3b8;       /* Punkty nieaktywne (Slate) */
-            --color-error: #ef4444;         /* Błąd (Rose) */
+            --color-success: #10b981;       
+            --color-default: #94a3b8;       
+            --color-error: #ef4444;         
             
-            --bg-body: #f8fafc;             /* Bardzo jasne tło strony */
-            --bg-card: #ffffff;             /* Tło kontenera gry */
-            --text-main: #1e293b;           /* Ciemny grafit dla tekstu */
-            --text-muted: #64748b;          /* Szary dla opisów */
+            --bg-body: #f1f5f9;             
+            --bg-card: #ffffff;             
+            --text-main: #1e293b;           
+            --text-muted: #64748b;          
             
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             --radius: 12px;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -38,567 +34,527 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: background-color 0.3s;
         }
 
-        /* --- LAYOUT KARTY --- */
-        .game-container {
+        /* --- TRYB PACJENTA (Pełny ekran) --- */
+        /* Ukrywa wszystko co zbędne, gdy klasa .patient-mode jest aktywna na body */
+        body.patient-mode {
+            background-color: #f8fafc; /* Czyste tło dla pacjenta */
+            padding: 0;
+            justify-content: center;
+            overflow: hidden; /* Blokada przewijania */
+        }
+
+        body.patient-mode header,
+        body.patient-mode #admin-panel,
+        body.patient-mode #results-card {
+            display: none !important;
+        }
+
+        body.patient-mode #game-wrapper {
+            box-shadow: none;
+            background: transparent;
+            padding: 0;
+            max-width: none;
+        }
+        
+        body.patient-mode canvas {
+            box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* --- UI GLÓWNE --- */
+        .container {
+            max-width: 800px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Karta Administratora */
+        .card {
             background-color: var(--bg-card);
             border-radius: var(--radius);
             box-shadow: var(--shadow-md);
-            max-width: 800px;
-            width: 100%;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* --- NAGŁÓWEK I LOGO --- */
-        header {
-            margin-bottom: 20px;
+            padding: 25px;
             text-align: center;
         }
 
         .logo-wrapper img {
-            max-height: 80px;
+            max-height: 60px;
             width: auto;
-            display: block;
-            margin: 0 auto;
+            margin-bottom: 10px;
         }
 
-        h1 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin: 15px 0 5px 0;
-            color: var(--text-main);
-            letter-spacing: -0.025em;
-        }
+        h1 { margin: 10px 0 5px; font-size: 1.5rem; }
+        p.subtitle { color: var(--text-muted); margin: 0 0 20px; font-size: 0.9rem; }
 
-        #sequenceInfo {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-top: 0;
-            margin-bottom: 25px;
-        }
-
-        /* --- KONTROLKI (INPUTY I BUTTONY) --- */
-        #controls {
+        /* Formularze */
+        .controls {
             display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
             justify-content: center;
-            align-items: center;
-            margin-bottom: 25px;
-            width: 100%;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
         select, button {
-            font-family: inherit;
-            font-size: 0.95rem;
-            padding: 10px 16px;
+            padding: 12px 20px;
             border-radius: 8px;
             border: 1px solid #cbd5e1;
+            font-size: 1rem;
             outline: none;
-            transition: all 0.2s ease;
-        }
-
-        select {
-            background-color: #fff;
-            color: var(--text-main);
             cursor: pointer;
-            min-width: 200px;
         }
 
-        select:hover, select:focus {
-            border-color: var(--color-primary);
-        }
-
-        button#resetButton {
+        button.primary-btn {
             background-color: var(--color-primary);
             color: white;
             border: none;
             font-weight: 600;
-            cursor: pointer;
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3);
+            transition: transform 0.1s;
         }
+        button.primary-btn:hover { background-color: var(--color-primary-hover); }
+        button.primary-btn:active { transform: translateY(1px); }
 
-        button#resetButton:hover {
-            background-color: var(--color-primary-hover);
-            transform: translateY(-1px);
-        }
-
-        button#resetButton:active {
-            transform: translateY(0);
-        }
-
-        /* Checkbox Container */
-        #hintToggleContainer {
+        /* Płótno Gry */
+        #game-wrapper {
             display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            background: #f1f5f9;
-            padding: 8px 12px;
-            border-radius: 8px;
         }
 
-        input[type="checkbox"] {
-            accent-color: var(--color-primary);
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
-
-        /* --- STATYSTYKI --- */
-        #stats {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: 20px;
-            padding: 15px 25px;
-            background-color: #f8fafc; /* Lekko szare tło dla statystyk */
-            border-radius: var(--radius);
-            border: 1px solid #e2e8f0;
-        }
-
-        .stat-item {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            display: flex;
-            gap: 8px;
-        }
-
-        .stat-value {
-            font-family: 'Courier New', monospace; /* Monospace dla cyfr */
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
-        #timer { color: var(--color-primary); }
-        #errors { color: var(--color-error); }
-
-        /* --- PŁÓTNO (CANVAS) --- */
         canvas {
-            border-radius: var(--radius);
             background-color: white;
-            box-shadow: var(--shadow-md); /* Cień zamiast obramowania */
-            border: 1px solid #e2e8f0;    /* Bardzo delikatna ramka */
+            border-radius: var(--radius);
             cursor: crosshair;
             touch-action: none;
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 20px;
+            /* Domyślnie lekki cień w trybie admina */
+            box-shadow: var(--shadow-md);
         }
 
-        /* --- KOMUNIKATY --- */
-        #info {
-            width: 100%;
-            max-width: 600px;
-            padding: 12px 20px;
-            text-align: center;
-            font-weight: 500;
-            color: var(--text-main);
-            background-color: #fff;
-            border-left: 4px solid var(--color-primary);
-            border-radius: 4px;
-            box-shadow: var(--shadow-sm);
-            min-height: 48px;
+        /* --- WYNIKI I NORMY --- */
+        #results-card {
+            display: none; /* Ukryte domyślnie */
+            text-align: left;
+            animation: fadeIn 0.5s;
+            border-left: 5px solid var(--color-primary);
+        }
+
+        .result-header {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
         }
 
-        /* Klasa dodawana przez JS do ukrywania */
-        .hidden-info {
-            visibility: hidden;
+        .norm-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .norm-table th, .norm-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+        }
+        
+        .norm-table th { background-color: #f8fafc; color: var(--text-muted); }
+        
+        .highlight-row { background-color: #ecfdf5; font-weight: bold; } /* Zielony pasek dla wyniku pacjenta */
+        .highlight-row-bad { background-color: #fef2f2; font-weight: bold; } /* Czerwony pasek */
+
+        .btn-restart {
+            margin-top: 20px;
+            background-color: var(--text-main);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+        }
+
+        /* Komunikaty w grze */
+        #game-info {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            pointer-events: none;
+            font-weight: 600;
+            color: var(--color-primary);
             opacity: 0;
+            transition: opacity 0.3s;
         }
+        body.patient-mode #game-info { opacity: 1; } /* Pokaż info tylko w trybie gry */
 
-        /* RWD */
-        @media (max-width: 600px) {
-            .game-container {
-                padding: 15px;
-            }
-            #controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            #stats {
-                font-size: 0.9rem;
-            }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="game-container">
+    <div class="container">
+        
         <header>
             <div class="logo-wrapper">
-                <a href="index.html" title="Powrót do strony głównej">
-                    <img src="logo.png" alt="Logo Psychodem">
-                </a>
+                <a href="#"><img src="logo.png" alt="Logo"></a>
             </div>
-            <h1>Połącz Kropki</h1>
-            <p id="sequenceInfo">Aktualna sekwencja: 1 → 2 → 3 → ...</p>
+            <h1>Test Łączenia Punktów (TMT)</h1>
+            <p class="subtitle">Wybierz wersję testu i przygotuj pacjenta.</p>
         </header>
-        
-        <div id="controls">
-            <select id="levelSelect" onchange="resetGame()">
-                <option value="easy">Poziom: Łatwy (1 → 20)</option>
-                <option value="medium" selected>Poziom: Średni (1, A, 2, B...)</option>
-                <option value="hard">Poziom: Trudny (długi)</option>
-            </select>
+
+        <div id="admin-panel" class="card">
+            <div class="controls">
+                <select id="levelSelect">
+                    <option value="A">Wersja A (Tylko liczby: 1-25)</option>
+                    <option value="B">Wersja B (Naprzemiennie: 1-A...)</option>
+                </select>
+                <button class="primary-btn" onclick="startTest()">Rozpocznij Test (Pełny ekran)</button>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+                Po kliknięciu "Rozpocznij", zegar i interfejs zostaną ukryte. <br>
+                Zegar startuje po kliknięciu pierwszego punktu. Test kończy się po połączeniu ostatniego.
+            </p>
+        </div>
+
+        <div id="results-card" class="card">
+            <div class="result-header">
+                <span>Wynik Pacjenta</span>
+                <span id="final-time-display" style="color: var(--color-primary); font-size: 1.4rem;">00:00</span>
+            </div>
+            <div id="interpretation-text"></div>
             
-            <button id="resetButton" onclick="resetGame()">Nowa Gra (Losuj)</button>
+            <table class="norm-table">
+                <thead>
+                    <tr>
+                        <th>Interpretacja</th>
+                        <th>Wersja A (Czas)</th>
+                        <th>Wersja B (Czas)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="row-norm">
+                        <td>🟢 Norma (Zdrowi dorośli)</td>
+                        <td>&lt; 40 sek.</td>
+                        <td>&lt; 60 sek.</td>
+                    </tr>
+                    <tr id="row-low">
+                        <td>🟠 Wynik obniżony / Do obserwacji</td>
+                        <td>41 - 90 sek.</td>
+                        <td>61 - 180 sek.</td>
+                    </tr>
+                    <tr id="row-clinical">
+                        <td>🔴 Wynik kliniczny (Możliwe zaburzenia)</td>
+                        <td>&gt; 90 sek.</td>
+                        <td>&gt; 180 sek.</td>
+                    </tr>
+                </tbody>
+            </table>
 
-            <div id="hintToggleContainer">
-                <input type="checkbox" id="hintToggle" onchange="toggleHints()">
-                <label for="hintToggle">Ukryj podpowiedzi</label>
+            <div style="margin-top: 15px; font-size: 0.85rem; color: var(--text-muted); text-align: left;">
+                <em>*Normy orientacyjne wg Talarowska et al. (2012). Wynik wymaga interpretacji psychologa. Liczba błędów w teście: <span id="error-display-count">0</span>.</em>
             </div>
+
+            <button class="btn-restart" onclick="location.reload()">Resetuj / Nowy Pacjent</button>
         </div>
 
-        <div id="stats">
-            <div class="stat-item">
-                <span>Czas:</span>
-                <span id="timer" class="stat-value">00:00</span>
-            </div>
-            <div class="stat-item">
-                <span>Błędy:</span>
-                <span id="errors" class="stat-value">0</span>
-            </div>
+        <div id="game-wrapper">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+            <div id="game-info">Połącz punkty w kolejności</div>
         </div>
 
-        <canvas id="gameCanvas" width="600" height="400"></canvas>
-        
-        <div id="info">Wybierz poziom i kliknij (1), aby rozpocząć!</div>
     </div>
 
     <script>
-        // JavaScript: Logika Gry
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const infoDiv = document.getElementById('info');
-        const timerSpan = document.getElementById('timer');
-        const errorsSpan = document.getElementById('errors');
-        const levelSelect = document.getElementById('levelSelect');
-        const sequenceInfo = document.getElementById('sequenceInfo');
-        const hintToggle = document.getElementById('hintToggle');
-
-        // Wewnętrzne wymiary Canvas
-        const CANVAS_WIDTH = canvas.width;
-        const CANVAS_HEIGHT = canvas.height;
-        const POINT_RADIUS = 18;
-        const FONT_SIZE = '16px';
-        const MIN_DISTANCE = 2 * POINT_RADIUS + 30;
-
-        // --- DEFINICJE POZIOMÓW ---
+        // --- KONFIGURACJA ---
+        // Zdefiniowane dokładnie wg standardu klinicznego
         const LEVELS = {
-            easy: {
-                count: 20,
-                labels: Array.from({ length: 20 }, (_, i) => (i + 1).toString()),
-                desc: "1 → 2 → 3 → ... → 20"
-            },
-            medium: {
-                count: 15,
-                labels: ['1', 'A', '2', 'B', '3', 'C', '4', 'D', '5', 'E', '6', 'F', '7', 'G', '8'],
-                desc: "1 → A → 2 → B → ... → 8"
-            },
-            hard: {
+            A: {
+                type: 'A',
                 count: 25,
-                labels: [
-                    '1', 'A', '2', 'B', '3', 'C', '4', 'D', '5', 'E', '6', 'F', '7', 'G', '8', 
-                    'H', '9', 'I', '10', 'J', '11', 'K', '12', 'L', '13'
-                ],
-                desc: "1 → A → 2 → B → ... → 13"
+                labels: Array.from({ length: 25 }, (_, i) => (i + 1).toString()), // 1..25
+                desc: "1 → 2 → 3 ... → 25"
+            },
+            B: {
+                type: 'B',
+                count: 25,
+                // 13 cyfr (1-13) i 12 liter (A-L). Razem 25.
+                labels: ['1', 'A', '2', 'B', '3', 'C', '4', 'D', '5', 'E', '6', 'F', '7', 'G', '8', 'H', '9', 'I', '10', 'J', '11', 'K', '12', 'L', '13'],
+                desc: "1 → A → 2 → B ... → 13"
             }
         };
 
-        // --- Zmienne Stanu Gry ---
-        let timerInterval = null;
-        let startTime = null;
-        let errorCount = 0;
-        let currentPointIndex = 0; 
-        let connections = [];      
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const gameInfo = document.getElementById('game-info');
+        
+        // Zmienne stanu
+        let currentLevel = null;
         let points = [];
-        let currentLevel = LEVELS['medium'];
+        let connections = [];
+        let currentPointIndex = 0;
+        let startTime = null;
+        let endTime = null;
+        let errorCount = 0;
+        let isRunning = false; // Czy test trwa (tryb pacjenta)
 
-        // --- Funkcje Ukrywania Podpowiedzi ---
+        // Stałe graficzne
+        const POINT_RADIUS = 18;
+        const MIN_DISTANCE = 55; // Minimalny odstęp między punktami
+        
+        // --- FUNKCJE LOGIKI GRY ---
 
-        function toggleHints() {
-            if (hintToggle.checked) {
-                // Ukryj podpowiedzi
-                infoDiv.classList.add('hidden-info');
-            } else {
-                // Pokaż podpowiedzi
-                infoDiv.classList.remove('hidden-info');
-                // Jeśli gra się rozpoczęła, odśwież komunikat
-                if (currentPointIndex > 0 && currentPointIndex < points.length && timerInterval !== null) {
-                    infoDiv.textContent = `Następny punkt: (${points[currentPointIndex].label})`;
-                }
-            }
-        }
+        function startTest() {
+            // Pobranie wyboru
+            const type = document.getElementById('levelSelect').value;
+            currentLevel = LEVELS[type];
 
-        function updateInfoDisplay(message, isEndGame = false) {
-            if (isEndGame || !hintToggle.checked) {
-                // Zawsze pokazuj końcowy komunikat lub jeśli podpowiedzi są włączone
-                infoDiv.innerHTML = message;
-                infoDiv.classList.remove('hidden-info');
-            } else {
-                // Jeśli ukrywamy podpowiedzi, tylko wyczyść/ukryj komunikat
-                infoDiv.classList.add('hidden-info');
-            }
-        }
-
-        // --- Funkcje Losowania ---
-
-        function getRandomInt(min, max) {
-            min = Math.ceil(min);
-            max = Math.floor(max);
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-
-        function generateRandomPoints() {
-            const randomPoints = [];
-            const labels = currentLevel.labels;
+            // Reset zmiennych
+            points = generatePoints(currentLevel.labels);
+            connections = [];
+            currentPointIndex = 0;
+            errorCount = 0;
+            startTime = null; // Czas startuje dopiero po 1 kliknięciu
+            endTime = null;
             
-            const xMin = POINT_RADIUS;
-            const xMax = CANVAS_WIDTH - POINT_RADIUS;
-            const yMin = POINT_RADIUS;
-            const yMax = CANVAS_HEIGHT - POINT_RADIUS;
+            // Wejście w tryb pacjenta (ukrycie UI)
+            document.body.classList.add('patient-mode');
+            
+            // Reset widoku wyników (jeśli był widoczny)
+            document.getElementById('results-card').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'none'; // Tymczasowo ukryj, klasa css i tak to robi ale dla pewności
 
-            for (let i = 0; i < labels.length; i++) {
-                let newPoint;
-                let isTooClose;
+            // Komunikat startowy
+            gameInfo.textContent = `Kliknij start: (${points[0].label})`;
+            isRunning = true;
+            
+            draw();
+        }
 
+        function endTest() {
+            isRunning = false;
+            endTime = Date.now();
+            const totalTimeSeconds = (endTime - startTime) / 1000;
+
+            // Wyjście z trybu pacjenta
+            document.body.classList.remove('patient-mode');
+            document.getElementById('admin-panel').style.display = 'block';
+
+            // Pokaż wyniki
+            showResults(totalTimeSeconds, errorCount, currentLevel.type);
+            
+            // Rysowanie końcowe (linia powrotna lub zamrożenie stanu)
+            draw();
+        }
+
+        function showResults(seconds, errors, type) {
+            const resultsCard = document.getElementById('results-card');
+            const timeDisplay = document.getElementById('final-time-display');
+            const errorDisplay = document.getElementById('error-display-count');
+            const interpText = document.getElementById('interpretation-text');
+            
+            // Formatowanie czasu
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            timeDisplay.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+            errorDisplay.textContent = errors;
+
+            // Logika Norm (Talarowska et al.)
+            let status = 'norm'; // norm, low, clinical
+            
+            if (type === 'A') {
+                if (seconds <= 40) status = 'norm';
+                else if (seconds <= 90) status = 'low';
+                else status = 'clinical';
+            } else { // Type B
+                if (seconds <= 60) status = 'norm';
+                else if (seconds <= 180) status = 'low';
+                else status = 'clinical';
+            }
+
+            // Podświetlanie tabeli i tekst
+            document.querySelectorAll('.norm-table tr').forEach(tr => {
+                tr.classList.remove('highlight-row', 'highlight-row-bad');
+            });
+
+            if (status === 'norm') {
+                document.getElementById('row-norm').classList.add('highlight-row');
+                interpText.innerHTML = `<span style="color:var(--color-success); font-weight:bold;">Wynik w normie.</span>`;
+            } else if (status === 'low') {
+                document.getElementById('row-low').classList.add('highlight-row-bad');
+                interpText.innerHTML = `<span style="color:orange; font-weight:bold;">Wynik poniżej oczekiwań (sugerowana obserwacja).</span>`;
+            } else {
+                document.getElementById('row-clinical').classList.add('highlight-row-bad');
+                interpText.innerHTML = `<span style="color:var(--color-error); font-weight:bold;">Wynik kliniczny (istotne spowolnienie).</span>`;
+            }
+
+            resultsCard.style.display = 'block';
+            resultsCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- GENEROWANIE PUNKTÓW (Bez nakładania się) ---
+        function generatePoints(labels) {
+            const newPoints = [];
+            const width = canvas.width;
+            const height = canvas.height;
+            const padding = 40;
+
+            for (let label of labels) {
+                let point, valid;
+                let attempts = 0;
                 do {
-                    const x = getRandomInt(xMin, xMax);
-                    const y = getRandomInt(yMin, yMax);
-                    
-                    newPoint = { x: x, y: y, label: labels[i] };
-                    isTooClose = false;
-                    for (const existingPoint of randomPoints) {
-                        const distance = Math.sqrt(
-                            Math.pow(newPoint.x - existingPoint.x, 2) + 
-                            Math.pow(newPoint.y - existingPoint.y, 2)
-                        );
-                        if (distance < MIN_DISTANCE) {
-                            isTooClose = true;
+                    valid = true;
+                    point = {
+                        x: Math.floor(Math.random() * (width - 2 * padding)) + padding,
+                        y: Math.floor(Math.random() * (height - 2 * padding)) + padding,
+                        label: label
+                    };
+
+                    // Sprawdź kolizje
+                    for (let existing of newPoints) {
+                        const dist = Math.hypot(point.x - existing.x, point.y - existing.y);
+                        if (dist < MIN_DISTANCE) {
+                            valid = false;
                             break;
                         }
                     }
-                } while (isTooClose);
-                randomPoints.push(newPoint);
+                    attempts++;
+                    // Zabezpieczenie przed nieskończoną pętlą (rzadkie)
+                    if (attempts > 500) break; 
+                } while (!valid);
+                newPoints.push(point);
             }
-            return randomPoints;
+            return newPoints;
         }
 
-        // --- Funkcje Czasu ---
-        function formatTime(totalSeconds) {
-            const minutes = Math.floor(totalSeconds / 60);
-            const seconds = totalSeconds % 60;
-            return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        }
-        function updateTimerDisplay() {
-            if (startTime) {
-                const currentTime = Math.floor((Date.now() - startTime) / 1000);
-                timerSpan.textContent = formatTime(currentTime);
-            }
-        }
-        function startTimer() {
-            if (timerInterval !== null) return;
-            startTime = Date.now();
-            timerInterval = setInterval(updateTimerDisplay, 1000);
-            updateInfoDisplay(`Start! Kliknij następny punkt: (${points[currentPointIndex].label})`);
-        }
-        function stopTimer() {
-            clearInterval(timerInterval);
-            timerInterval = null;
-        }
-
-        // --- Funkcje Rysowania ---
+        // --- RYSOWANIE ---
         function draw() {
-            ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-            // Zmieniono tylko źródło koloru (teraz pobiera zaktualizowane zmienne CSS)
+            // Czyścimy
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Linie
             ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
-            ctx.lineWidth = 4;
+            ctx.lineWidth = 3;
             ctx.beginPath();
             connections.forEach(conn => {
                 ctx.moveTo(conn.start.x, conn.start.y);
                 ctx.lineTo(conn.end.x, conn.end.y);
             });
             ctx.stroke();
-            ctx.closePath();
 
-            points.forEach((point, index) => {
-                const isConnected = index < currentPointIndex;
+            // Punkty
+            points.forEach((p, idx) => {
+                const isConnected = idx < currentPointIndex;
+                const isNext = idx === currentPointIndex;
 
-                ctx.fillStyle = isConnected 
-                    ? getComputedStyle(document.documentElement).getPropertyValue('--color-success').trim()
-                    : getComputedStyle(document.documentElement).getPropertyValue('--color-default').trim();
-            
                 ctx.beginPath();
-                ctx.arc(point.x, point.y, POINT_RADIUS, 0, Math.PI * 2);
+                ctx.arc(p.x, p.y, POINT_RADIUS, 0, Math.PI * 2);
+                
+                // Styl wypełnienia
+                if (isConnected) ctx.fillStyle = '#10b981'; // Zielony
+                else ctx.fillStyle = '#e2e8f0'; // Szary (nieaktywny)
+                
+                // Jeśli to następny punkt i gra trwa - lekko wyróżnij obwódką (opcjonalne, subtelne)
+                if (isNext && isRunning) {
+                    ctx.strokeStyle = '#4f46e5';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+                
                 ctx.fill();
 
-                ctx.fillStyle = 'white'; 
-                ctx.font = `bold ${FONT_SIZE} Arial`; // Dodano 'bold' dla lepszej czytelności na nowych kolorach
+                // Tekst
+                ctx.fillStyle = isConnected ? 'white' : '#1e293b';
+                ctx.font = "bold 16px Arial";
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText(point.label, point.x, point.y);
+                ctx.fillText(p.label, p.x, p.y);
             });
         }
 
-        function drawFinalLine() {
-            ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-            draw(); 
-            
-            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-error').trim(); 
-            ctx.lineWidth = 6;
-            ctx.beginPath();
-            
-            points.forEach((point, index) => {
-                if (index === 0) {
-                    ctx.moveTo(point.x, point.y);
-                } else {
-                    ctx.lineTo(point.x, point.y);
-                }
-            });
-            ctx.stroke();
-        }
-
-        // --- Obsługa Interakcji ---
-
-        function handleInteraction(event) {
-            if (event.type === 'touchstart') {
-                event.preventDefault();
-            }
-
-            if (timerInterval === null && currentPointIndex === points.length) {
-                return;
-            }
+        // --- OBSŁUGA KLIKNIĘĆ ---
+        function handleClick(e) {
+            if (!isRunning) return; // Kliknięcia działają tylko po naciśnięciu Start
 
             const rect = canvas.getBoundingClientRect();
-            const clientX = event.touches ? event.touches[0].clientX : event.clientX;
-            const clientY = event.touches ? event.touches[0].clientY : event.clientY;
-            const clickX = clientX - rect.left;
-            const clickY = clientY - rect.top;
+            // Skalowanie na wypadek gdyby canvas był przeskalowany CSSem
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
 
-            const scaleX = CANVAS_WIDTH / rect.width;
-            const scaleY = CANVAS_HEIGHT / rect.height;
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
 
-            const mouseX = clickX * scaleX;
-            const mouseY = clickY * scaleY;
-            const expectedPoint = points[currentPointIndex];
-            
-            // 1. Sprawdź, czy kliknięto w oczekiwany punkt
-            const distanceToExpected = Math.sqrt(
-                Math.pow(mouseX - expectedPoint.x, 2) + Math.pow(mouseY - expectedPoint.y, 2)
-            );
+            // Sprawdź czy kliknięto w OCZEKIWANY punkt
+            const target = points[currentPointIndex];
+            const dist = Math.hypot(x - target.x, y - target.y);
 
-            if (distanceToExpected < POINT_RADIUS) {
-                // POPRAWNE KLIKNIĘCIE
-                if (currentPointIndex === 0 && timerInterval === null) {
-                    startTimer();
-                }
-
-                if (currentPointIndex > 0) {
-                    const previousPoint = points[currentPointIndex - 1];
-                    connections.push({ start: previousPoint, end: expectedPoint });
+            if (dist < POINT_RADIUS + 10) { // +10 marginesu błędu dla palca/myszy
+                // Poprawne kliknięcie
+                if (currentPointIndex === 0) {
+                    startTime = Date.now(); // Start czasu dopiero teraz!
+                    gameInfo.textContent = `Szukaj: ${points[1].label}`;
+                } else {
+                    connections.push({ start: points[currentPointIndex - 1], end: target });
+                    if (currentPointIndex < points.length - 1) {
+                         gameInfo.textContent = `Dobrze! Następny: ${points[currentPointIndex + 1].label}`;
+                    }
                 }
 
                 currentPointIndex++;
-                if (currentPointIndex === points.length) {
-                    stopTimer();
-                    const finalTime = timerSpan.textContent;
-                    
-                    const finalMessage = `
-                        <strong style="color:var(--color-success)">GRATULACJE! Wszystkie punkty połączone! 🥳</strong><br>
-                        Twój czas: <span style="color: var(--color-primary);">${finalTime}</span> |
-                        Liczba błędów: <span style="color: var(--color-error);">${errorCount}</span>
-                    `;
-                    updateInfoDisplay(finalMessage, true); // Zawsze pokazuj na koniec
-                    
-                    drawFinalLine();
-                } else {
-                    updateInfoDisplay(`Połączono! Następny: (${points[currentPointIndex].label})`);
-                    draw();
-                }
-                return;
-            } 
-            
-            // 2. Jeśli nie kliknięto poprawnie, sprawdź, czy kliknięto jakikolwiek inny punkt
-            let clickedWrongPoint = false;
-            if (currentPointIndex > 0 || timerInterval !== null) { 
-                for(let i = 0; i < points.length; i++) {
-                    const currentPoint = points[i];
-                    // Pomijamy już połączone punkty i oczekiwany punkt
-                    if (i < currentPointIndex) continue;
-                    if (i === currentPointIndex) continue;
+                draw();
 
-                    const distance = Math.sqrt(
-                        Math.pow(mouseX - currentPoint.x, 2) + Math.pow(mouseY - currentPoint.y, 2)
-                    );
-                    if (distance < POINT_RADIUS) {
-                        clickedWrongPoint = true;
-                        break;
+                // Czy koniec?
+                if (currentPointIndex >= points.length) {
+                    endTest();
+                }
+            } else {
+                // Sprawdź czy kliknięto w JAKIKOLWIEK INNY (BŁĘDNY) punkt
+                // (Tylko jeśli zegar już ruszył)
+                if (startTime) {
+                    let clickedWrong = false;
+                    for (let i = 0; i < points.length; i++) {
+                        if (i === currentPointIndex) continue; // Pomiń poprawny
+                        if (i < currentPointIndex) continue;   // Pomiń już połączone
+                        
+                        const d = Math.hypot(x - points[i].x, y - points[i].y);
+                        if (d < POINT_RADIUS + 10) {
+                            clickedWrong = true;
+                            break;
+                        }
+                    }
+                    
+                    if (clickedWrong) {
+                        errorCount++;
+                        // Delikatny flash na czerwono (opcjonalnie)
+                        const originalBg = canvas.style.backgroundColor;
+                        canvas.style.backgroundColor = '#fef2f2';
+                        setTimeout(() => canvas.style.backgroundColor = 'white', 200);
                     }
                 }
             }
-
-            // 3. Jeśli kliknięto w ZŁY SYMBOL - nalicz błąd
-            if (clickedWrongPoint) {
-                errorCount++;
-                errorsSpan.textContent = errorCount;
-                const errorMessage = `BŁĄD! Kliknięto zły symbol. Oczekiwany: (${expectedPoint.label}). Błędy: ${errorCount}`;
-                updateInfoDisplay(errorMessage);
-            } 
-            // 4. W przeciwnym razie (kliknięto puste tło) - zignoruj
-            else if (currentPointIndex > 0 || timerInterval !== null) {
-                 const emptyMessage = `Puste tło. Kliknij symbol (${expectedPoint.label})`;
-                 updateInfoDisplay(emptyMessage);
-            }
         }
+
+        // Nasłuchuj mysz i dotyk
+        canvas.addEventListener('mousedown', handleClick);
+        // Zapobieganie podwójnemu wywołaniu na touch devices jest tu uproszczone, 
+        // w prostym modelu mousedown wystarczy, chyba że potrzebny multitouch.
         
-        // --- Funkcja Reset i Konfiguracja Gry ---
-        function resetGame() {
-            // Konfiguracja nowego poziomu
-            const selectedLevelKey = levelSelect.value;
-            currentLevel = LEVELS[selectedLevelKey];
+        // Pierwsze rysowanie (puste)
+        ctx.font = "20px Arial";
+        ctx.fillStyle = "#64748b";
+        ctx.textAlign = "center";
+        ctx.fillText("Wybierz wersję i kliknij Start", canvas.width/2, canvas.height/2);
 
-            // Reset stanu
-            stopTimer();
-            startTime = null;
-            errorCount = 0;
-            currentPointIndex = 0;
-            connections = [];
-            // Generowanie nowych punktów dla wybranego poziomu
-            points = generateRandomPoints();
-            // Aktualizacja informacji o sekwencji
-            sequenceInfo.textContent = `Aktualna sekwencja: ${currentLevel.desc}`;
-            // Reset wyświetlania
-            timerSpan.textContent = '00:00';
-            errorsSpan.textContent = '0';
-            // Ustawienie początkowego komunikatu
-            const startMessage = `Kliknij punkt startowy (${points[0].label}), aby rozpocząć!`;
-            updateInfoDisplay(startMessage, true); // Zawsze pokazuj początkowy komunikat
-            toggleHints(); // Stosuje ukrycie/pokazanie po resecie
-
-            // Przerysowanie
-            draw();
-            // Ponowne włączenie słuchaczy
-            canvas.removeEventListener('click', handleInteraction);
-            canvas.removeEventListener('touchstart', handleInteraction);
-            canvas.addEventListener('click', handleInteraction);
-            canvas.addEventListener('touchstart', handleInteraction);
-        }
-
-        // INICJALIZACJA GRY
-        resetGame();
     </script>
-
 </body>
 </html>
