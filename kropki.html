@@ -7,26 +7,23 @@
     <style>
         /* --- NOWOCZESNA PALETA KOLORÓW I ZMIENNE --- */
         :root {
-            /* Nowoczesne odcienie (Indigo, Slate, Emerald, Rose) */
-            --color-primary: #4f46e5;       /* Główny akcent (Indigo) */
+            --color-primary: #4f46e5;
             --color-primary-hover: #4338ca; 
-            --color-success: #10b981;       /* Sukces (Emerald) */
-            --color-default: #94a3b8;       /* Punkty nieaktywne (Slate) */
-            --color-error: #ef4444;         /* Błąd (Rose) */
+            --color-success: #10b981;
+            --color-default: #94a3b8;
+            --color-error: #ef4444;
             
-            --bg-body: #f8fafc;             /* Bardzo jasne tło strony */
-            --bg-card: #ffffff;             /* Tło kontenera gry */
-            --text-main: #1e293b;           /* Ciemny grafit dla tekstu */
-            --text-muted: #64748b;          /* Szary dla opisów */
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
             
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             --radius: 12px;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -51,41 +48,45 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        /* --- STYL DLA TRYBU PEŁNOEKRANOWEGO --- */
+        /* Gdy kontener jest w trybie fullscreen, ukrywamy zbędne elementy */
+        .game-container:fullscreen {
+            width: 100vw;
+            max-width: 100vw;
+            height: 100vh;
+            border-radius: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+        }
+
+        .game-container:fullscreen header,
+        .game-container:fullscreen #controls,
+        .game-container:fullscreen #info {
+            display: none; /* Ukrywa dystraktory w trybie pełnym */
+        }
+
+        .game-container:fullscreen #gameCanvas {
+            max-height: 85vh; /* Zostawia miejsce na statystyki */
+            width: auto;
         }
 
         /* --- NAGŁÓWEK I LOGO --- */
-        header {
-            margin-bottom: 20px;
-            text-align: center;
-        }
+        header { margin-bottom: 20px; text-align: center; }
+        .logo-wrapper img { max-height: 80px; width: auto; display: block; margin: 0 auto; }
+        h1 { font-size: 1.75rem; font-weight: 700; margin: 15px 0 5px 0; color: var(--text-main); letter-spacing: -0.025em; }
+        #sequenceInfo { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; }
 
-        .logo-wrapper img {
-            max-height: 80px;
-            width: auto;
-            display: block;
-            margin: 0 auto;
-        }
-
-        h1 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin: 15px 0 5px 0;
-            color: var(--text-main);
-            letter-spacing: -0.025em;
-        }
-
-        #sequenceInfo {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-top: 0;
-            margin-bottom: 25px;
-        }
-
-        /* --- KONTROLKI (INPUTY I BUTTONY) --- */
+        /* --- KONTROLKI --- */
         #controls {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 10px;
             justify-content: center;
             align-items: center;
             margin-bottom: 25px;
@@ -100,55 +101,19 @@
             border: 1px solid #cbd5e1;
             outline: none;
             transition: all 0.2s ease;
-        }
-
-        select {
-            background-color: #fff;
-            color: var(--text-main);
             cursor: pointer;
-            min-width: 200px;
         }
 
-        select:hover, select:focus {
-            border-color: var(--color-primary);
-        }
+        button#resetButton { background-color: var(--color-primary); color: white; border: none; font-weight: 600; }
+        button#resetButton:hover { background-color: var(--color-primary-hover); transform: translateY(-1px); }
 
-        button#resetButton {
-            background-color: var(--color-primary);
+        button#fullscreenButton {
+            background-color: #1e293b;
             color: white;
             border: none;
             font-weight: 600;
-            cursor: pointer;
-            box-shadow: var(--shadow-sm);
         }
-
-        button#resetButton:hover {
-            background-color: var(--color-primary-hover);
-            transform: translateY(-1px);
-        }
-
-        button#resetButton:active {
-            transform: translateY(0);
-        }
-
-        /* Checkbox Container */
-        #hintToggleContainer {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            background: #f1f5f9;
-            padding: 8px 12px;
-            border-radius: 8px;
-        }
-
-        input[type="checkbox"] {
-            accent-color: var(--color-primary);
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
+        button#fullscreenButton:hover { background-color: #0f172a; }
 
         /* --- STATYSTYKI --- */
         #stats {
@@ -158,25 +123,13 @@
             max-width: 600px;
             margin-bottom: 20px;
             padding: 15px 25px;
-            background-color: #f8fafc; /* Lekko szare tło dla statystyk */
+            background-color: #f8fafc;
             border-radius: var(--radius);
             border: 1px solid #e2e8f0;
         }
 
-        .stat-item {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            display: flex;
-            gap: 8px;
-        }
-
-        .stat-value {
-            font-family: 'Courier New', monospace; /* Monospace dla cyfr */
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
+        .stat-item { font-size: 1rem; font-weight: 600; color: var(--text-muted); display: flex; gap: 8px; }
+        .stat-value { font-family: 'Courier New', monospace; font-weight: 700; font-size: 1.1rem; }
         #timer { color: var(--color-primary); }
         #errors { color: var(--color-error); }
 
@@ -184,8 +137,8 @@
         canvas {
             border-radius: var(--radius);
             background-color: white;
-            box-shadow: var(--shadow-md); /* Cień zamiast obramowania */
-            border: 1px solid #e2e8f0;    /* Bardzo delikatna ramka */
+            box-shadow: var(--shadow-md);
+            border: 1px solid #e2e8f0;
             cursor: crosshair;
             touch-action: none;
             max-width: 100%;
@@ -193,49 +146,25 @@
             margin-bottom: 20px;
         }
 
-        /* --- KOMUNIKATY --- */
         #info {
-            width: 100%;
-            max-width: 600px;
-            padding: 12px 20px;
-            text-align: center;
-            font-weight: 500;
-            color: var(--text-main);
-            background-color: #fff;
-            border-left: 4px solid var(--color-primary);
-            border-radius: 4px;
-            box-shadow: var(--shadow-sm);
-            min-height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
+            width: 100%; max-width: 600px; padding: 12px 20px; text-align: center;
+            font-weight: 500; color: var(--text-main); background-color: #fff;
+            border-left: 4px solid var(--color-primary); border-radius: 4px;
+            box-shadow: var(--shadow-sm); min-height: 48px; display: flex;
+            align-items: center; justify-content: center;
         }
 
-        /* Klasa dodawana przez JS do ukrywania */
-        .hidden-info {
-            visibility: hidden;
-            opacity: 0;
-        }
+        .hidden-info { visibility: hidden; opacity: 0; }
 
-        /* RWD */
         @media (max-width: 600px) {
-            .game-container {
-                padding: 15px;
-            }
-            #controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            #stats {
-                font-size: 0.9rem;
-            }
+            .game-container { padding: 15px; }
+            #controls { flex-direction: column; align-items: stretch; }
         }
     </style>
 </head>
 <body>
 
-    <div class="game-container">
+    <div class="game-container" id="fullscreenTarget">
         <header>
             <div class="logo-wrapper">
                 <a href="index.html" title="Powrót do strony głównej">
@@ -253,7 +182,8 @@
                 <option value="hard">Poziom: Trudny (długi)</option>
             </select>
             
-            <button id="resetButton" onclick="resetGame()">Nowa Gra (Losuj)</button>
+            <button id="resetButton" onclick="resetGame()">Nowa Gra</button>
+            <button id="fullscreenButton" onclick="toggleFullscreen()">Tryb Pełnoekranowy</button>
 
             <div id="hintToggleContainer">
                 <input type="checkbox" id="hintToggle" onchange="toggleHints()">
@@ -278,7 +208,6 @@
     </div>
 
     <script>
-        // JavaScript: Logika Gry
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const infoDiv = document.getElementById('info');
@@ -287,55 +216,38 @@
         const levelSelect = document.getElementById('levelSelect');
         const sequenceInfo = document.getElementById('sequenceInfo');
         const hintToggle = document.getElementById('hintToggle');
+        const fullscreenTarget = document.getElementById('fullscreenTarget');
 
-        // Wewnętrzne wymiary Canvas
         const CANVAS_WIDTH = canvas.width;
         const CANVAS_HEIGHT = canvas.height;
         const POINT_RADIUS = 18;
         const FONT_SIZE = '16px';
         const MIN_DISTANCE = 2 * POINT_RADIUS + 30;
 
-        // --- DEFINICJE POZIOMÓW ---
         const LEVELS = {
-            easy: {
-                count: 20,
-                labels: Array.from({ length: 20 }, (_, i) => (i + 1).toString()),
-                desc: "1 → 2 → 3 → ... → 20"
-            },
-            medium: {
-                count: 15,
-                labels: ['1', 'A', '2', 'B', '3', 'C', '4', 'D', '5', 'E', '6', 'F', '7', 'G', '8'],
-                desc: "1 → A → 2 → B → ... → 8"
-            },
-            hard: {
-                count: 25,
-                labels: [
-                    '1', 'A', '2', 'B', '3', 'C', '4', 'D', '5', 'E', '6', 'F', '7', 'G', '8', 
-                    'H', '9', 'I', '10', 'J', '11', 'K', '12', 'L', '13'
-                ],
-                desc: "1 → A → 2 → B → ... → 13"
-            }
+            easy: { count: 20, labels: Array.from({ length: 20 }, (_, i) => (i + 1).toString()), desc: "1 → 2 → 3 → ... → 20" },
+            medium: { count: 15, labels: ['1', 'A', '2', 'B', '3', 'C', '4', 'D', '5', 'E', '6', 'F', '7', 'G', '8'], desc: "1 → A → 2 → B → ... → 8" },
+            hard: { count: 25, labels: ['1', 'A', '2', 'B', '3', 'C', '4', 'D', '5', 'E', '6', 'F', '7', 'G', '8', 'H', '9', 'I', '10', 'J', '11', 'K', '12', 'L', '13'], desc: "1 → A → 2 → B → ... → 13" }
         };
 
-        // --- Zmienne Stanu Gry ---
-        let timerInterval = null;
-        let startTime = null;
-        let errorCount = 0;
-        let currentPointIndex = 0; 
-        let connections = [];      
-        let points = [];
-        let currentLevel = LEVELS['medium'];
+        let timerInterval = null, startTime = null, errorCount = 0, currentPointIndex = 0, connections = [], points = [], currentLevel = LEVELS['medium'];
 
-        // --- Funkcje Ukrywania Podpowiedzi ---
-
-        function toggleHints() {
-            if (hintToggle.checked) {
-                // Ukryj podpowiedzi
-                infoDiv.classList.add('hidden-info');
+        // --- TRYB PEŁNOEKRANOWY ---
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                fullscreenTarget.requestFullscreen().catch(err => {
+                    alert(`Błąd podczas włączania trybu pełnoekranowego: ${err.message}`);
+                });
             } else {
-                // Pokaż podpowiedzi
+                document.exitFullscreen();
+            }
+        }
+
+        // --- LOGIKA GRY ---
+        function toggleHints() {
+            if (hintToggle.checked) infoDiv.classList.add('hidden-info');
+            else {
                 infoDiv.classList.remove('hidden-info');
-                // Jeśli gra się rozpoczęła, odśwież komunikat
                 if (currentPointIndex > 0 && currentPointIndex < points.length && timerInterval !== null) {
                     infoDiv.textContent = `Następny punkt: (${points[currentPointIndex].label})`;
                 }
@@ -344,261 +256,128 @@
 
         function updateInfoDisplay(message, isEndGame = false) {
             if (isEndGame || !hintToggle.checked) {
-                // Zawsze pokazuj końcowy komunikat lub jeśli podpowiedzi są włączone
                 infoDiv.innerHTML = message;
                 infoDiv.classList.remove('hidden-info');
             } else {
-                // Jeśli ukrywamy podpowiedzi, tylko wyczyść/ukryj komunikat
                 infoDiv.classList.add('hidden-info');
             }
         }
 
-        // --- Funkcje Losowania ---
-
-        function getRandomInt(min, max) {
-            min = Math.ceil(min);
-            max = Math.floor(max);
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
+        function getRandomInt(min, max) { return Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min) + 1)) + Math.ceil(min); }
 
         function generateRandomPoints() {
             const randomPoints = [];
             const labels = currentLevel.labels;
-            
-            const xMin = POINT_RADIUS;
-            const xMax = CANVAS_WIDTH - POINT_RADIUS;
-            const yMin = POINT_RADIUS;
-            const yMax = CANVAS_HEIGHT - POINT_RADIUS;
-
             for (let i = 0; i < labels.length; i++) {
-                let newPoint;
-                let isTooClose;
-
+                let newPoint, isTooClose;
                 do {
-                    const x = getRandomInt(xMin, xMax);
-                    const y = getRandomInt(yMin, yMax);
-                    
-                    newPoint = { x: x, y: y, label: labels[i] };
-                    isTooClose = false;
-                    for (const existingPoint of randomPoints) {
-                        const distance = Math.sqrt(
-                            Math.pow(newPoint.x - existingPoint.x, 2) + 
-                            Math.pow(newPoint.y - existingPoint.y, 2)
-                        );
-                        if (distance < MIN_DISTANCE) {
-                            isTooClose = true;
-                            break;
-                        }
-                    }
+                    newPoint = { x: getRandomInt(POINT_RADIUS, CANVAS_WIDTH - POINT_RADIUS), y: getRandomInt(POINT_RADIUS, CANVAS_HEIGHT - POINT_RADIUS), label: labels[i] };
+                    isTooClose = randomPoints.some(p => Math.sqrt(Math.pow(newPoint.x - p.x, 2) + Math.pow(newPoint.y - p.y, 2)) < MIN_DISTANCE);
                 } while (isTooClose);
                 randomPoints.push(newPoint);
             }
             return randomPoints;
         }
 
-        // --- Funkcje Czasu ---
         function formatTime(totalSeconds) {
-            const minutes = Math.floor(totalSeconds / 60);
-            const seconds = totalSeconds % 60;
-            return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            const m = Math.floor(totalSeconds / 60);
+            const s = totalSeconds % 60;
+            return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
         }
+
         function updateTimerDisplay() {
-            if (startTime) {
-                const currentTime = Math.floor((Date.now() - startTime) / 1000);
-                timerSpan.textContent = formatTime(currentTime);
-            }
+            if (startTime) timerSpan.textContent = formatTime(Math.floor((Date.now() - startTime) / 1000));
         }
+
         function startTimer() {
             if (timerInterval !== null) return;
             startTime = Date.now();
             timerInterval = setInterval(updateTimerDisplay, 1000);
             updateInfoDisplay(`Start! Kliknij następny punkt: (${points[currentPointIndex].label})`);
         }
-        function stopTimer() {
-            clearInterval(timerInterval);
-            timerInterval = null;
-        }
 
-        // --- Funkcje Rysowania ---
+        function stopTimer() { clearInterval(timerInterval); timerInterval = null; }
+
         function draw() {
             ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-            // Zmieniono tylko źródło koloru (teraz pobiera zaktualizowane zmienne CSS)
             ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
             ctx.lineWidth = 4;
             ctx.beginPath();
-            connections.forEach(conn => {
-                ctx.moveTo(conn.start.x, conn.start.y);
-                ctx.lineTo(conn.end.x, conn.end.y);
-            });
+            connections.forEach(conn => { ctx.moveTo(conn.start.x, conn.start.y); ctx.lineTo(conn.end.x, conn.end.y); });
             ctx.stroke();
-            ctx.closePath();
 
             points.forEach((point, index) => {
                 const isConnected = index < currentPointIndex;
-
-                ctx.fillStyle = isConnected 
-                    ? getComputedStyle(document.documentElement).getPropertyValue('--color-success').trim()
-                    : getComputedStyle(document.documentElement).getPropertyValue('--color-default').trim();
-            
+                ctx.fillStyle = isConnected ? getComputedStyle(document.documentElement).getPropertyValue('--color-success').trim() : getComputedStyle(document.documentElement).getPropertyValue('--color-default').trim();
                 ctx.beginPath();
                 ctx.arc(point.x, point.y, POINT_RADIUS, 0, Math.PI * 2);
                 ctx.fill();
-
-                ctx.fillStyle = 'white'; 
-                ctx.font = `bold ${FONT_SIZE} Arial`; // Dodano 'bold' dla lepszej czytelności na nowych kolorach
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
+                ctx.fillStyle = 'white';
+                ctx.font = `bold ${FONT_SIZE} Arial`;
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
                 ctx.fillText(point.label, point.x, point.y);
             });
         }
 
         function drawFinalLine() {
-            ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-            draw(); 
-            
-            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-error').trim(); 
+            draw();
+            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-error').trim();
             ctx.lineWidth = 6;
             ctx.beginPath();
-            
-            points.forEach((point, index) => {
-                if (index === 0) {
-                    ctx.moveTo(point.x, point.y);
-                } else {
-                    ctx.lineTo(point.x, point.y);
-                }
-            });
+            points.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
             ctx.stroke();
         }
 
-        // --- Obsługa Interakcji ---
-
         function handleInteraction(event) {
-            if (event.type === 'touchstart') {
-                event.preventDefault();
-            }
-
-            if (timerInterval === null && currentPointIndex === points.length) {
-                return;
-            }
+            if (event.type === 'touchstart') event.preventDefault();
+            if (timerInterval === null && currentPointIndex === points.length) return;
 
             const rect = canvas.getBoundingClientRect();
             const clientX = event.touches ? event.touches[0].clientX : event.clientX;
             const clientY = event.touches ? event.touches[0].clientY : event.clientY;
-            const clickX = clientX - rect.left;
-            const clickY = clientY - rect.top;
-
-            const scaleX = CANVAS_WIDTH / rect.width;
-            const scaleY = CANVAS_HEIGHT / rect.height;
-
-            const mouseX = clickX * scaleX;
-            const mouseY = clickY * scaleY;
+            
+            const mouseX = (clientX - rect.left) * (CANVAS_WIDTH / rect.width);
+            const mouseY = (clientY - rect.top) * (CANVAS_HEIGHT / rect.height);
             const expectedPoint = points[currentPointIndex];
             
-            // 1. Sprawdź, czy kliknięto w oczekiwany punkt
-            const distanceToExpected = Math.sqrt(
-                Math.pow(mouseX - expectedPoint.x, 2) + Math.pow(mouseY - expectedPoint.y, 2)
-            );
+            const dist = Math.sqrt(Math.pow(mouseX - expectedPoint.x, 2) + Math.pow(mouseY - expectedPoint.y, 2));
 
-            if (distanceToExpected < POINT_RADIUS) {
-                // POPRAWNE KLIKNIĘCIE
-                if (currentPointIndex === 0 && timerInterval === null) {
-                    startTimer();
-                }
-
-                if (currentPointIndex > 0) {
-                    const previousPoint = points[currentPointIndex - 1];
-                    connections.push({ start: previousPoint, end: expectedPoint });
-                }
-
+            if (dist < POINT_RADIUS) {
+                if (currentPointIndex === 0 && timerInterval === null) startTimer();
+                if (currentPointIndex > 0) connections.push({ start: points[currentPointIndex - 1], end: expectedPoint });
                 currentPointIndex++;
                 if (currentPointIndex === points.length) {
                     stopTimer();
-                    const finalTime = timerSpan.textContent;
-                    
-                    const finalMessage = `
-                        <strong style="color:var(--color-success)">GRATULACJE! Wszystkie punkty połączone! 🥳</strong><br>
-                        Twój czas: <span style="color: var(--color-primary);">${finalTime}</span> |
-                        Liczba błędów: <span style="color: var(--color-error);">${errorCount}</span>
-                    `;
-                    updateInfoDisplay(finalMessage, true); // Zawsze pokazuj na koniec
-                    
+                    updateInfoDisplay(`<strong style="color:var(--color-success)">GRATULACJE!</strong><br>Czas: ${timerSpan.textContent} | Błędy: ${errorCount}`, true);
                     drawFinalLine();
                 } else {
                     updateInfoDisplay(`Połączono! Następny: (${points[currentPointIndex].label})`);
                     draw();
                 }
-                return;
-            } 
-            
-            // 2. Jeśli nie kliknięto poprawnie, sprawdź, czy kliknięto jakikolwiek inny punkt
-            let clickedWrongPoint = false;
-            if (currentPointIndex > 0 || timerInterval !== null) { 
-                for(let i = 0; i < points.length; i++) {
-                    const currentPoint = points[i];
-                    // Pomijamy już połączone punkty i oczekiwany punkt
-                    if (i < currentPointIndex) continue;
-                    if (i === currentPointIndex) continue;
-
-                    const distance = Math.sqrt(
-                        Math.pow(mouseX - currentPoint.x, 2) + Math.pow(mouseY - currentPoint.y, 2)
-                    );
-                    if (distance < POINT_RADIUS) {
-                        clickedWrongPoint = true;
-                        break;
-                    }
+            } else {
+                let clickedWrong = points.some((p, i) => i > currentPointIndex && Math.sqrt(Math.pow(mouseX - p.x, 2) + Math.pow(mouseY - p.y, 2)) < POINT_RADIUS);
+                if (clickedWrong) {
+                    errorCount++;
+                    errorsSpan.textContent = errorCount;
+                    updateInfoDisplay(`BŁĄD! Oczekiwany: (${expectedPoint.label})`);
                 }
-            }
-
-            // 3. Jeśli kliknięto w ZŁY SYMBOL - nalicz błąd
-            if (clickedWrongPoint) {
-                errorCount++;
-                errorsSpan.textContent = errorCount;
-                const errorMessage = `BŁĄD! Kliknięto zły symbol. Oczekiwany: (${expectedPoint.label}). Błędy: ${errorCount}`;
-                updateInfoDisplay(errorMessage);
-            } 
-            // 4. W przeciwnym razie (kliknięto puste tło) - zignoruj
-            else if (currentPointIndex > 0 || timerInterval !== null) {
-                 const emptyMessage = `Puste tło. Kliknij symbol (${expectedPoint.label})`;
-                 updateInfoDisplay(emptyMessage);
             }
         }
         
-        // --- Funkcja Reset i Konfiguracja Gry ---
         function resetGame() {
-            // Konfiguracja nowego poziomu
-            const selectedLevelKey = levelSelect.value;
-            currentLevel = LEVELS[selectedLevelKey];
-
-            // Reset stanu
-            stopTimer();
-            startTime = null;
-            errorCount = 0;
-            currentPointIndex = 0;
-            connections = [];
-            // Generowanie nowych punktów dla wybranego poziomu
+            currentLevel = LEVELS[levelSelect.value];
+            stopTimer(); startTime = null; errorCount = 0; currentPointIndex = 0; connections = [];
             points = generateRandomPoints();
-            // Aktualizacja informacji o sekwencji
             sequenceInfo.textContent = `Aktualna sekwencja: ${currentLevel.desc}`;
-            // Reset wyświetlania
-            timerSpan.textContent = '00:00';
-            errorsSpan.textContent = '0';
-            // Ustawienie początkowego komunikatu
-            const startMessage = `Kliknij punkt startowy (${points[0].label}), aby rozpocząć!`;
-            updateInfoDisplay(startMessage, true); // Zawsze pokazuj początkowy komunikat
-            toggleHints(); // Stosuje ukrycie/pokazanie po resecie
-
-            // Przerysowanie
+            timerSpan.textContent = '00:00'; errorsSpan.textContent = '0';
+            updateInfoDisplay(`Kliknij punkt (${points[0].label}), aby zacząć!`, true);
+            toggleHints();
             draw();
-            // Ponowne włączenie słuchaczy
-            canvas.removeEventListener('click', handleInteraction);
-            canvas.removeEventListener('touchstart', handleInteraction);
-            canvas.addEventListener('click', handleInteraction);
-            canvas.addEventListener('touchstart', handleInteraction);
         }
 
-        // INICJALIZACJA GRY
+        canvas.addEventListener('mousedown', handleInteraction);
+        canvas.addEventListener('touchstart', handleInteraction);
         resetGame();
     </script>
-
 </body>
 </html>
