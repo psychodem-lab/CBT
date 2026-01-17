@@ -5,378 +5,211 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Psychodem - Test Uwagi</title>
     <style>
-        /* --- NOWOCZESNA PALETA KOLORÓW I ZMIENNE --- */
         :root {
             --color-primary: #4f46e5;
             --color-primary-hover: #4338ca; 
             --color-success: #10b981;
             --color-default: #94a3b8;
             --color-error: #ef4444;
-            
             --bg-body: #f8fafc;
             --bg-card: #ffffff;
             --text-main: #1e293b;
             --text-muted: #64748b;
-            
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
             --radius: 12px;
         }
 
-        * { box-sizing: border-box; }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: system-ui, -apple-system, sans-serif;
             background-color: var(--bg-body);
             color: var(--text-main);
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            margin: 0; padding: 20px;
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        /* --- LAYOUT KARTY --- */
         .game-container {
             background-color: var(--bg-card);
             border-radius: var(--radius);
             box-shadow: var(--shadow-md);
-            max-width: 800px;
-            width: 100%;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: all 0.3s ease;
+            max-width: 800px; width: 100%;
+            padding: 30px; display: flex; flex-direction: column; align-items: center;
         }
 
-        /* --- STYL DLA TRYBU PEŁNOEKRANOWEGO --- */
-        /* Gdy kontener jest w trybie fullscreen, ukrywamy zbędne elementy */
+        /* --- TRYB PEŁNOEKRANOWY (TYLKO PUNKTY) --- */
         .game-container:fullscreen {
-            width: 100vw;
-            max-width: 100vw;
-            height: 100vh;
-            border-radius: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 100vw; max-width: 100vw; height: 100vh;
+            border-radius: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
             background-color: #ffffff;
         }
 
+        /* Ukrywanie wszystkiego poza canvasem w trybie Fullscreen */
         .game-container:fullscreen header,
         .game-container:fullscreen #controls,
+        .game-container:fullscreen #stats,
         .game-container:fullscreen #info {
-            display: none; /* Ukrywa dystraktory w trybie pełnym */
+            display: none !important;
         }
 
         .game-container:fullscreen #gameCanvas {
-            max-height: 85vh; /* Zostawia miejsce na statystyki */
-            width: auto;
+            width: 95vw; height: 95vh;
+            object-fit: contain;
+            border: none; box-shadow: none; margin: 0;
         }
 
-        /* --- NAGŁÓWEK I LOGO --- */
-        header { margin-bottom: 20px; text-align: center; }
-        .logo-wrapper img { max-height: 80px; width: auto; display: block; margin: 0 auto; }
-        h1 { font-size: 1.75rem; font-weight: 700; margin: 15px 0 5px 0; color: var(--text-main); letter-spacing: -0.025em; }
-        #sequenceInfo { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; }
-
-        /* --- KONTROLKI --- */
-        #controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 25px;
-            width: 100%;
-        }
-
+        header { text-align: center; margin-bottom: 20px; }
+        .logo-wrapper img { max-height: 60px; margin-bottom: 10px; }
+        
+        #controls { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; }
+        
         select, button {
-            font-family: inherit;
-            font-size: 0.95rem;
-            padding: 10px 16px;
-            border-radius: 8px;
-            border: 1px solid #cbd5e1;
-            outline: none;
-            transition: all 0.2s ease;
-            cursor: pointer;
+            padding: 10px 15px; border-radius: 8px; border: 1px solid #cbd5e1;
+            cursor: pointer; font-size: 0.9rem;
         }
 
-        button#resetButton { background-color: var(--color-primary); color: white; border: none; font-weight: 600; }
-        button#resetButton:hover { background-color: var(--color-primary-hover); transform: translateY(-1px); }
+        #resetButton { background: var(--color-primary); color: white; border: none; font-weight: 600; }
+        #fullscreenButton { background: #1e293b; color: white; border: none; }
 
-        button#fullscreenButton {
-            background-color: #1e293b;
-            color: white;
-            border: none;
-            font-weight: 600;
-        }
-        button#fullscreenButton:hover { background-color: #0f172a; }
-
-        /* --- STATYSTYKI --- */
         #stats {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: 20px;
-            padding: 15px 25px;
-            background-color: #f8fafc;
-            border-radius: var(--radius);
-            border: 1px solid #e2e8f0;
+            display: flex; justify-content: space-around; width: 100%; max-width: 500px;
+            margin-bottom: 15px; padding: 10px; background: #f1f5f9; border-radius: 8px;
         }
 
-        .stat-item { font-size: 1rem; font-weight: 600; color: var(--text-muted); display: flex; gap: 8px; }
-        .stat-value { font-family: 'Courier New', monospace; font-weight: 700; font-size: 1.1rem; }
-        #timer { color: var(--color-primary); }
-        #errors { color: var(--color-error); }
+        .stat-value { font-weight: 800; font-family: monospace; font-size: 1.2rem; }
 
-        /* --- PŁÓTNO (CANVAS) --- */
         canvas {
-            border-radius: var(--radius);
-            background-color: white;
-            box-shadow: var(--shadow-md);
-            border: 1px solid #e2e8f0;
-            cursor: crosshair;
-            touch-action: none;
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 20px;
+            background: white; border: 1px solid #e2e8f0; border-radius: 8px;
+            box-shadow: var(--shadow-md); cursor: crosshair; touch-action: none;
         }
 
-        #info {
-            width: 100%; max-width: 600px; padding: 12px 20px; text-align: center;
-            font-weight: 500; color: var(--text-main); background-color: #fff;
-            border-left: 4px solid var(--color-primary); border-radius: 4px;
-            box-shadow: var(--shadow-sm); min-height: 48px; display: flex;
-            align-items: center; justify-content: center;
-        }
-
-        .hidden-info { visibility: hidden; opacity: 0; }
-
-        @media (max-width: 600px) {
-            .game-container { padding: 15px; }
-            #controls { flex-direction: column; align-items: stretch; }
-        }
+        #info { margin-top: 15px; font-weight: 500; min-height: 40px; text-align: center; }
+        .hidden-info { visibility: hidden; }
     </style>
 </head>
 <body>
 
     <div class="game-container" id="fullscreenTarget">
         <header>
-            <div class="logo-wrapper">
-                <a href="index.html" title="Powrót do strony głównej">
-                    <img src="logo.png" alt="Logo Psychodem">
-                </a>
-            </div>
-            <h1>Połącz Kropki</h1>
-            <p id="sequenceInfo">Aktualna sekwencja: 1 → 2 → 3 → ...</p>
+            <div class="logo-wrapper"><img src="logo.png" alt="Logo"></div>
+            <h1 style="margin:0">Połącz Kropki</h1>
         </header>
         
         <div id="controls">
             <select id="levelSelect" onchange="resetGame()">
-                <option value="easy">Poziom: Łatwy (1 → 20)</option>
-                <option value="medium" selected>Poziom: Średni (1, A, 2, B...)</option>
-                <option value="hard">Poziom: Trudny (długi)</option>
+                <option value="easy">Łatwy (1-20)</option>
+                <option value="medium" selected>Średni (1-A-2-B)</option>
+                <option value="hard">Trudny (1-13/A-L)</option>
             </select>
-            
             <button id="resetButton" onclick="resetGame()">Nowa Gra</button>
             <button id="fullscreenButton" onclick="toggleFullscreen()">Tryb Pełnoekranowy</button>
-
-            <div id="hintToggleContainer">
-                <input type="checkbox" id="hintToggle" onchange="toggleHints()">
-                <label for="hintToggle">Ukryj podpowiedzi</label>
+            <div style="display:flex; align-items:center; gap:5px; font-size:0.8rem">
+                <input type="checkbox" id="hintToggle" onchange="toggleHints()"> <label for="hintToggle">Ukryj pomoc</label>
             </div>
         </div>
 
         <div id="stats">
-            <div class="stat-item">
-                <span>Czas:</span>
-                <span id="timer" class="stat-value">00:00</span>
-            </div>
-            <div class="stat-item">
-                <span>Błędy:</span>
-                <span id="errors" class="stat-value">0</span>
-            </div>
+            <div>Czas: <span id="timer" class="stat-value" style="color:var(--color-primary)">00:00</span></div>
+            <div>Błędy: <span id="errors" class="stat-value" style="color:var(--color-error)">0</span></div>
         </div>
 
         <canvas id="gameCanvas" width="600" height="400"></canvas>
-        
-        <div id="info">Wybierz poziom i kliknij (1), aby rozpocząć!</div>
+        <div id="info">Kliknij (1), aby zacząć</div>
     </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        const infoDiv = document.getElementById('info');
         const timerSpan = document.getElementById('timer');
         const errorsSpan = document.getElementById('errors');
+        const infoDiv = document.getElementById('info');
         const levelSelect = document.getElementById('levelSelect');
-        const sequenceInfo = document.getElementById('sequenceInfo');
-        const hintToggle = document.getElementById('hintToggle');
-        const fullscreenTarget = document.getElementById('fullscreenTarget');
-
-        const CANVAS_WIDTH = canvas.width;
-        const CANVAS_HEIGHT = canvas.height;
-        const POINT_RADIUS = 18;
-        const FONT_SIZE = '16px';
-        const MIN_DISTANCE = 2 * POINT_RADIUS + 30;
 
         const LEVELS = {
-            easy: { count: 20, labels: Array.from({ length: 20 }, (_, i) => (i + 1).toString()), desc: "1 → 2 → 3 → ... → 20" },
-            medium: { count: 15, labels: ['1', 'A', '2', 'B', '3', 'C', '4', 'D', '5', 'E', '6', 'F', '7', 'G', '8'], desc: "1 → A → 2 → B → ... → 8" },
-            hard: { count: 25, labels: ['1', 'A', '2', 'B', '3', 'C', '4', 'D', '5', 'E', '6', 'F', '7', 'G', '8', 'H', '9', 'I', '10', 'J', '11', 'K', '12', 'L', '13'], desc: "1 → A → 2 → B → ... → 13" }
+            easy: { labels: Array.from({length:20}, (_,i)=>(i+1).toString()) },
+            medium: { labels: ['1','A','2','B','3','C','4','D','5','E','6','F','7','G','8'] },
+            hard: { labels: ['1','A','2','B','3','C','4','D','5','E','6','F','7','G','8','H','9','I','10','J','11','K','12','L','13'] }
         };
 
-        let timerInterval = null, startTime = null, errorCount = 0, currentPointIndex = 0, connections = [], points = [], currentLevel = LEVELS['medium'];
+        let timerInterval, startTime, errorCount, currentIdx, connections, points, currentLevel;
 
-        // --- TRYB PEŁNOEKRANOWY ---
         function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                fullscreenTarget.requestFullscreen().catch(err => {
-                    alert(`Błąd podczas włączania trybu pełnoekranowego: ${err.message}`);
-                });
-            } else {
-                document.exitFullscreen();
-            }
+            const target = document.getElementById('fullscreenTarget');
+            if (!document.fullscreenElement) target.requestFullscreen();
+            else document.exitFullscreen();
         }
 
-        // --- LOGIKA GRY ---
-        function toggleHints() {
-            if (hintToggle.checked) infoDiv.classList.add('hidden-info');
-            else {
-                infoDiv.classList.remove('hidden-info');
-                if (currentPointIndex > 0 && currentPointIndex < points.length && timerInterval !== null) {
-                    infoDiv.textContent = `Następny punkt: (${points[currentPointIndex].label})`;
-                }
-            }
-        }
-
-        function updateInfoDisplay(message, isEndGame = false) {
-            if (isEndGame || !hintToggle.checked) {
-                infoDiv.innerHTML = message;
-                infoDiv.classList.remove('hidden-info');
-            } else {
-                infoDiv.classList.add('hidden-info');
-            }
-        }
-
-        function getRandomInt(min, max) { return Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min) + 1)) + Math.ceil(min); }
-
-        function generateRandomPoints() {
-            const randomPoints = [];
-            const labels = currentLevel.labels;
-            for (let i = 0; i < labels.length; i++) {
-                let newPoint, isTooClose;
+        function resetGame() {
+            currentLevel = LEVELS[levelSelect.value];
+            clearInterval(timerInterval);
+            timerInterval = null; startTime = null; errorCount = 0; currentIdx = 0; connections = [];
+            
+            // Generowanie punktów
+            points = [];
+            for (let i = 0; i < currentLevel.labels.length; i++) {
+                let p, ok;
                 do {
-                    newPoint = { x: getRandomInt(POINT_RADIUS, CANVAS_WIDTH - POINT_RADIUS), y: getRandomInt(POINT_RADIUS, CANVAS_HEIGHT - POINT_RADIUS), label: labels[i] };
-                    isTooClose = randomPoints.some(p => Math.sqrt(Math.pow(newPoint.x - p.x, 2) + Math.pow(newPoint.y - p.y, 2)) < MIN_DISTANCE);
-                } while (isTooClose);
-                randomPoints.push(newPoint);
+                    p = { x: Math.random()*560+20, y: Math.random()*360+20, label: currentLevel.labels[i] };
+                    ok = !points.some(ep => Math.sqrt((p.x-ep.x)**2+(p.y-ep.y)**2) < 50);
+                } while (!ok);
+                points.push(p);
             }
-            return randomPoints;
+            
+            timerSpan.textContent = '00:00';
+            errorsSpan.textContent = '0';
+            infoDiv.textContent = `Kliknij punkt (${points[0].label})`;
+            draw();
         }
-
-        function formatTime(totalSeconds) {
-            const m = Math.floor(totalSeconds / 60);
-            const s = totalSeconds % 60;
-            return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-        }
-
-        function updateTimerDisplay() {
-            if (startTime) timerSpan.textContent = formatTime(Math.floor((Date.now() - startTime) / 1000));
-        }
-
-        function startTimer() {
-            if (timerInterval !== null) return;
-            startTime = Date.now();
-            timerInterval = setInterval(updateTimerDisplay, 1000);
-            updateInfoDisplay(`Start! Kliknij następny punkt: (${points[currentPointIndex].label})`);
-        }
-
-        function stopTimer() { clearInterval(timerInterval); timerInterval = null; }
 
         function draw() {
-            ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
-            ctx.lineWidth = 4;
+            ctx.clearRect(0, 0, 600, 400);
+            ctx.strokeStyle = '#4f46e5'; ctx.lineWidth = 3;
             ctx.beginPath();
-            connections.forEach(conn => { ctx.moveTo(conn.start.x, conn.start.y); ctx.lineTo(conn.end.x, conn.end.y); });
+            connections.forEach(c => { ctx.moveTo(c.start.x, c.start.y); ctx.lineTo(c.end.x, c.end.y); });
             ctx.stroke();
 
-            points.forEach((point, index) => {
-                const isConnected = index < currentPointIndex;
-                ctx.fillStyle = isConnected ? getComputedStyle(document.documentElement).getPropertyValue('--color-success').trim() : getComputedStyle(document.documentElement).getPropertyValue('--color-default').trim();
-                ctx.beginPath();
-                ctx.arc(point.x, point.y, POINT_RADIUS, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = 'white';
-                ctx.font = `bold ${FONT_SIZE} Arial`;
-                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                ctx.fillText(point.label, point.x, point.y);
+            points.forEach((p, i) => {
+                ctx.fillStyle = i < currentIdx ? '#10b981' : '#94a3b8';
+                ctx.beginPath(); ctx.arc(p.x, p.y, 18, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = 'white'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText(p.label, p.x, p.y);
             });
         }
 
-        function drawFinalLine() {
-            draw();
-            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-error').trim();
-            ctx.lineWidth = 6;
-            ctx.beginPath();
-            points.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
-            ctx.stroke();
-        }
-
-        function handleInteraction(event) {
-            if (event.type === 'touchstart') event.preventDefault();
-            if (timerInterval === null && currentPointIndex === points.length) return;
-
+        canvas.addEventListener('mousedown', e => {
             const rect = canvas.getBoundingClientRect();
-            const clientX = event.touches ? event.touches[0].clientX : event.clientX;
-            const clientY = event.touches ? event.touches[0].clientY : event.clientY;
-            
-            const mouseX = (clientX - rect.left) * (CANVAS_WIDTH / rect.width);
-            const mouseY = (clientY - rect.top) * (CANVAS_HEIGHT / rect.height);
-            const expectedPoint = points[currentPointIndex];
-            
-            const dist = Math.sqrt(Math.pow(mouseX - expectedPoint.x, 2) + Math.pow(mouseY - expectedPoint.y, 2));
+            const x = (e.clientX - rect.left) * (600 / rect.width);
+            const y = (e.clientY - rect.top) * (400 / rect.height);
+            const target = points[currentIdx];
 
-            if (dist < POINT_RADIUS) {
-                if (currentPointIndex === 0 && timerInterval === null) startTimer();
-                if (currentPointIndex > 0) connections.push({ start: points[currentPointIndex - 1], end: expectedPoint });
-                currentPointIndex++;
-                if (currentPointIndex === points.length) {
-                    stopTimer();
-                    updateInfoDisplay(`<strong style="color:var(--color-success)">GRATULACJE!</strong><br>Czas: ${timerSpan.textContent} | Błędy: ${errorCount}`, true);
-                    drawFinalLine();
-                } else {
-                    updateInfoDisplay(`Połączono! Następny: (${points[currentPointIndex].label})`);
-                    draw();
+            if (Math.sqrt((x-target.x)**2+(y-target.y)**2) < 18) {
+                if (currentIdx === 0 && !timerInterval) {
+                    startTime = Date.now();
+                    timerInterval = setInterval(() => {
+                        timerSpan.textContent = new Date(Date.now()-startTime).toISOString().substr(14, 5);
+                    }, 1000);
                 }
+                if (currentIdx > 0) connections.push({start: points[currentIdx-1], end: target});
+                currentIdx++;
+                
+                if (currentIdx === points.length) {
+                    clearInterval(timerInterval);
+                    // AUTOMATYCZNE WYJŚCIE Z FULLSCREEN
+                    if (document.fullscreenElement) document.exitFullscreen();
+                    infoDiv.innerHTML = `<b style="color:green">KONIEC!</b> Czas: ${timerSpan.textContent}, Błędy: ${errorCount}`;
+                } else {
+                    infoDiv.textContent = `Następny: (${points[currentIdx].label})`;
+                }
+                draw();
             } else {
-                let clickedWrong = points.some((p, i) => i > currentPointIndex && Math.sqrt(Math.pow(mouseX - p.x, 2) + Math.pow(mouseY - p.y, 2)) < POINT_RADIUS);
-                if (clickedWrong) {
+                if (points.some((p,i) => i > currentIdx && Math.sqrt((x-p.x)**2+(y-p.y)**2) < 18)) {
                     errorCount++;
                     errorsSpan.textContent = errorCount;
-                    updateInfoDisplay(`BŁĄD! Oczekiwany: (${expectedPoint.label})`);
                 }
             }
-        }
-        
-        function resetGame() {
-            currentLevel = LEVELS[levelSelect.value];
-            stopTimer(); startTime = null; errorCount = 0; currentPointIndex = 0; connections = [];
-            points = generateRandomPoints();
-            sequenceInfo.textContent = `Aktualna sekwencja: ${currentLevel.desc}`;
-            timerSpan.textContent = '00:00'; errorsSpan.textContent = '0';
-            updateInfoDisplay(`Kliknij punkt (${points[0].label}), aby zacząć!`, true);
-            toggleHints();
-            draw();
-        }
+        });
 
-        canvas.addEventListener('mousedown', handleInteraction);
-        canvas.addEventListener('touchstart', handleInteraction);
+        function toggleHints() { infoDiv.classList.toggle('hidden-info', document.getElementById('hintToggle').checked); }
+
         resetGame();
     </script>
 </body>
