@@ -90,7 +90,11 @@
 
     <div class="game-container" id="fullscreenTarget">
         <header>
-            <div class="logo-wrapper"><img src="logo.png" alt="Logo"></div>
+        <div class="logo-wrapper">
+                <a href="index.html" title="Powrót do strony głównej">
+                    <img src="logo.png" alt="Logo Psychodem">
+                </a>
+            </div>
             <h1 style="margin:0">Połącz Kropki</h1>
         </header>
         
@@ -125,7 +129,7 @@
         const levelSelect = document.getElementById('levelSelect');
 
         const LEVELS = {
-            easy: { labels: Array.from({length:20}, (_,i)=>(i+1).toString()) },
+            easy: { labels: Array.from({length:25}, (_,i)=>(i+1).toString()) },
             medium: { labels: ['1','A','2','B','3','C','4','D','5','E','6','F','7','G','8'] },
             hard: { labels: ['1','A','2','B','3','C','4','D','5','E','6','F','7','G','8','H','9','I','10','J','11','K','12','L','13'] }
         };
