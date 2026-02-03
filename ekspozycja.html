@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" href="cbt.png" />
+    <title>Hierarchia Ekspozycji (CBT)</title>
+    
+    <style>
+        /* Stylistyka bazowa zgodna z Twoim szablonem */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            line-height: 1.6; 
+            margin: 20px; 
+            background-color: #FAFAFA;
+            color: #1a237e; 
+        }
+        
+        .container { 
+            max-width: 850px; 
+            margin: 0 auto; 
+            background-color: #ffffff; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); 
+            margin-bottom: 40px; 
+        }
+
+        .logo-wrapper { text-align: center; margin-bottom: 20px; }
+        .logo-wrapper img { max-height: 80px; width: auto; }
+        
+        h1 { color: #0d47a1; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Stylizacja kroków */
+        .step-container { margin-bottom: 30px; }
+        
+        .step-title {
+            background-color: #bbdefb;
+            color: #0d47a1;
+            padding: 10px 15px;
+            border-radius: 8px 8px 0 0;
+            font-weight: bold;
+            border-left: 5px solid #1e88e5;
+        }
+
+        .step-content {
+            padding: 20px;
+            border: 1px solid #e3f2fd;
+            border-top: none;
+            background-color: #fcfcfc;
+            border-radius: 0 0 8px 8px;
+        }
+
+        textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            box-sizing: border-box; 
+            resize: vertical; 
+            font-family: inherit;
+        }
+
+        /* Stylizacja tabel */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background-color: white;
+        }
+
+        th { background-color: #e3f2fd; color: #0d47a1; padding: 10px; text-align: left; border: 1px solid #bbdefb; }
+        td { border: 1px solid #bbdefb; padding: 5px; vertical-align: top; }
+        
+        /* Specyficzne dla tabeli inputowej */
+        td textarea { border: none; border-radius: 0; min-height: 50px; display: block; width: 100%; box-shadow: none; resize: none; }
+        td textarea:focus { outline: 2px solid #bbdefb; }
+        
+        /* Tabela z przykładem (statyczna) */
+        .example-table td { padding: 10px; background-color: #f9f9f9; color: #555; }
+
+        ul { margin-top: 0; padding-left: 20px; }
+        li { margin-bottom: 5px; }
+
+        .citation {
+            font-size: 0.85em;
+            color: #555;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+            padding-top: 10px;
+        }
+
+        .action-buttons { text-align: center; margin-top: 30px; }
+        .print-btn { background-color: #4caf50; color: white; padding: 12px 25px; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .clear-btn { background-color: #e53935; color: white; padding: 12px 25px; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; margin-left: 10px; }
+        
+        .print-btn:hover { background-color: #43a047; }
+
+        @media print {
+            .action-buttons, .logo-wrapper { display: none; }
+            .container { box-shadow: none; width: 100%; margin: 0; padding: 0; }
+            body { background-color: white; }
+            textarea { border: 1px solid #eee; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo-wrapper">
+        <a href="index.html"><img src="logo.png" alt="Logo"></a>
+    </div>
+
+    <div class="container">
+        <h1>Hierarchia Ekspozycji</h1>
+
+        <form id="cbt-exposure-hierarchy">
+            
+            <div class="step-container">
+                <div class="step-title">1. Czym jest ekspozycja? (Instrukcja)</div>
+                <div class="step-content">
+                    <p>Ekspozycja to metoda polegająca na <strong>świadomym i kontrolowanym</strong> wystawianiu się na sytuacje budzące lęk. Celem jest habituacja (wygaszenie lęku) i nauka, że zagrożenie jest mniejsze niż podpowiada umysł.</p>
+                    <p><strong>Zasady skutecznej ekspozycji:</strong></p>
+                    <ul>
+                        <li><strong>Planowanie:</strong> Nie rzucamy się na "głęboką wodę". Budujemy drabinę trudności.</li>
+                        <li><strong>Długość:</strong> Pozostajemy w sytuacji lękowej tak długo, aż lęk spadnie (zazwyczaj o połowę).</li>
+                        <li><strong>Bez "ułatwiaczy":</strong> Nie używamy zachowań zabezpieczających (np. odwracanie wzroku, trzymanie telefonu, branie leków "na wszelki wypadek").</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="step-container">
+                <div class="step-title">2. Przykładowa Hierarchia (Lęk przed wystąpieniami)</div>
+                <div class="step-content">
+                    <p>Zobacz, jak wygląda przykładowa "drabina" lęku. Skala 0-100 oznacza poziom dyskomfortu (SUD).</p>
+                    <table class="example-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 20%;">Poziom (0-100)</th>
+                                <th style="width: 80%;">Sytuacja / Zadanie</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>10-20</strong></td>
+                                <td>Zadanie pytania na czacie podczas webinaru.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>40</strong></td>
+                                <td>Zabranie głosu w 3-osobowej grupie znajomych.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>60</strong></td>
+                                <td>Wygłoszenie krótkiego ogłoszenia w biurze (do 5 osób).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>80</strong></td>
+                                <td>Prezentacja projektu przed zarządem.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>100</strong></td>
+                                <td>Wystąpienie na dużej konferencji.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="step-container">
+                <div class="step-title">3. Twoja Hierarchia Ekspozycji</div>
+                <div class="step-content">
+                    <p>Wypisz sytuacje od najmniej do najbardziej stresujących. <br>
+                    <em>0 = pełny spokój, 100 = najgorszy wyobrażalny lęk.</em></p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 20%;">Poziom lęku</th>
+                                <th style="width: 40%;">Opis sytuacji / zadania</th>
+                                <th style="width: 40%;">Czego się obawiasz? (Katastroficzna myśl)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="background-color: #e8f5e9; font-weight: bold; text-align: center; vertical-align: middle;">10 - 30<br><span style="font-size:0.8em; font-weight:normal;">(Niski)</span></td>
+                                <td><textarea placeholder="Sytuacja wywołująca lekki niepokój..."></textarea></td>
+                                <td><textarea placeholder="Nikt nie zwróci uwagi..."></textarea></td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #e8f5e9; font-weight: bold; text-align: center; vertical-align: middle;">10 - 30</td>
+                                <td><textarea></textarea></td>
+                                <td><textarea></textarea></td>
+                            </tr>
+
+                            <tr>
+                                <td style="background-color: #fff9c4; font-weight: bold; text-align: center; vertical-align: middle;">40 - 60<br><span style="font-size:0.8em; font-weight:normal;">(Średni)</span></td>
+                                <td><textarea placeholder="Sytuacja wywołująca wyraźny stres..."></textarea></td>
+                                <td><textarea placeholder="Zacznę się jąkać..."></textarea></td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #fff9c4; font-weight: bold; text-align: center; vertical-align: middle;">40 - 60</td>
+                                <td><textarea></textarea></td>
+                                <td><textarea></textarea></td>
+                            </tr>
+
+                            <tr>
+                                <td style="background-color: #ffe0b2; font-weight: bold; text-align: center; vertical-align: middle;">70 - 80<br><span style="font-size:0.8em; font-weight:normal;">(Wysoki)</span></td>
+                                <td><textarea placeholder="Sytuacja bardzo trudna..."></textarea></td>
+                                <td><textarea placeholder="Wszyscy mnie wyśmieją..."></textarea></td>
+                            </tr>
+
+                            <tr>
+                                <td style="background-color: #ffcdd2; font-weight: bold; text-align: center; vertical-align: middle;">90 - 100<br><span style="font-size:0.8em; font-weight:normal;">(Ekstremalny)</span></td>
+                                <td><textarea placeholder="Sytuacja paraliżująca..."></textarea></td>
+                                <td><textarea placeholder="Zemdlałbym ze strachu..."></textarea></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="step-container">
+                <div class="step-title">4. Planowanie pierwszej sesji</div>
+                <div class="step-content">
+                    <p>Wybierz <strong>jedno</strong> zadanie z poziomu 30-40 (umiarkowany lęk) na początek.</p>
+                    
+                    <label><strong>1. Co dokładnie zrobisz?</strong> (Opisz szczegóły)</label>
+                    <textarea placeholder="Np. Pójdę do sklepu i zapytam ekspedientkę o..." style="margin-bottom: 15px;"></textarea>
+                    
+                    <label><strong>2. Kiedy to zrobisz?</strong> (Dzień i godzina)</label>
+                    <textarea placeholder="Data..." style="margin-bottom: 15px; min-height: 40px;"></textarea>
+
+                    <label><strong>3. Jak długo będziesz w tej sytuacji?</strong> (Pamiętaj o zasadzie habituacji)</label>
+                    <textarea placeholder="Zostanę tam tak długo, aż lęk spadnie przynajmniej o połowę..." style="min-height: 60px;"></textarea>
+                </div>
+            </div>
+
+            <div class="citation">
+                <strong>Źródła wiedzy:</strong><br>
+                1. Foa, E. B., & Kozak, M. J. (1986). <em>Emotional processing of fear: Exposure to corrective information.</em> Psychological Bulletin.<br>
+                2. Abramowitz, J. S., Deacon, B. J., & Whiteside, S. P. (2019). <em>Exposure Therapy for Anxiety: Principles and Practice.</em> Guilford Press.
+            </div>
+
+            <div class="action-buttons">
+                <button type="button" class="print-btn" onclick="window.print()">🖨️ Drukuj Arkusz</button>
+                <button type="reset" class="clear-btn">🗑️ Wyczyść wszystko</button>
+            </div>
+
+        </form>
+    </div>
+</body>
+</html>
