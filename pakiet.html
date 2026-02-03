@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" href="cbt.png" />
+    <title>Centrum Narzędzi CBT</title>
+    
+    <style>
+        /* Twoja stylistyka bazowa */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            line-height: 1.6; 
+            margin: 20px; 
+            background-color: #FAFAFA;
+            color: #1a237e; 
+        }
+        
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            background-color: #ffffff; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); 
+            margin-bottom: 40px; 
+            min-height: 600px;
+        }
+
+        .logo-wrapper { text-align: center; margin-bottom: 20px; }
+        .logo-wrapper img { max-height: 80px; width: auto; }
+        
+        h1 { color: #0d47a1; text-align: center; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        h2 { color: #1565c0; font-size: 1.4em; border-bottom: 2px solid #e3f2fd; padding-bottom: 10px; margin-top: 0; }
+
+        /* NAWIGACJA (TABY) */
+        .nav-tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .nav-btn {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+            border: 1px solid #bbdefb;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .nav-btn:hover { background-color: #bbdefb; }
+        .nav-btn.active { background-color: #1565c0; color: white; border-color: #0d47a1; }
+
+        /* Stylizacja sekcji formularzy */
+        .tool-section { display: none; animation: fadeIn 0.3s; }
+        .tool-section.active { display: block; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Elementy formularzy */
+        .step-container { margin-bottom: 25px; }
+        
+        .step-title {
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            border-left: 5px solid #1e88e5;
+            margin-bottom: 10px;
+        }
+
+        textarea { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            box-sizing: border-box; 
+            resize: vertical; 
+            font-family: inherit;
+        }
+
+        input[type="text"], input[type="number"], input[type="time"] {
+            width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;
+        }
+
+        /* Tabele */
+        table { width: 100%; border-collapse: collapse; margin-top: 5px; background-color: white; }
+        th { background-color: #e3f2fd; color: #0d47a1; padding: 10px; text-align: left; border: 1px solid #bbdefb; font-size: 0.9em; }
+        td { border: 1px solid #bbdefb; padding: 5px; vertical-align: top; }
+        td textarea { border: none; box-shadow: none; min-height: 50px; resize: none; }
+        td textarea:focus { outline: 2px solid #90caf9; }
+
+        .citation {
+            font-size: 0.8em;
+            color: #757575;
+            border-top: 1px solid #eee;
+            margin-top: 30px;
+            padding-top: 10px;
+            font-style: italic;
+        }
+
+        .action-buttons { text-align: center; margin-top: 30px; }
+        .print-btn { background-color: #4caf50; color: white; padding: 12px 25px; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; }
+        .clear-btn { background-color: #e53935; color: white; padding: 12px 25px; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; margin-left: 10px; }
+        
+        /* DRUKOWANIE */
+        @media print {
+            .nav-tools, .action-buttons, .logo-wrapper { display: none !important; }
+            .container { box-shadow: none; width: 100%; margin: 0; padding: 0; border: none; }
+            body { background-color: white; margin: 0; }
+            .tool-section { display: none; }
+            .tool-section.active { display: block; } /* Drukuje tylko aktywny tab */
+            textarea { border: 1px solid #ddd; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo-wrapper">
+        <a href="index.html"><img src="logo.png" alt="Logo"></a>
+    </div>
+
+    <div class="container">
+        <h1>CBT Toolbox</h1>
+        
+        <div class="nav-tools">
+            <button class="nav-btn active" onclick="openTool('tool16')">16. Analiza Kosztów</button>
+            <button class="nav-btn" onclick="openTool('tool15')">15. Sen (CBT-I)</button>
+            <button class="nav-btn" onclick="openTool('tool13')">13. Relaksacja</button>
+            <button class="nav-btn" onclick="openTool('tool12')">12. Wdzięczność</button>
+            <button class="nav-btn" onclick="openTool('tool11')">11. Złość</button>
+            <button class="nav-btn" onclick="openTool('tool6')">6. Aktywacja</button>
+            <button class="nav-btn" onclick="openTool('tool5')">5. Co jeśli?</button>
+            <button class="nav-btn" onclick="openTool('tool4')">4. Przekonania</button>
+        </div>
+
+        <form id="cbt-master-form">
+
+            <div id="tool16" class="tool-section active">
+                <h2>16. Analiza Kosztów i Korzyści (Decision Matrix)</h2>
+                <p>Użyj tego arkusza, gdy wahasz się, czy zmienić nawyk, czy pozostać przy starym zachowaniu.</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 50%; text-align: center;">OPCJA A: Pozostanie przy starym zachowaniu<br>(np. dalsze palenie, unikanie, prokrastynacja)</th>
+                            <th style="width: 50%; text-align: center;">OPCJA B: Zmiana zachowania<br>(np. rzucenie palenia, podjęcie wyzwania)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <strong>ZYSKI (Co zyskuję nie zmieniając nic?):</strong>
+                                <textarea style="height: 120px;"></textarea>
+                            </td>
+                            <td>
+                                <strong>ZYSKI (Co zyskam zmieniając?):</strong>
+                                <textarea style="height: 120px;"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>STRATY (Co tracę nie zmieniając nic?):</strong>
+                                <textarea style="height: 120px;"></textarea>
+                            </td>
+                            <td>
+                                <strong>STRATY (Co stracę/ryzykuję zmieniając?):</strong>
+                                <textarea style="height: 120px;"></textarea>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="step-content" style="margin-top: 20px;">
+                    <strong>Wniosek / Decyzja:</strong>
+                    <textarea placeholder="Patrząc na powyższe - co jest dla mnie bardziej opłacalne długoterminowo?"></textarea>
+                </div>
+                <div class="citation">Źródło: Miller, W. R., & Rollnick, S. (2013). Motivational Interviewing. Guilford Press.</div>
+            </div>
+
+            <div id="tool15" class="tool-section">
+                <h2>15. Dziennik Higieny Snu (CBT-I)</h2>
+                <p>Wypełniaj codziennie rano po przebudzeniu.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Dzień</th>
+                            <th>Godz. pójścia do łóżka</th>
+                            <th>Ile czasu zasypiałeś? (min)</th>
+                            <th>Liczba przebudzeń</th>
+                            <th>Ostateczna pobudka</th>
+                            <th>Jakość snu (1-10)</th>
+                            <th>Drzemki / Kofeina</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Pon</td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><textarea></textarea></td></tr>
+                        <tr><td>Wt</td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><textarea></textarea></td></tr>
+                        <tr><td>Śr</td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><textarea></textarea></td></tr>
+                        <tr><td>Czw</td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><textarea></textarea></td></tr>
+                        <tr><td>Pt</td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><textarea></textarea></td></tr>
+                        <tr><td>Sob</td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><textarea></textarea></td></tr>
+                        <tr><td>Ndz</td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><textarea></textarea></td></tr>
+                    </tbody>
+                </table>
+                <div class="citation">Źródło: Morin, C. M., & Espie, C. A. (2003). Insomnia: A Clinical Guide to Assessment and Treatment.</div>
+            </div>
+
+            <div id="tool13" class="tool-section">
+                <h2>13. Progresywna Relaksacja Mięśni (PMR)</h2>
+                <p>Instrukcja: Napinaj każdą grupę mięśni przez 5-7 sek, a potem nagle rozluźnij i obserwuj ulgę przez 15-20 sek.</p>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Poziom napięcia PRZED (0-10): <input type="number" style="width: 60px;"></span>
+                    <span>Poziom napięcia PO (0-10): <input type="number" style="width: 60px;"></span>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 70%;">Grupa Mięśni</th>
+                            <th style="width: 30%;">Wykonano (✓)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1. Prawa dłoń i przedramię (zaciśnij pięść)</td><td style="text-align:center;"><input type="checkbox"></td></tr>
+                        <tr><td>2. Prawe ramię (napnij biceps)</td><td style="text-align:center;"><input type="checkbox"></td></tr>
+                        <tr><td>3. Lewa dłoń i przedramię</td><td style="text-align:center;"><input type="checkbox"></td></tr>
+                        <tr><td>4. Lewe ramię</td><td style="text-align:center;"><input type="checkbox"></td></tr>
+                        <tr><td>5. Czoło (uniesienie brwi) i oczy (zaciśnięcie)</td><td style="text-align:center;"><input type="checkbox"></td></tr>
+                        <tr><td>6. Szczęka (zaciśnięcie zębów) i usta</td><td style="text-align:center;"><input type="checkbox"></td></tr>
+                        <tr><td>7. Kark i szyja (odchylenie głowy lekko w tył)</td><td style="text-align:center;"><input type="checkbox"></td></tr>
+                        <tr><td>8. Klatka piersiowa i plecy (głęboki wdech, ściągnięcie łopatek)</td><td style="text-align:center;"><input type="checkbox"></td></tr>
+                        <tr><td>9. Brzuch (wciągnięcie i napięcie)</td><td style="text-align:center;"><input type="checkbox"></td></tr>
+                        <tr><td>10. Prawa noga (udo i łydka)</td><td style="text-align:center;"><input type="checkbox"></td></tr>
+                        <tr><td>11. Lewa noga (udo i łydka)</td><td style="text-align:center;"><input type="checkbox"></td></tr>
+                    </tbody>
+                </table>
+                <div class="citation">Źródło: Jacobson, E. (1938). Progressive Relaxation. University of Chicago Press.</div>
+            </div>
+
+            <div id="tool12" class="tool-section">
+                <h2>12. Empiryczny Dziennik Wdzięczności</h2>
+                <p>Badania (Seligman, 2005) pokazują, że wypisywanie 3 dobrych rzeczy dziennie przez tydzień redukuje objawy depresji na 6 miesięcy.</p>
+                <p><strong>Zadanie:</strong> Wypisz 3 rzeczy, które poszły dziś dobrze i napisz DLACZEGO to się stało.</p>
+
+                <div class="step-container">
+                    <div class="step-title">1. Co dobrego się wydarzyło?</div>
+                    <textarea placeholder="Np. Smaczna kawa, miła rozmowa, słońce..." style="margin-bottom: 5px;"></textarea>
+                    <textarea placeholder="Dlaczego? Np. Bo znalazłem czas, by ją zaparzyć; Bo byłem otwarty na ludzi." style="height: 60px; background-color: #f9fbe7;"></textarea>
+                </div>
+                <div class="step-container">
+                    <div class="step-title">2. Co dobrego się wydarzyło?</div>
+                    <textarea placeholder="" style="margin-bottom: 5px;"></textarea>
+                    <textarea placeholder="Dlaczego?" style="height: 60px; background-color: #f9fbe7;"></textarea>
+                </div>
+                <div class="step-container">
+                    <div class="step-title">3. Co dobrego się wydarzyło?</div>
+                    <textarea placeholder="" style="margin-bottom: 5px;"></textarea>
+                    <textarea placeholder="Dlaczego?" style="height: 60px; background-color: #f9fbe7;"></textarea>
+                </div>
+                <div class="citation">Źródło: Seligman, M. E. P., et al. (2005). Positive Psychology Progress. American Psychologist.</div>
+            </div>
+
+            <div id="tool11" class="tool-section">
+                <h2>11. Termometr Złości (Novaco)</h2>
+                <p>Rozpoznaj wczesne sygnały złości, aby zareagować zanim wybuchniesz.</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Poziom (1-10)</th>
+                            <th style="width: 40%;">Sygnały z ciała i myśli</th>
+                            <th style="width: 40%;">Strategia zaradcza (Co zrobię?)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background-color: #ffebee;">
+                            <td style="font-weight:bold; color:#b71c1c; text-align:center;">9-10<br>WYBUCH</td>
+                            <td><textarea placeholder="Krzyk, gorąco w twarzy, brak kontroli..."></textarea></td>
+                            <td><textarea placeholder="Ewakuacja (wyjście z pokoju bez słowa). Bezpieczeństwo."></textarea></td>
+                        </tr>
+                        <tr style="background-color: #fff3e0;">
+                            <td style="font-weight:bold; color:#e65100; text-align:center;">6-8<br>NARASTANIE</td>
+                            <td><textarea placeholder="Zaciśnięte pięści, szybki oddech, myśl: 'On robi to specjalnie'..."></textarea></td>
+                            <td><textarea placeholder="Głębokie oddechy. Policz do 10. Powiedz: 'Muszę ochłonąć'."></textarea></td>
+                        </tr>
+                        <tr style="background-color: #e8f5e9;">
+                            <td style="font-weight:bold; color:#1b5e20; text-align:center;">1-5<br>SPOKÓJ / IRYTACJA</td>
+                            <td><textarea placeholder="Lekkie spięcie, normalny oddech..."></textarea></td>
+                            <td><textarea placeholder="Asertywny komunikat. Relaksacja."></textarea></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="citation">Źródło: Novaco, R. W. (1975). Anger Control: The Development and Evaluation of an Experimental Treatment.</div>
+            </div>
+
+            <div id="tool6" class="tool-section">
+                <h2>6. Planer Aktywności (Aktywacja Behawioralna)</h2>
+                <p>Leczenie depresji/obniżonego nastroju przez działanie. Oceniaj czynności w skali 0-10.</p>
+                <ul>
+                    <li><strong>P (Przyjemność):</strong> Ile radości mi to dało?</li>
+                    <li><strong>O (Osiągnięcie):</strong> Jak bardzo czuję, że zrobiłem coś ważnego/trudnego?</li>
+                </ul>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">Pora dnia</th>
+                            <th style="width: 55%;">Zaplanowana aktywność</th>
+                            <th style="width: 15%;">P (0-10)</th>
+                            <th style="width: 15%;">O (0-10)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Rano</td><td><textarea></textarea></td><td><input type="number"></td><td><input type="number"></td></tr>
+                        <tr><td>Południe</td><td><textarea></textarea></td><td><input type="number"></td><td><input type="number"></td></tr>
+                        <tr><td>Popołudnie</td><td><textarea></textarea></td><td><input type="number"></td><td><input type="number"></td></tr>
+                        <tr><td>Wieczór</td><td><textarea></textarea></td><td><input type="number"></td><td><input type="number"></td></tr>
+                    </tbody>
+                </table>
+                <div class="citation">Źródło: Martell, C. R., et al. (2010). Behavioral Activation for Depression: A Clinician's Guide. Guilford Press.</div>
+            </div>
+
+            <div id="tool5" class="tool-section">
+                <h2>5. Dekatastrofizajca ("Co jeśli?")</h2>
+                <p>Narzędzie do radzenia sobie z lękiem antycypacyjnym i zamartwianiem się.</p>
+
+                <div class="step-container">
+                    <label><strong>1. Czym się martwisz? (Przewidywanie)</strong></label>
+                    <textarea style="height: 60px;"></textarea>
+                </div>
+
+                <div class="step-container">
+                    <label><strong>2. Najgorszy możliwy scenariusz:</strong></label>
+                    <textarea style="height: 60px; border-color: #ef9a9a;"></textarea>
+                    
+                    <label><strong>Jeśli to się stanie, jak sobie poradzę? (Plan awaryjny)</strong></label>
+                    <textarea style="height: 60px; border-color: #a5d6a7;"></textarea>
+                </div>
+
+                <div class="step-container">
+                    <label><strong>3. Najlepszy możliwy scenariusz:</strong></label>
+                    <textarea style="height: 60px;"></textarea>
+                </div>
+
+                <div class="step-container">
+                    <label><strong>4. Najbardziej REALISTYCZNY scenariusz:</strong></label>
+                    <textarea style="height: 60px; border: 2px solid #2196f3;"></textarea>
+                </div>
+                <div class="citation">Źródło: Beck, J. S. (2011). Cognitive Behavior Therapy: Basics and Beyond. Guilford Press.</div>
+            </div>
+
+            <div id="tool4" class="tool-section">
+                <h2>4. Odkrywanie Przekonań Kluczowych (Strzałka w dół)</h2>
+                <p>Metoda dochodzenia do źródła problemu poprzez pytania "Co w tym najgorszego?" lub "Co to o mnie mówi?".</p>
+
+                <div class="step-container">
+                    <label><strong>Myśl automatyczna (Sytuacja bieżąca):</strong></label>
+                    <textarea placeholder="Np. Szef nie odpisał mi na maila."></textarea>
+                </div>
+                
+                <div style="text-align: center; font-size: 20px; color: #1e88e5;">⬇️ <em>Jeśli to prawda, dlaczego to jest dla mnie przykre?</em></div>
+
+                <div class="step-container">
+                    <textarea placeholder="Np. Bo pewnie jest zły na moją pracę."></textarea>
+                </div>
+
+                <div style="text-align: center; font-size: 20px; color: #1e88e5;">⬇️ <em>A jeśli to prawda, co najgorszego może się stać?</em></div>
+
+                <div class="step-container">
+                    <textarea placeholder="Np. Może mnie zwolnić."></textarea>
+                </div>
+
+                <div style="text-align: center; font-size: 20px; color: #1e88e5;">⬇️ <em>Co to by mówiło o Tobie jako o człowieku?</em></div>
+
+                <div class="step-container">
+                    <label><strong>PRZEKONANIE KLUCZOWE:</strong></label>
+                    <textarea placeholder="Np. Że jestem do niczego / Że jestem niekompetentny." style="border: 2px solid #d32f2f; background-color: #ffebee;"></textarea>
+                </div>
+                <div class="citation">Źródło: Burns, D. D. (1980). Feeling Good: The New Mood Therapy.</div>
+            </div>
+
+            <div class="action-buttons">
+                <button type="button" class="print-btn" onclick="window.print()">🖨️ Drukuj (Widoczne)</button>
+                <button type="reset" class="clear-btn">🗑️ Wyczyść</button>
+            </div>
+
+        </form>
+    </div>
+
+    <script>
+        function openTool(toolId) {
+            // Ukryj wszystkie sekcje
+            var sections = document.getElementsByClassName('tool-section');
+            for (var i = 0; i < sections.length; i++) {
+                sections[i].style.display = 'none';
+                sections[i].classList.remove('active');
+            }
+
+            // Pokaż wybraną
+            var selected = document.getElementById(toolId);
+            selected.style.display = 'block';
+            setTimeout(() => selected.classList.add('active'), 10); // Małe opóźnienie dla animacji
+
+            // Aktualizuj przyciski (styl)
+            var btns = document.getElementsByClassName('nav-btn');
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.remove('active');
+            }
+            // Znajdź przycisk, który został kliknięty (proste dopasowanie po tekście onclick byłoby trudniejsze, więc zrobimy pętlę po atrybucie)
+            // Tutaj prościej: w funkcji przekazujemy ID, a przyciski odświeżamy 'ręcznie' lub via event.
+            // Dla prostoty w HTML: event.currentTarget.classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>
