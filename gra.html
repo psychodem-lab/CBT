@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyzwania Umysłu - Trening Psychologiczny</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; padding: 20px; }
+        #game-container { background: white; width: 100%; max-width: 600px; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; }
+        .hidden { display: none; }
+        .hero-card { border: 2px solid #e0e0e0; padding: 15px; margin: 10px 0; border-radius: 10px; cursor: pointer; transition: 0.3s; }
+        .hero-card:hover { border-color: #3498db; background-color: #f7fbff; }
+        .choice-btn { display: block; width: 100%; padding: 12px; margin: 10px 0; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .choice-btn:hover { background: #2980b9; }
+        #feedback { margin-top: 20px; padding: 15px; border-radius: 5px; font-weight: bold; }
+        .correct { background: #d4edda; color: #155724; }
+        .wrong { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <h1>Wyzwania Umysłu</h1>
+    
+    <div id="hero-selection">
+        <h3>Wybierz swojego bohatera i jego wyzwanie:</h3>
+        <div class="hero-card" onclick="startGame('marek')">
+            <strong>Marek (Wyśmiewanie)</strong>: Grupa rówieśników żartuje z jego hobby.
+        </div>
+        <div class="hero-card" onclick="startGame('ania')">
+            <strong>Ania (Lęk)</strong>: Boi się wystąpienia przed klasą/zespołem.
+        </div>
+    </div>
+
+    <div id="game-screen" class="hidden">
+        <h2 id="story-title"></h2>
+        <p id="story-text"></p>
+        <div id="choices"></div>
+        <div id="feedback" class="hidden"></div>
+        <button id="next-btn" class="choice-btn hidden" onclick="resetGame()">Zagraj ponownie</button>
+    </div>
+</div>
+
+<script>
+    const gameData = {
+        marek: {
+            title: "Marek i trudna rozmowa",
+            text: "Koledzy na korytarzu śmieją się z Twojego nowego plecaka. Czujesz, jak narasta w Tobie złość i wstyd. Co robisz?",
+            choices: [
+                { text: "Wyzywasz ich i zaczynasz krzyczeć.", feedback: "To agresja. Może to uciszy ich na chwilę, ale zaostrzy konflikt.", correct: false },
+                { text: "Spuszczasz głowę i szybko odchodzisz.", feedback: "To uległość. Twoje potrzeby nie zostały zaspokojone, a Ty czujesz się gorzej.", correct: false },
+                { text: "Mówisz spokojnie: 'Nie podoba mi się, gdy oceniacie moje rzeczy w ten sposób. Proszę, przestańcie'.", feedback: "Brawo! To asertywność. Wyrażasz swoje zdanie, nie atakując innych.", correct: true }
+            ]
+        },
+        ania: {
+            title: "Ania i paraliżujący strach",
+            text: "Zaraz Twoja kolej na prezentację. Serce bije Ci mocno, a dłonie się pocą. Myślisz: 'Na pewno się ośmieszę'. Jak reagujesz?",
+            choices: [
+                { text: "Uciekasz z sali, mówiąc że źle się czujesz.", feedback: "To unikanie. Przynosi ulgę na chwilę, ale potęguje lęk w przyszłości.", correct: false },
+                { text: "Stosujesz technikę oddechową 4-7-8 i zmieniasz myśl na: 'Jestem przygotowana'.", feedback: "Świetnie! Techniki regulacji napięcia i restrukturyzacja poznawcza pomagają opanować lęk.", correct: true },
+                { text: "Próbujesz o tym nie myśleć i zaciskasz zęby.", feedback: "Tłumienie emocji często sprawia, że wracają one z większą siłą.", correct: false }
+            ]
+        }
+    };
+
+    function startGame(hero) {
+        document.getElementById('hero-selection').classList.add('hidden');
+        document.getElementById('game-screen').classList.remove('hidden');
+        
+        const data = gameData[hero];
+        document.getElementById('story-title').innerText = data.title;
+        document.getElementById('story-text').innerText = data.text;
+        
+        const choicesDiv = document.getElementById('choices');
+        choicesDiv.innerHTML = '';
+        
+        data.choices.forEach(choice => {
+            const btn = document.createElement('button');
+            btn.className = 'choice-btn';
+            btn.innerText = choice.text;
+            btn.onclick = () => showFeedback(choice);
+            choicesDiv.appendChild(btn);
+        });
+    }
+
+    function showFeedback(choice) {
+        const feedbackDiv = document.getElementById('feedback');
+        feedbackDiv.classList.remove('hidden', 'correct', 'wrong');
+        feedbackDiv.classList.add(choice.correct ? 'correct' : 'wrong');
+        feedbackDiv.innerText = choice.feedback;
+        document.getElementById('next-btn').classList.remove('hidden');
+    }
+
+    function resetGame() {
+        location.reload();
+    }
+</script>
+
+</body>
+</html>
