@@ -4,97 +4,228 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wyzwania Umysłu - Trening Psychologiczny</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; padding: 20px; }
-        #game-container { background: white; width: 100%; max-width: 600px; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; text-align: center; }
+        :root {
+            --primary: #3498db; --bg: #f4f7f6; --text: #2c3e50; --card: #ffffff;
+            --success: #27ae60; --danger: #e74c3c; --warning: #f1c40f;
+        }
+        body.dark-mode {
+            --bg: #1a1a2e; --text: #e0e0e0; --card: #16213e; --primary: #4cc9f0;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; transition: 0.3s; }
+        #app { max-width: 800px; margin: 20px auto; padding: 20px; }
+        .card { background: var(--card); border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        
+        /* UI Elements */
+        .stats-bar { display: flex; justify-content: space-around; margin-bottom: 20px; font-size: 0.9em; }
+        .progress-container { height: 10px; background: #eee; border-radius: 5px; margin: 10px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.5s; }
+        .btn { border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; width: 100%; margin: 5px 0; transition: 0.2s; font-weight: bold; }
+        .btn-choice { background: #ecf0f1; color: #2c3e50; text-align: left; border: 2px solid transparent; }
+        .btn-choice:hover { border-color: var(--primary); background: #e8f4fd; }
+        .badge { display: inline-block; padding: 5px 10px; border-radius: 20px; background: var(--warning); font-size: 0.7em; margin: 2px; color: #000; }
+        
+        /* Animations */
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
         .hidden { display: none; }
-        .hero-card { border: 2px solid #e0e0e0; padding: 15px; margin: 10px 0; border-radius: 10px; cursor: pointer; transition: 0.3s; }
-        .hero-card:hover { border-color: #3498db; background-color: #f7fbff; }
-        .choice-btn { display: block; width: 100%; padding: 12px; margin: 10px 0; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
-        .choice-btn:hover { background: #2980b9; }
-        #feedback { margin-top: 20px; padding: 15px; border-radius: 5px; font-weight: bold; }
-        .correct { background: #d4edda; color: #155724; }
-        .wrong { background: #f8d7da; color: #721c24; }
+        .timer { font-weight: bold; color: var(--danger); float: right; }
+        canvas { max-width: 100%; margin-top: 20px; }
     </style>
 </head>
-<body>
+<body class="">
 
-<div id="game-container">
-    <h1>Wyzwania Umysłu</h1>
-    
-    <div id="hero-selection">
-        <h3>Wybierz swojego bohatera i jego wyzwanie:</h3>
-        <div class="hero-card" onclick="startGame('marek')">
-            <strong>Marek (Wyśmiewanie)</strong>: Grupa rówieśników żartuje z jego hobby.
+<div id="app">
+    <div class="card fade-in" id="hud">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <button onclick="toggleDarkMode()">🌓 Tryb</button>
+            <div>Energia: <span id="energy-val">100</span>% ⚡</div>
+            <div>XP: <span id="xp-val">0</span> ⭐</div>
         </div>
-        <div class="hero-card" onclick="startGame('ania')">
-            <strong>Ania (Lęk)</strong>: Boi się wystąpienia przed klasą/zespołem.
-        </div>
+        <div class="progress-container"><div id="main-progress" class="progress-fill"></div></div>
     </div>
 
-    <div id="game-screen" class="hidden">
+    <div id="screen-start" class="card fade-in">
+        <h1>Wyzwania Umysłu 2.0</h1>
+        <p>Wybierz bohatera, aby rozpocząć trening umiejętności psychologicznych.</p>
+        <div id="hero-list"></div>
+    </div>
+
+    <div id="screen-game" class="card hidden fade-in">
+        <div class="timer" id="timer-box">Czas: <span id="time-left">20</span>s</div>
         <h2 id="story-title"></h2>
+        <div id="avatar-container" style="font-size: 50px; text-align: center; margin-bottom: 10px;">👤</div>
         <p id="story-text"></p>
-        <div id="choices"></div>
-        <div id="feedback" class="hidden"></div>
-        <button id="next-btn" class="choice-btn hidden" onclick="resetGame()">Zagraj ponownie</button>
+        <div id="inventory" style="margin-bottom: 15px;"></div>
+        <div id="choices-container"></div>
+        <div id="feedback-box" class="hidden" style="margin-top: 20px; padding: 15px; border-radius: 8px;"></div>
+    </div>
+
+    <div id="screen-reflection" class="card hidden fade-in">
+        <h3>Dziennik Refleksji</h3>
+        <p>Zanim sprawdzisz wynik, opisz krótko: co czułeś w tej sytuacji?</p>
+        <textarea id="reflection-input" style="width: 100%; height: 100px; margin-bottom: 10px;"></textarea>
+        <button class="btn" style="background: var(--success); color: white;" onclick="finalizeLevel()">Dalej</button>
+    </div>
+
+    <div id="screen-results" class="card hidden fade-in">
+        <h2>Wynik Treningu</h2>
+        <div id="badges-container"></div>
+        <canvas id="statsChart"></canvas>
+        <div id="theory-module" style="margin-top: 20px; font-size: 0.9em; border-top: 1px solid #ddd; padding-top: 15px;"></div>
+        <button class="btn" style="background: var(--primary); color: white; margin-top: 20px;" onclick="location.reload()">Zagraj od nowa</button>
     </div>
 </div>
 
 <script>
-    const gameData = {
-        marek: {
-            title: "Marek i trudna rozmowa",
-            text: "Koledzy na korytarzu śmieją się z Twojego nowego plecaka. Czujesz, jak narasta w Tobie złość i wstyd. Co robisz?",
-            choices: [
-                { text: "Wyzywasz ich i zaczynasz krzyczeć.", feedback: "To agresja. Może to uciszy ich na chwilę, ale zaostrzy konflikt.", correct: false },
-                { text: "Spuszczasz głowę i szybko odchodzisz.", feedback: "To uległość. Twoje potrzeby nie zostały zaspokojone, a Ty czujesz się gorzej.", correct: false },
-                { text: "Mówisz spokojnie: 'Nie podoba mi się, gdy oceniacie moje rzeczy w ten sposób. Proszę, przestańcie'.", feedback: "Brawo! To asertywność. Wyrażasz swoje zdanie, nie atakując innych.", correct: true }
-            ]
-        },
-        ania: {
-            title: "Ania i paraliżujący strach",
-            text: "Zaraz Twoja kolej na prezentację. Serce bije Ci mocno, a dłonie się pocą. Myślisz: 'Na pewno się ośmieszę'. Jak reagujesz?",
-            choices: [
-                { text: "Uciekasz z sali, mówiąc że źle się czujesz.", feedback: "To unikanie. Przynosi ulgę na chwilę, ale potęguje lęk w przyszłości.", correct: false },
-                { text: "Stosujesz technikę oddechową 4-7-8 i zmieniasz myśl na: 'Jestem przygotowana'.", feedback: "Świetnie! Techniki regulacji napięcia i restrukturyzacja poznawcza pomagają opanować lęk.", correct: true },
-                { text: "Próbujesz o tym nie myśleć i zaciskasz zęby.", feedback: "Tłumienie emocji często sprawia, że wracają one z większą siłą.", correct: false }
-            ]
-        }
+    // Baza danych gry (Implementacja punktów 3, 4, 8, 11, 20)
+    const heroes = [
+        { id: 'marek', name: 'Marek', difficulty: 'Łatwy', skill: 'Asertywność', icon: '😡' },
+        { id: 'ania', name: 'Ania', difficulty: 'Średni', skill: 'Lęk Społeczny', icon: '😰' },
+        { id: 'kasia', name: 'Kasia', difficulty: 'Trudny', skill: 'Granice/NVC', icon: '😐' }
+    ];
+
+    const scenarios = {
+        marek: [
+            {
+                text: "Grupa znajomych śmieje się z Twojego hobby (szachy). Mówią: 'Ale nuda, idź do biblioteki'. Co robisz?",
+                timer: 15,
+                choices: [
+                    { text: "Mówię: 'Sami jesteście nudni' i odchodzę.", type: 'agresja', xp: 5, energy: -10, feedback: "To agresja obronna. Zamyka drogę do dialogu." },
+                    { text: "Uśmiecham się sztucznie i zmieniam temat.", type: 'uległość', xp: 2, energy: -20, feedback: "Uległość. Twoje pasje są ważne, nie musisz ich ukrywać." },
+                    { text: "Mówię: 'Lubię szachy, dają mi satysfakcję. Rozumiem, że dla Was to nuda, ale proszę o szacunek'.", type: 'asertywność', xp: 20, energy: 0, feedback: "Świetnie! To postawa asertywna.", tool: "Komunikat JA" }
+                ]
+            }
+        ],
+        ania: [
+            {
+                text: "Masz wygłosić prezentację. Czujesz paraliżujący lęk. Twoja pierwsza myśl: 'Zaraz zemdleję, wszyscy zobaczą jak się trzęsę'.",
+                timer: 20,
+                choices: [
+                    { text: "Uciekam pod pretekstem choroby.", type: 'uległość', xp: 0, energy: -30, feedback: "Unikanie wzmacnia lęk w dłuższej perspektywie." },
+                    { text: "Używam techniki oddechowej 4-7-8 i idę na środek.", type: 'asertywność', xp: 25, energy: -5, feedback: "Działanie mimo lęku to odwaga. Oddech uspokaja ciało.", tool: "Oddech 4-7-8" },
+                    { text: "Wmawiam sobie: 'Nie myśl o tym, bądź twarda'.", type: 'agresja', xp: 5, energy: -15, feedback: "Tłumienie emocji zwiększa napięcie." }
+                ]
+            }
+        ]
     };
 
-    function startGame(hero) {
-        document.getElementById('hero-selection').classList.add('hidden');
-        document.getElementById('game-screen').classList.remove('hidden');
-        
-        const data = gameData[hero];
-        document.getElementById('story-title').innerText = data.title;
-        document.getElementById('story-text').innerText = data.text;
-        
-        const choicesDiv = document.getElementById('choices');
-        choicesDiv.innerHTML = '';
-        
-        data.choices.forEach(choice => {
-            const btn = document.createElement('button');
-            btn.className = 'choice-btn';
-            btn.innerText = choice.text;
-            btn.onclick = () => showFeedback(choice);
-            choicesDiv.appendChild(btn);
+    // Stan gry (Implementacja 1, 2, 5, 9, 27)
+    let state = {
+        xp: parseInt(localStorage.getItem('psyXP')) || 0,
+        energy: 100,
+        currentHero: null,
+        currentStep: 0,
+        stats: { asertywność: 0, uległość: 0, agresja: 0 },
+        inventory: [],
+        timer: null
+    };
+
+    function init() {
+        document.getElementById('xp-val').innerText = state.xp;
+        const list = document.getElementById('hero-list');
+        heroes.forEach(h => {
+            list.innerHTML += `<div class="btn btn-choice" onclick="startHero('${h.id}')">${h.icon} <b>${h.name}</b> - Wyzwanie: ${h.skill} (${h.difficulty})</div>`;
         });
     }
 
-    function showFeedback(choice) {
-        const feedbackDiv = document.getElementById('feedback');
-        feedbackDiv.classList.remove('hidden', 'correct', 'wrong');
-        feedbackDiv.classList.add(choice.correct ? 'correct' : 'wrong');
-        feedbackDiv.innerText = choice.feedback;
-        document.getElementById('next-btn').classList.remove('hidden');
+    function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+
+    function startHero(heroId) {
+        state.currentHero = heroId;
+        state.currentStep = 0;
+        document.getElementById('screen-start').classList.add('hidden');
+        document.getElementById('screen-game').classList.remove('hidden');
+        renderStep();
     }
 
-    function resetGame() {
-        location.reload();
+    function renderStep() {
+        const step = scenarios[state.currentHero][state.currentStep];
+        document.getElementById('story-title').innerText = `Scenariusz: ${state.currentHero.toUpperCase()}`;
+        document.getElementById('story-text').innerText = step.text;
+        document.getElementById('avatar-container').innerText = heroes.find(h => h.id === state.currentHero).icon;
+        
+        const container = document.getElementById('choices-container');
+        container.innerHTML = '';
+        step.choices.forEach((c, idx) => {
+            container.innerHTML += `<button class="btn btn-choice" onclick="makeChoice(${idx})">${c.text}</button>`;
+        });
+
+        startTimer(step.timer);
     }
+
+    function startTimer(seconds) {
+        let left = seconds;
+        document.getElementById('time-left').innerText = left;
+        clearInterval(state.timer);
+        state.timer = setInterval(() => {
+            left--;
+            document.getElementById('time-left').innerText = left;
+            if (left <= 0) {
+                clearInterval(state.timer);
+                alert("Czas minął! Wybierz cokolwiek intuicyjnie.");
+            }
+        }, 1000);
+    }
+
+    function makeChoice(idx) {
+        clearInterval(state.timer);
+        const choice = scenarios[state.currentHero][state.currentStep].choices[idx];
+        
+        state.xp += choice.xp;
+        state.energy += choice.energy;
+        state.stats[choice.type]++;
+        if (choice.tool) state.inventory.push(choice.tool);
+
+        updateHUD();
+
+        const fb = document.getElementById('feedback-box');
+        fb.innerHTML = `<strong>${choice.type.toUpperCase()}</strong>: ${choice.feedback}`;
+        fb.className = `fade-in ${choice.type === 'asertywność' ? 'correct' : 'wrong'}`;
+        fb.classList.remove('hidden');
+
+        setTimeout(() => {
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-reflection').classList.remove('hidden');
+        }, 2000);
+    }
+
+    function updateHUD() {
+        document.getElementById('xp-val').innerText = state.xp;
+        document.getElementById('energy-val').innerText = state.energy;
+        document.getElementById('main-progress').style.width = (state.energy) + '%';
+        localStorage.setItem('psyXP', state.xp);
+    }
+
+    function finalizeLevel() {
+        document.getElementById('screen-reflection').classList.add('hidden');
+        document.getElementById('screen-results').classList.remove('hidden');
+        
+        // Render Wykresu (Punkt 27)
+        const ctx = document.getElementById('statsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Asertywność', 'Uległość', 'Agresja'],
+                datasets: [{
+                    data: [state.stats.asertywność, state.stats.uległość, state.stats.agresja],
+                    backgroundColor: ['#27ae60', '#f1c40f', '#e74c3c']
+                }]
+            }
+        });
+
+        // Moduł teorii (Punkt 11, 20)
+        document.getElementById('theory-module').innerHTML = `
+            <h4>Pigułka Wiedzy:</h4>
+            <blockquote>Asertywność to nie tylko odmawianie. To umiejętność wyrażania swoich myśli i uczuć przy jednoczesnym poszanowaniu granic innych osób. 
+            Według badań (Alberti & Emmons, 2017), trening asertywności obniża poziom kortyzolu. <br>
+            <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3584580/" target="_blank">Zobacz badanie o CBT</a></blockquote>
+        `;
+    }
+
+    init();
 </script>
 
 </body>
