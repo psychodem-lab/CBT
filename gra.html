@@ -40,13 +40,13 @@
         textarea { width: 100%; height: 120px; background: var(--card); color: var(--text); border-radius: 8px; padding: 10px; border: 1px solid #444; }
         .hidden { display: none; }
         
-        /* Styl mini gry */
         .mini-game-box { text-align: center; padding: 20px; border: 2px dashed var(--primary); border-radius: 15px; margin-top: 20px; }
         .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
 
         @media print {
             .no-print { display: none; }
-            body { background: white; color: black; }
+            body { background: white; color: black !important; }
+            * { color: black !important; }
             .card { box-shadow: none; border: 1px solid #ccc; }
         }
     </style>
@@ -102,53 +102,94 @@
     <div id="m-summary" class="hidden">
         <h1 style="text-align: center;">Raport Treningu Umiejętności Psychologicznych</h1>
         <div id="s-content"></div>
-        <button class="btn-choice no-print" onclick="window.location.reload()">Wróć do gry</button>
+        <button class="btn-choice no-print" onclick="window.location.reload()">Wróć do menu</button>
     </div>
 </div>
 
 <script>
     const scenarios = [
-        { id: 0, icon: '😤', title: 'Marek: Wyśmiewanie', text: 'Koledzy drwią z Twojego hobby (szachy). Co mówisz?', rQ: 'Jakie emocje czułeś, wybierając tę odpowiedź?', 
+        { id: 0, icon: '😤', title: 'Marek: Wyśmiewanie', text: 'Koledzy drwią z Twojego hobby. Co mówisz?', rQ: 'Jak czujesz się, gdy bronisz swoich pasji?', 
           choices: [
-            { t: '„Sami jesteście nudni, spadajcie!”', type: 'agresja', f: 'Agresja wywołuje opór.', xp: 5, en: -20 },
-            { t: '(Milczysz i odchodzisz)', type: 'uległość', f: 'Uległość kumuluje frustrację.', xp: 2, en: -15 },
-            { t: '„Lubię szachy. Przykro mi, że tak to oceniacie. Proszę przestańcie.”', type: 'asertywność', f: 'Wzorowa asertywność (Komunikat JA).', xp: 25, en: 0 },
-            { t: '„Przynajmniej nie oblewam matmy jak wy.”', type: 'pas-agresja', f: 'Pasywna agresja niszczy relacje.', xp: 10, en: -10 },
-            { t: '„Dobra, macie rację, to głupie.”', type: 'unikanie', f: 'Zdrada własnych wartości obniża samoocenę.', xp: 0, en: -25 }
+            { t: '„Sami jesteście nudni, spadajcie!”', type: 'agresja', f: 'Agresja rodzi opór.', xp: 5, en: -20 },
+            { t: '(Milczysz i odchodzisz)', type: 'uległość', f: 'Uległość kumuluje złość.', xp: 2, en: -15 },
+            { t: '„Lubię szachy i to moja sprawa. Proszę, nie drwijcie z tego.”', type: 'asertywność', f: 'Wzorowa asertywność.', xp: 25, en: 0 },
+            { t: '„Przynajmniej nie jestem taki słaby z matmy jak wy.”', type: 'pas-agresja', f: 'To tylko zaostrzy konflikt.', xp: 10, en: -10 },
+            { t: '„Dobra, to faktycznie głupie.”', type: 'unikanie', f: 'Zdrada własnych wartości boli najbardziej.', xp: 0, en: -25 }
           ]},
-        { id: 1, icon: '😰', title: 'Ania: Lęk Społeczny', text: 'Stoisz przed grupą. Czujesz, że zaraz zapomnisz języka.', rQ: 'Czy w realnym życiu też stosujesz unikanie czy konfrontację?',
+        { id: 1, icon: '😰', title: 'Ania: Lęk Społeczny', text: 'Stoisz przed grupą i czujesz paraliż.', rQ: 'Co najbardziej przeraża Cię w ocenie innych?',
           choices: [
-            { t: 'Uciekam z pokoju.', type: 'uległość', f: 'Ucieczka karmi lęk.', xp: 0, en: -30 },
-            { t: 'Mówię: „Stresuję się, dajcie mi chwilę”.', type: 'asertywność', f: 'Autodemaskacja lęku obniża napięcie.', xp: 25, en: -5 },
-            { t: 'Zaczynam krzyczeć na osobę w pierwszym rzędzie.', type: 'agresja', f: 'Przemieszczenie złości.', xp: 5, en: -40 },
-            { t: 'Stosuję oddech 4-7-8 i zaczynam mówić.', type: 'asertywność', f: 'Regulacja fizjologiczna (nerw błędny).', xp: 30, en: 0 },
-            { t: 'Wyobrażam sobie, że wszyscy są w śmiesznych strojach.', type: 'unikanie', f: 'Dystansowanie poznawcze – pomocne doraźnie.', xp: 15, en: -5 }
+            { t: 'Uciekam bez słowa.', type: 'uległość', f: 'Unikanie wzmacnia lęk.', xp: 0, en: -30 },
+            { t: 'Mówię: „Potrzebuję chwili, stresuję się”.', type: 'asertywność', f: 'Otwartość buduje autentyczność.', xp: 25, en: -5 },
+            { t: 'Zaczynam mówić bardzo głośno i agresywnie.', type: 'agresja', f: 'To maskowanie lęku siłą.', xp: 5, en: -40 },
+            { t: 'Stosuję oddech 4-7-8 i zaczynam spokojnie.', type: 'asertywność', f: 'Technika regulacji działa.', xp: 30, en: 0 },
+            { t: 'Zamykam oczy i liczę na cud.', type: 'unikanie', f: 'Bierna postawa nie pomaga.', xp: 10, en: -10 }
           ]},
-        { id: 2, icon: '💬', title: 'Kasia: Granice', text: 'Przyjaciel chce pożyczyć pieniądze po raz piąty.', rQ: 'Co jest dla Ciebie trudniejsze: odmowa czy pożyczenie wbrew sobie?',
+        { id: 2, icon: '💬', title: 'Kasia: Granice', text: 'Przyjaciel chce pożyczyć pieniądze 5-ty raz.', rQ: 'Dlaczego odmawianie jest dla Ciebie wyzwaniem?',
           choices: [
-            { t: '„Nie mam, idź do banku.”', type: 'agresja', f: 'Szorstka odmowa.', xp: 10, en: -5 },
-            { t: '„Jasne, nie ma problemu (choć sam nie mam).”', type: 'uległość', f: 'Brak granic niszczy Cię od środka.', xp: 2, en: -30 },
-            { t: '„Chętnie bym pomógł, ale umówiliśmy się na zwrot poprzednich. Nie pożyczę.”', type: 'asertywność', f: 'Konsekwencja i dbanie o zasady.', xp: 25, en: 0 },
-            { t: '„Znowu to samo? Jesteś beznadziejny.”', type: 'pas-agresja', f: 'Atak personalny zamiast odmowy.', xp: 5, en: -15 },
-            { t: '„Zobaczymy... pogadamy później.”', type: 'unikanie', f: 'Zwlekanie zwiększa stres.', xp: 5, en: -10 }
+            { t: '„Nie mam, idź do banku!”', type: 'agresja', f: 'Zbyt szorstko.', xp: 10, en: -5 },
+            { t: '„Jasne, proszę (mimo że sam potrzebuję).”', type: 'uległość', f: 'Brak granic prowadzi do frustracji.', xp: 2, en: -30 },
+            { t: '„Nie pożyczę Ci, bo nie oddałeś poprzednich. Przykro mi.”', type: 'asertywność', f: 'Konsekwencja to podstawa.', xp: 25, en: 0 },
+            { t: '„Znowu? Jesteś beznadziejny w finansach.”', type: 'pas-agresja', f: 'Atakujesz osobę, nie problem.', xp: 5, en: -15 },
+            { t: '„Zobaczymy... może jutro.”', type: 'unikanie', f: 'Zwlekanie to też brak decyzji.', xp: 5, en: -10 }
+          ]},
+        { id: 3, icon: '💼', title: 'Tomasz: Nadgodziny', text: 'Szef prosi o pracę w piątek wieczorem.', rQ: 'Czy boisz się konsekwencji zawodowych za asertywność?',
+          choices: [
+            { t: '„Sam Pan sobie siedź!”', type: 'agresja', f: 'Nieprofesjonalne.', xp: 5, en: -25 },
+            { t: '„Dobrze, zostanę (płacząc w duchu).”', type: 'uległość', f: 'Wypalenie blisko.', xp: 5, en: -40 },
+            { t: '„Dziś nie mogę. Mam plany, których nie zmienię.”', type: 'asertywność', f: 'Czas wolny to świętość.', xp: 25, en: 0 },
+            { t: '„Skoro inni wyszli, to ja też muszę?”', type: 'pas-agresja', f: 'Marudzenie nie pomaga.', xp: 10, en: -15 },
+            { t: 'Wyślizguję się z biura po cichu.', type: 'unikanie', f: 'Tchórzostwo buduje złą opinię.', xp: 15, en: -5 }
+          ]},
+        { id: 4, icon: '👂', title: 'Zofia: Empatia', text: 'Przyjaciel płacze po rozstaniu.', rQ: 'Czy umiesz słuchać bez dawania złotych rad?',
+          choices: [
+            { t: '„Daj spokój, tego kwiatu jest pół światu!”', type: 'agresja', f: 'To unieważnienie emocji.', xp: 5, en: -20 },
+            { t: 'Też zaczynam histerycznie płakać.', type: 'uległość', f: 'Przejmujesz ból, nie pomagasz.', xp: 2, en: -30 },
+            { t: '„Jestem przy Tobie. Chcesz o tym pogadać czy pomilczeć?”', type: 'asertywność', f: 'Idealne wsparcie.', xp: 30, en: 0 },
+            { t: '„Zawsze wybierasz złych ludzi.”', type: 'pas-agresja', f: 'Dobiegasz leżącego.', xp: 0, en: -15 },
+            { t: 'Mówię, że muszę pilnie iść do domu.', type: 'unikanie', f: 'Brak gotowości na trudne emocje.', xp: 5, en: -10 }
+          ]},
+        { id: 5, icon: '🧠', title: 'Adam: Samoocena', text: 'Dostałeś awans, ale czujesz, że to pomyłka.', rQ: 'Co mówi Twój wewnętrzny krytyk?',
+          choices: [
+            { t: '„To przez ich błąd, zaraz mnie wyrzucą.”', type: 'uległość', f: 'To syndrom oszusta.', xp: 5, en: -25 },
+            { t: 'Wypisuję swoje 3 sukcesy z ostatniego miesiąca.', type: 'asertywność', f: 'Fakty pokonują lęk.', xp: 25, en: 0 },
+            { t: 'Mówię wszystkim: „Jestem najlepszy, wiedziałem to!”', type: 'agresja', f: 'Pycha maskuje niepewność.', xp: 10, en: -10 },
+            { t: '„Zobaczymy jak długo to potrwa...”', type: 'pas-agresja', f: 'Podkopujesz własną radość.', xp: 5, en: -15 },
+            { t: 'Nie idę na spotkanie powitalne.', type: 'unikanie', f: 'Uciekasz przed sukcesem.', xp: 0, en: -20 }
+          ]},
+        { id: 6, icon: '💔', title: 'Ewa: Konflikt', text: 'Partner zapomniał o Twoich urodzinach.', rQ: 'Czy wolisz milczeć, czy wyjaśniać sytuację od razu?',
+          choices: [
+            { t: 'Robię wielką awanturę i rzucam talerzem.', type: 'agresja', f: 'Przemoc nie rozwiązuje problemów.', xp: 0, en: -40 },
+            { t: 'Mówię: „Nic się nie stało”, ale czuję żal.', type: 'uległość', f: 'Tłumienie uczuć rodzi urazę.', xp: 5, en: -30 },
+            { t: '„Jest mi bardzo przykro. To dla mnie ważny dzień.”', type: 'asertywność', f: 'Komunikat JA buduje bliskość.', xp: 25, en: 0 },
+            { t: 'Nie odzywam się do niego przez tydzień.', type: 'pas-agresja', f: 'Ciche dni to bierna agresja.', xp: 5, en: -25 },
+            { t: 'Udaję, że ja też zapomniałam.', type: 'unikanie', f: 'Gry psychologiczne są męczące.', xp: 10, en: -15 }
+          ]},
+        { id: 7, icon: '⏳', title: 'Jakub: Czas', text: 'Masz ważny termin, a siedzisz na telefonie.', rQ: 'Co Cię rozprasza, gdy pojawia się trudne zadanie?',
+          choices: [
+            { t: 'Wyrzucam telefon przez okno ze złości.', type: 'agresja', f: 'Zbyt gwałtownie.', xp: 5, en: -20 },
+            { t: '„Jestem leniem i nic nie osiągnę.”', type: 'uległość', f: 'Samobiczowanie paraliżuje.', xp: 0, en: -35 },
+            { t: 'Ustawiam stoper na 10 minut i zaczynam mały krok.', type: 'asertywność', f: 'Metoda małych kroków wygrywa.', xp: 25, en: 0 },
+            { t: '„Inni też nic nie robią...”', type: 'pas-agresja', f: 'Porównywanie to pułapka.', xp: 5, en: -10 },
+            { t: 'Idę spać, żeby o tym nie myśleć.', type: 'unikanie', f: 'Prokrastynacja to lęk przed porażką.', xp: 10, en: -15 }
+          ]},
+        { id: 8, icon: '📱', title: 'Lena: Hejt', text: 'Ktoś skrytykował Twój wygląd w sieci.', rQ: 'Czyja opinia o Tobie jest najważniejsza?',
+          choices: [
+            { t: 'Piszę mu: „Sam jesteś brzydki!”', type: 'agresja', f: 'Zniżasz się do jego poziomu.', xp: 5, en: -30 },
+            { t: 'Kasuję zdjęcie i płaczę.', type: 'uległość', f: 'Dajesz hejterowi władzę.', xp: 2, en: -25 },
+            { t: 'Blokuję użytkownika i zapominam.', type: 'asertywność', f: 'Higiena cyfrowa to podstawa.', xp: 20, en: 0 },
+            { t: '„Ciekawe co Ty masz w lustrze...”', type: 'pas-agresja', f: 'Wchodzisz w toksyczną grę.', xp: 5, en: -15 },
+            { t: 'Pytam znajomych, czy to prawda.', type: 'unikanie', f: 'Szukasz potwierdzenia na zewnątrz.', xp: 10, en: -10 }
+          ]},
+        { id: 9, icon: '🎯', title: 'Piotr: Perfekcja', text: 'Projekt jest gotowy, ale chcesz go poprawić 10-ty raz.', rQ: 'Czy umiesz odpuścić, gdy coś jest „wystarczająco dobre”?',
+          choices: [
+            { t: 'Zarywam noc, żeby dopieścić detale.', type: 'uległość', f: 'Kosztem zdrowia? Nie warto.', xp: 5, en: -40 },
+            { t: 'Wysyłam tak jak jest, akceptując niedoskonałość.', type: 'asertywność', f: 'Done is better than perfect.', xp: 30, en: 10 },
+            { t: 'Krzyczę na współpracownika, że on nic nie poprawił.', type: 'agresja', f: 'Przerzucasz własny stres na innych.', xp: 5, en: -20 },
+            { t: '„Zawsze muszę robić wszystko sam...”', type: 'pas-agresja', f: 'Męczeństwo nie pomaga.', xp: 5, en: -15 },
+            { t: 'Zostawiam projekt i nie oddaję go w ogóle.', type: 'unikanie', f: 'Sabotujesz własną pracę.', xp: 0, en: -30 }
           ]}
     ];
 
-    // Dopełnienie do 10 scenariuszy
-    for(let i=3; i<10; i++) {
-        scenarios.push({
-            id: i, icon: '🧠', title: `Wyzwanie ${i+1}`, text: 'Sytuacja wymagająca wyboru postawy psychologicznej.', rQ: 'Co było Twoim priorytetem w tej decyzji?',
-            choices: [
-                { t: 'Ostra riposta', type: 'agresja', f: 'Zbyt impulsywnie.', xp: 5, en: -20 },
-                { t: 'Zgoda dla świętego spokoju', type: 'uległość', f: 'Twoje potrzeby są ważne.', xp: 5, en: -30 },
-                { t: 'Jasne określenie swojego zdania', type: 'asertywność', f: 'Idealna równowaga.', xp: 25, en: 0 },
-                { t: 'Złośliwa uwaga pod nosem', type: 'pas-agresja', f: 'To psuje atmosferę.', xp: 10, en: -15 },
-                { t: 'Zmiana tematu / wyjście', type: 'unikanie', f: 'Problem pozostanie.', xp: 5, en: -10 }
-            ]
-        });
-    }
-
-    // Mini Gra - Dane
     const miniGameData = [
         { s: "Czuję ucisk w klatce piersiowej.", c: "Fakt" },
         { s: "Na pewno mnie nie lubią.", c: "Myśl" },
@@ -221,7 +262,6 @@
         document.getElementById('m-menu').classList.remove('hidden');
     }
 
-    // Obsługa Mini Gry
     function startMiniGame() {
         state.mgIndex = 0;
         document.getElementById('m-menu').classList.add('hidden');
@@ -268,9 +308,9 @@
         content.innerHTML = state.results.map(r => `
             <div class="card">
                 <h3>${r.title}</h3>
-                <p><strong>Refleksja:</strong> ${r.reflection || 'Brak'}</p>
+                <p><strong>Refleksja:</strong> ${r.reflection || 'Brak wpisu'}</p>
             </div>
-        `).join('') || '<p>Najpierw ukończ zadania!</p>';
+        `).join('') || '<p>Ukończ zadania, aby wygenerować raport.</p>';
         window.print();
     }
 
