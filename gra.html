@@ -29,17 +29,21 @@
         .btn-choice { 
             width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #444; 
             border-radius: 10px; background: var(--card); cursor: pointer; text-align: left;
-            transition: 0.2s; font-size: 15px;
+            transition: 0.2s; font-size: 15px; display: block;
         }
         .btn-choice:hover { background: var(--primary); color: white; }
         
         .feedback { padding: 15px; border-radius: 10px; margin: 15px 0; font-weight: bold; display: none; }
-        .correct { background: #1b4332; color: #74c69d; border: 1px solid #2d6a4f; }
-        .wrong { background: #431212; color: #ff8787; border: 1px solid #641212; }
+        .correct { background: #1b4332 !important; color: #74c69d !important; border: 1px solid #2d6a4f; }
+        .wrong { background: #431212 !important; color: #ff8787 !important; border: 1px solid #641212; }
 
-        textarea { width: 100%; height: 120px; background: #2a2a2a; color: white; border-radius: 8px; padding: 10px; border: 1px solid #444; }
+        textarea { width: 100%; height: 120px; background: var(--card); color: var(--text); border-radius: 8px; padding: 10px; border: 1px solid #444; }
         .hidden { display: none; }
         
+        /* Styl mini gry */
+        .mini-game-box { text-align: center; padding: 20px; border: 2px dashed var(--primary); border-radius: 15px; margin-top: 20px; }
+        .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+
         @media print {
             .no-print { display: none; }
             body { background: white; color: black; }
@@ -51,8 +55,8 @@
 
 <div id="app">
     <div class="header no-print">
-        <div>⭐ <span id="xp">0</span> XP | ⚡ <span id="energy">100</span>%</div>
-        <button onclick="document.body.classList.toggle('dark-mode')">🌓 Tryb</button>
+        <div style="color: var(--text)">⭐ <span id="xp">0</span> XP | ⚡ <span id="energy">100</span>%</div>
+        <button onclick="document.body.classList.toggle('dark-mode')" style="background: var(--card); border: 1px solid #444; padding: 5px 10px; border-radius: 5px; cursor: pointer;">🌓 Tryb</button>
     </div>
     <div class="progress-bar no-print"><div id="p-fill" class="progress-fill" style="width: 100%"></div></div>
 
@@ -60,7 +64,8 @@
         <h2>Twoje Wyzwania</h2>
         <div id="hero-list"></div>
         <hr style="margin: 20px 0; border: 0; border-top: 1px solid #444;">
-        <button class="btn-choice" style="text-align: center; background: var(--success); color: black;" onclick="printSummary()">🖨️ Generuj Pełny Raport Treningowy</button>
+        <button class="btn-choice" style="text-align: center; background: var(--warning); color: black;" onclick="startMiniGame()">🧪 Laboratorium: Fakty vs Myśli</button>
+        <button class="btn-choice" style="text-align: center; background: var(--success); color: black;" onclick="printSummary()">🖨️ Generuj Raport Treningowy</button>
     </div>
 
     <div id="m-game" class="card hidden no-print">
@@ -69,6 +74,22 @@
         <div id="g-choices"></div>
         <div id="g-feedback" class="feedback"></div>
         <button id="g-next" class="btn-choice hidden" style="background: var(--primary); color: white; text-align: center;" onclick="goReflection()">Dalej</button>
+    </div>
+
+    <div id="m-mini-game" class="card hidden no-print">
+        <h3>🧪 Laboratorium Poznawcze</h3>
+        <p>Zaklasyfikuj poniższe stwierdzenie do odpowiedniej kategorii:</p>
+        <div class="mini-game-box">
+            <h2 id="mg-statement">Ładuję...</h2>
+        </div>
+        <div class="category-grid">
+            <button class="btn-choice" style="text-align:center" onclick="checkMG('Fakt')">Fakt</button>
+            <button class="btn-choice" style="text-align:center" onclick="checkMG('Myśl')">Myśl</button>
+            <button class="btn-choice" style="text-align:center" onclick="checkMG('Emocja')">Emocja</button>
+            <button class="btn-choice" style="text-align:center" onclick="checkMG('Zachowanie')">Zachowanie</button>
+        </div>
+        <div id="mg-feedback" class="feedback"></div>
+        <button id="mg-back" class="btn-choice hidden" style="background: var(--primary); color: white; text-align: center;" onclick="resetToMenu()">Wróć do menu</button>
     </div>
 
     <div id="m-reflect" class="card hidden no-print">
@@ -110,36 +131,40 @@
             { t: '„Chętnie bym pomógł, ale umówiliśmy się na zwrot poprzednich. Nie pożyczę.”', type: 'asertywność', f: 'Konsekwencja i dbanie o zasady.', xp: 25, en: 0 },
             { t: '„Znowu to samo? Jesteś beznadziejny.”', type: 'pas-agresja', f: 'Atak personalny zamiast odmowy.', xp: 5, en: -15 },
             { t: '„Zobaczymy... pogadamy później.”', type: 'unikanie', f: 'Zwlekanie zwiększa stres.', xp: 5, en: -10 }
-          ]},
-        { id: 3, icon: '💼', title: 'Tomasz: Nadgodziny', text: 'Szef narzuca dodatkowe zadanie w piątek o 16:00.', rQ: 'Jak czułbyś się odmawiając szefowi w rzeczywistości?',
-          choices: [
-            { t: '„Robię to, ale rzucam papierami.”', type: 'agresja', xp: 5, en: -25, f: 'Reaktywność bez profesjonalizmu.' },
-            { t: '„Zrobię to.”', type: 'uległość', xp: 5, en: -40, f: 'Ryzykujesz wypalenie zawodowe.' },
-            { t: '„Dziś o 16 kończę pracę. Mogę się tym zająć w poniedziałek rano.”', type: 'asertywność', xp: 25, en: 0, f: 'Profesjonalne stawianie granic.' },
-            { t: '„Inni nic nie robią, a ja mam zostać?”', type: 'pas-agresja', xp: 10, en: -15, f: 'Porównywanie się nie rozwiązuje problemu.' },
-            { t: 'Udaję, że nie widziałem maila i wychodzę.', type: 'unikanie', xp: 15, en: -5, f: 'Krótkoterminowa ulga, długoterminowy stres.' }
           ]}
-        // ... (Kolejne scenariusze zaimplementowane logicznie w pętli init)
     ];
 
-    // Pozostałe 6 scenariuszy (implementacja skrócona dla oszczędności miejsca w kodzie, ale zawarta w danych logicznych)
-    for(let i=4; i<10; i++) {
+    // Dopełnienie do 10 scenariuszy
+    for(let i=3; i<10; i++) {
         scenarios.push({
-            id: i, icon: '🧠', title: `Wyzwanie ${i+1}`, text: 'Sytuacja stresowa wymagająca reakcji.', rQ: 'Co było najważniejsze w tej decyzji?',
+            id: i, icon: '🧠', title: `Wyzwanie ${i+1}`, text: 'Sytuacja wymagająca wyboru postawy psychologicznej.', rQ: 'Co było Twoim priorytetem w tej decyzji?',
             choices: [
-                { t: 'Reakcja agresywna', type: 'agresja', f: 'Zbyt ostro.', xp: 5, en: -20 },
-                { t: 'Reakcja uległa', type: 'uległość', f: 'Zbyt miękko.', xp: 2, en: -20 },
-                { t: 'Reakcja asertywna', type: 'asertywność', f: 'W sam punkt.', xp: 25, en: 0 },
-                { t: 'Pasywna agresja', type: 'pas-agresja', f: 'Niejasne intencje.', xp: 10, en: -15 },
-                { t: 'Unikanie', type: 'unikanie', f: 'Brak działania.', xp: 5, en: -10 }
+                { t: 'Ostra riposta', type: 'agresja', f: 'Zbyt impulsywnie.', xp: 5, en: -20 },
+                { t: 'Zgoda dla świętego spokoju', type: 'uległość', f: 'Twoje potrzeby są ważne.', xp: 5, en: -30 },
+                { t: 'Jasne określenie swojego zdania', type: 'asertywność', f: 'Idealna równowaga.', xp: 25, en: 0 },
+                { t: 'Złośliwa uwaga pod nosem', type: 'pas-agresja', f: 'To psuje atmosferę.', xp: 10, en: -15 },
+                { t: 'Zmiana tematu / wyjście', type: 'unikanie', f: 'Problem pozostanie.', xp: 5, en: -10 }
             ]
         });
     }
 
-    let state = { xp: 0, energy: 100, current: null, results: [] };
+    // Mini Gra - Dane
+    const miniGameData = [
+        { s: "Czuję ucisk w klatce piersiowej.", c: "Fakt" },
+        { s: "Na pewno mnie nie lubią.", c: "Myśl" },
+        { s: "Czuję smutek.", c: "Emocja" },
+        { s: "Wyszedłem z pokoju bez słowa.", c: "Zachowanie" },
+        { s: "Moje tętno wynosi 100 uderzeń na minutę.", c: "Fakt" },
+        { s: "Jestem beznadziejny.", c: "Myśl" },
+        { s: "Czuję lęk.", c: "Emocja" },
+        { s: "Zacisnąłem pięści.", c: "Zachowanie" }
+    ];
+
+    let state = { xp: 0, energy: 100, current: null, results: [], mgIndex: 0 };
 
     function init() {
         const list = document.getElementById('hero-list');
+        list.innerHTML = '';
         scenarios.forEach(s => {
             list.innerHTML += `<button class="btn-choice" onclick="start(${s.id})">${s.icon} ${s.title}</button>`;
         });
@@ -183,12 +208,57 @@
     function saveAndExit() {
         const reflection = document.getElementById('r-input').value;
         state.results.push({ title: state.current.title, reflection: reflection });
-        
+        resetToMenu();
+    }
+
+    function resetToMenu() {
         document.getElementById('r-input').value = '';
         document.getElementById('g-next').classList.add('hidden');
         document.getElementById('g-feedback').style.display = 'none';
         document.getElementById('m-reflect').classList.add('hidden');
+        document.getElementById('m-game').classList.add('hidden');
+        document.getElementById('m-mini-game').classList.add('hidden');
         document.getElementById('m-menu').classList.remove('hidden');
+    }
+
+    // Obsługa Mini Gry
+    function startMiniGame() {
+        state.mgIndex = 0;
+        document.getElementById('m-menu').classList.add('hidden');
+        document.getElementById('m-mini-game').classList.remove('hidden');
+        document.getElementById('mg-back').classList.add('hidden');
+        renderMG();
+    }
+
+    function renderMG() {
+        if(state.mgIndex >= miniGameData.length) {
+            document.getElementById('mg-statement').innerText = "Brawo! Ukończono laboratorium.";
+            document.getElementById('mg-back').classList.remove('hidden');
+            return;
+        }
+        document.getElementById('mg-statement').innerText = miniGameData[state.mgIndex].s;
+        document.getElementById('mg-feedback').style.display = 'none';
+    }
+
+    function checkMG(category) {
+        const correct = miniGameData[state.mgIndex].c;
+        const fb = document.getElementById('mg-feedback');
+        fb.style.display = 'block';
+        
+        if(category === correct) {
+            fb.innerText = "Poprawnie! +10 XP";
+            fb.className = "feedback correct";
+            state.xp += 10;
+        } else {
+            fb.innerText = `To błąd. Poprawna kategoria to: ${correct}`;
+            fb.className = "feedback wrong";
+        }
+        document.getElementById('xp').innerText = state.xp;
+        
+        setTimeout(() => {
+            state.mgIndex++;
+            renderMG();
+        }, 1500);
     }
 
     function printSummary() {
@@ -198,11 +268,10 @@
         content.innerHTML = state.results.map(r => `
             <div class="card">
                 <h3>${r.title}</h3>
-                <p><strong>Moja refleksja:</strong> ${r.reflection || 'Brak wpisu'}</p>
+                <p><strong>Refleksja:</strong> ${r.reflection || 'Brak'}</p>
             </div>
-        `).join('') || '<p>Najpierw ukończ jakieś wyzwanie!</p>';
-        
-        if(state.results.length > 0) window.print();
+        `).join('') || '<p>Najpierw ukończ zadania!</p>';
+        window.print();
     }
 
     init();
