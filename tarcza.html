@@ -3,202 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interaktywna Tarcza Wartości - ACT</title>
+    <title>Technika Bull's Eye - Mobilny Raport ACT</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            --bg: #f8fafc;
             --primary: #1e293b;
             --accent: #ef4444;
-            --secondary: #3b82f6;
-            --text: #334155;
+            --blue: #3b82f6;
+            --bg: #f8fafc;
         }
 
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
             background-color: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
+            margin: 0;
+            padding: 10px;
             display: flex;
-            justify-content: center;
-            padding: 20px;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .card {
-            background: white;
-            max-width: 800px;
+        .container {
+            max-width: 600px;
             width: 100%;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-        }
-
-        h1 { color: var(--primary); text-align: center; margin-bottom: 10px; }
-        
-        .instructions {
-            background: #f1f5f9;
+            background: white;
             padding: 20px;
-            border-left: 4px solid var(--secondary);
-            margin-bottom: 30px;
-            font-size: 0.95rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-sizing: border-box;
         }
 
-        .canvas-container {
+        h1 { font-size: 1.5rem; text-align: center; color: var(--primary); }
+
+        .instruction-box {
+            background: #eff6ff;
+            border-left: 4px solid var(--blue);
+            padding: 15px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        /* Responsywny kontener tarczy */
+        #report-area {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .canvas-wrapper {
             position: relative;
-            display: flex;
-            justify-content: center;
+            width: 100%;
+            aspect-ratio: 1 / 1;
             margin-bottom: 20px;
         }
 
         canvas {
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            cursor: crosshair;
-            background: #fff;
-            max-width: 100%;
+            width: 100% !important;
+            height: auto !important;
+            touch-action: none; /* Blokuje przewijanie strony przy dotykaniu tarczy */
+            border: 1px solid #e2e8f0;
+            border-radius: 50%;
         }
 
-        .action-plan {
-            margin-top: 30px;
-            padding: 20px;
-            border: 2px dashed #cbd5e1;
+        .plan-section {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px dashed var(--accent);
             border-radius: 8px;
-            display: none; /* Pokazywane po oddaniu strzału */
         }
-
-        .action-plan h3 { color: var(--accent); margin-top: 0; }
 
         textarea {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
+            height: 80px;
             margin-top: 10px;
-            font-family: inherit;
-            resize: vertical;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            font-size: 1rem;
         }
 
-        .controls {
+        .buttons {
             display: flex;
             gap: 10px;
-            justify-content: center;
-            margin-top: 25px;
+            margin-top: 20px;
         }
 
         button {
-            padding: 12px 24px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
+            flex: 1;
+            padding: 15px;
+            font-size: 1rem;
+            font-weight: bold;
             border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
         }
 
-        .btn-main { background: var(--secondary); color: white; }
-        .btn-outline { background: #e2e8f0; color: var(--primary); }
-        button:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-pdf { background: var(--blue); color: white; }
+        .btn-reset { background: #94a3b8; color: white; }
+        button:active { transform: scale(0.98); }
 
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            font-size: 0.8rem;
-            color: #94a3b8;
+        .score-list {
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 1.2rem; }
+            button { padding: 12px; font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h1>Technika "The Bull's Eye"</h1>
-    
-    <div class="instructions">
-        <strong>Instrukcja obsługi:</strong>
-        <ol>
-            <li>Tarcza reprezentuje Twoje wartości w 4 sferach życia. Środek ("dziesiątka") to życie w 100% zgodne z Twoimi wartościami.</li>
-            <li>Kliknij w każdym z 4 pól, aby postawić kropkę tam, gdzie Twoim zdaniem obecnie się znajdujesz.</li>
-            <li>Im dalej od środka postawisz znak, tym większy rozdźwięk czujesz między swoimi marzeniami a rzeczywistością.</li>
-        </ol>
+<div class="container">
+    <div id="report-area">
+        <h1>Tarcza Wartości (ACT)</h1>
+        
+        <div class="instruction-box">
+            <strong>Jak to zrobić?</strong> Kliknij w każdym z 4 pól. Środek to pełna zgodność z Twoimi wartościami. Brzeg tarczy to całkowity brak spójności. 
+        </div>
+
+        <div class="canvas-wrapper">
+            <canvas id="bullsEyeCanvas" width="600" height="600"></canvas>
+        </div>
+
+        <div id="scores" class="score-list"></div>
+
+        <div id="planSection" class="plan-section">
+            <h3 id="worstAreaTitle" style="margin:0; color: var(--accent);"></h3>
+            <p style="font-size: 0.85rem; margin: 5px 0;">To obszar najbardziej oddalony od Twoich wartości. Jaki jeden krok zrobisz w tym tygodniu?</p>
+            <textarea id="behavioralStep" placeholder="Zapisz konkretne działanie..."></textarea>
+        </div>
     </div>
 
-    <div class="canvas-container">
-        <canvas id="bullsEye" width="600" height="600"></canvas>
+    <div class="buttons">
+        <button class="btn-reset" onclick="resetAll()">Reset</button>
+        <button class="btn-pdf" onclick="saveAsPDF()">Pobierz PDF</button>
     </div>
-
-    <div id="actionContainer" class="action-plan">
-        <h3 id="worstAreaTitle">Plan naprawczy</h3>
-        <p>To jest obszar, który obecnie najbardziej odbiega od Twoich wartości. Jaki jeden, mały <strong>krok behawioralny</strong> możesz wykonać w tym tygodniu, aby zbliżyć się do środka tarczy?</p>
-        <textarea id="behavioralStep" placeholder="Np. 'Zadzwonię do mamy w czwartek o 18:00' lub 'Pójdę na 15-minutowy spacer po pracy'"></textarea>
-    </div>
-
-    <div class="controls">
-        <button class="btn-outline" onclick="reset()">Wyczyść tarczę</button>
-        <button class="btn-main" onclick="downloadPDF()">Pobierz Raport PDF</button>
-    </div>
-
-    <footer>
-        Opracowano na podstawie: Lundgren, T. et al. (2012). The Bull's-Eye Values Survey.
-    </footer>
 </div>
 
 <script>
-    const { jsPDF } = window.jspdf;
-    const canvas = document.getElementById('bullsEye');
+    const canvas = document.getElementById('bullsEyeCanvas');
     const ctx = canvas.getContext('2d');
-    const actionContainer = document.getElementById('actionContainer');
-    const worstAreaTitle = document.getElementById('worstAreaTitle');
-    
-    const size = 600;
-    const center = size / 2;
-    const maxRadius = 260;
-    
+    const planSection = document.getElementById('planSection');
+    const scoresDiv = document.getElementById('scores');
+
     let shots = {
-        "Praca i Edukacja": null,
-        "Relacje": null,
-        "Czas Wolny": null,
-        "Zdrowie i Rozwój": null
+        "RELACJE": null,
+        "PRACA / NAUKA": null,
+        "ZDROWIE / ROZWÓJ": null,
+        "CZAS WOLNY": null
     };
 
     function draw() {
-        ctx.clearRect(0, 0, size, size);
-        
-        // Tło tarczy
-        ctx.beginPath();
-        ctx.arc(center, center, maxRadius, 0, Math.PI * 2);
-        ctx.fillStyle = "#ffffff";
-        ctx.fill();
-        ctx.strokeStyle = "#cbd5e1";
-        ctx.stroke();
+        const size = 600;
+        const center = 300;
+        const radius = 280;
 
-        // Okręgi pomocnicze
-        for(let i=1; i<=5; i++) {
+        ctx.clearRect(0, 0, size, size);
+
+        // Rysowanie kręgów
+        for(let i=5; i>=1; i--) {
             ctx.beginPath();
-            ctx.arc(center, center, (maxRadius/5)*i, 0, Math.PI*2);
+            ctx.arc(center, center, (radius/5)*i, 0, Math.PI*2);
+            ctx.fillStyle = i % 2 === 0 ? '#ffffff' : '#f1f5f9';
+            ctx.fill();
+            ctx.strokeStyle = '#cbd5e1';
             ctx.stroke();
         }
 
-        // Linie podziału
+        // Osie
         ctx.beginPath();
-        ctx.moveTo(center - maxRadius, center); ctx.lineTo(center + maxRadius, center);
-        ctx.moveTo(center, center - maxRadius); ctx.lineTo(center, center + maxRadius);
-        ctx.strokeStyle = "#1e293b";
+        ctx.moveTo(center-radius, center); ctx.lineTo(center+radius, center);
+        ctx.moveTo(center, center-radius); ctx.lineTo(center, center+radius);
+        ctx.strokeStyle = '#1e293b';
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Czytelne Etykiety Sfer
-        ctx.font = "bold 18px Inter, sans-serif";
-        ctx.fillStyle = "#1e293b";
+        // Napisy Sfer
+        ctx.font = "bold 22px Arial";
+        ctx.fillStyle = "#475569";
         ctx.textAlign = "center";
-        
-        ctx.fillText("PRACA I EDUKACJA", center + 130, center - 130);
-        ctx.fillText("RELACJE", center - 130, center - 130);
-        ctx.fillText("CZAS WOLNY", center - 130, center + 145);
-        ctx.fillText("ZDROWIE I ROZWÓJ", center + 130, center + 145);
+        ctx.fillText("RELACJE", center - 140, center - 140);
+        ctx.fillText("PRACA / NAUKA", center + 140, center - 140);
+        ctx.fillText("CZAS WOLNY", center - 140, center + 160);
+        ctx.fillText("ZDROWIE", center + 140, center + 160);
 
-        // Rysowanie strzałów
-        Object.values(shots).forEach(s => {
-            if(s) {
+        // Strzały
+        Object.entries(shots).forEach(([name, data]) => {
+            if(data) {
                 ctx.beginPath();
-                ctx.arc(s.x, s.y, 10, 0, Math.PI*2);
+                ctx.arc(data.x, data.y, 12, 0, Math.PI*2);
                 ctx.fillStyle = "#ef4444";
                 ctx.fill();
                 ctx.strokeStyle = "white";
@@ -208,78 +207,75 @@
         });
     }
 
-    canvas.addEventListener('click', (e) => {
+    // Obsługa dotyku i myszki
+    canvas.addEventListener('pointerdown', (e) => {
         const rect = canvas.getBoundingClientRect();
-        const x = (e.clientX - rect.left) * (size / rect.width);
-        const y = (e.clientY - rect.top) * (size / rect.height);
-        
-        const dist = Math.sqrt(Math.pow(x-center, 2) + Math.pow(y-center, 2));
-        
-        if(dist <= maxRadius) {
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const x = (e.clientX - rect.left) * scaleX;
+        const y = (e.clientY - rect.top) * scaleY;
+
+        const dist = Math.sqrt(Math.pow(x-300, 2) + Math.pow(y-300, 2));
+
+        if(dist <= 280) {
             let area = "";
-            if(x > center && y < center) area = "Praca i Edukacja";
-            else if(x < center && y < center) area = "Relacje";
-            else if(x < center && y > center) area = "Czas Wolny";
-            else area = "Zdrowie i Rozwój";
+            if(x < 300 && y < 300) area = "RELACJE";
+            else if(x >= 300 && y < 300) area = "PRACA / NAUKA";
+            else if(x < 300 && y >= 300) area = "CZAS WOLNY";
+            else area = "ZDROWIE / ROZWÓJ";
 
             shots[area] = {x, y, dist};
             draw();
-            updateActionPlan();
+            calculateResults();
         }
     });
 
-    function updateActionPlan() {
+    function calculateResults() {
+        let output = "<strong>Twoje wyniki:</strong><br>";
         let maxDist = -1;
         let worstArea = "";
 
-        for (const [name, data] of Object.entries(shots)) {
-            if(data && data.dist > maxDist) {
-                maxDist = data.dist;
-                worstArea = name;
+        Object.entries(shots).forEach(([name, data]) => {
+            if(data) {
+                const score = Math.round(100 - (data.dist/280*100));
+                output += `• ${name}: ${score}% spójności<br>`;
+                if(data.dist > maxDist) {
+                    maxDist = data.dist;
+                    worstArea = name;
+                }
             }
-        }
+        });
 
+        scoresDiv.innerHTML = output;
         if(worstArea) {
-            actionContainer.style.display = "block";
-            worstAreaTitle.innerText = `Obszar wymagający uwagi: ${worstArea}`;
+            planSection.style.display = "block";
+            document.getElementById('worstAreaTitle').innerText = `Cel: ${worstArea}`;
         }
     }
 
-    function reset() {
-        shots = { "Praca i Edukacja": null, "Relacje": null, "Czas Wolny": null, "Zdrowie i Rozwój": null };
-        actionContainer.style.display = "none";
+    async function saveAsPDF() {
+        const { jsPDF } = window.jspdf;
+        const report = document.getElementById('report-area');
+        
+        // Renderowanie obszaru HTML do obrazu (rozwiązuje problem polskich znaków)
+        const canvasImage = await html2canvas(report, { scale: 2 });
+        const imgData = canvasImage.toDataURL('image/png');
+        
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+        pdf.addImage(imgData, 'PNG', 0, 10, pdfWidth, pdfHeight);
+        pdf.save("moje_wartosci_ACT.pdf");
+    }
+
+    function resetAll() {
+        shots = { "RELACJE": null, "PRACA / NAUKA": null, "ZDROWIE / ROZWÓJ": null, "CZAS WOLNY": null };
+        planSection.style.display = "none";
+        scoresDiv.innerHTML = "";
         document.getElementById('behavioralStep').value = "";
         draw();
-    }
-
-    function downloadPDF() {
-        const doc = new jsPDF();
-        doc.setFontSize(20);
-        doc.text("Raport Bull's Eye - Analiza Wartosci", 20, 20);
-        
-        const img = canvas.toDataURL('image/png');
-        doc.addImage(img, 'PNG', 40, 40, 130, 130);
-        
-        doc.setFontSize(14);
-        doc.text("Twoje wyniki (0-100% spójności):", 20, 180);
-        
-        let y = 190;
-        doc.setFontSize(11);
-        for (const [name, data] of Object.entries(shots)) {
-            const score = data ? Math.round(100 - (data.dist/maxRadius*100)) : "Nie oceniono";
-            doc.text(`${name}: ${score}%`, 20, y);
-            y += 8;
-        }
-
-        const plan = document.getElementById('behavioralStep').value;
-        if(plan) {
-            doc.setFontSize(14);
-            doc.text("Zaplanowany krok behawioralny:", 20, y + 10);
-            doc.setFontSize(11);
-            doc.text(doc.splitTextToSize(plan, 170), 20, y + 20);
-        }
-
-        doc.save("moje_wartosci.pdf");
     }
 
     draw();
