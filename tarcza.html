@@ -3,201 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raport Bull's Eye - Terapia ACT</title>
+    <title>Interaktywna Tarcza Wartości - ACT</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --accent-color: #e74c3c;
-            --secondary-color: #3498db;
-            --bg-color: #f4f7f6;
+            --bg: #f8fafc;
+            --primary: #1e293b;
+            --accent: #ef4444;
+            --secondary: #3b82f6;
+            --text: #334155;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
             padding: 20px;
         }
 
-        .container {
+        .card {
             background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            max-width: 650px;
+            max-width: 800px;
             width: 100%;
-            text-align: center;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        h1 { color: var(--primary); text-align: center; margin-bottom: 10px; }
+        
+        .instructions {
+            background: #f1f5f9;
+            padding: 20px;
+            border-left: 4px solid var(--secondary);
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .canvas-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
         }
 
         canvas {
-            border-radius: 50%;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
             cursor: crosshair;
+            background: #fff;
             max-width: 100%;
-            height: auto;
-            border: 5px solid var(--primary-color);
-            margin-bottom: 20px;
+        }
+
+        .action-plan {
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            display: none; /* Pokazywane po oddaniu strzału */
+        }
+
+        .action-plan h3 { color: var(--accent); margin-top: 0; }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-family: inherit;
+            resize: vertical;
         }
 
         .controls {
             display: flex;
             gap: 10px;
             justify-content: center;
-            margin-top: 10px;
+            margin-top: 25px;
         }
 
         button {
-            padding: 12px 20px;
-            font-size: 14px;
-            font-weight: bold;
-            border: none;
-            border-radius: 5px;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.2s;
+            border: none;
         }
 
-        .btn-reset { background-color: #95a5a6; color: white; }
-        .btn-pdf { background-color: var(--secondary-color); color: white; }
-        button:hover { opacity: 0.8; }
+        .btn-main { background: var(--secondary); color: white; }
+        .btn-outline { background: #e2e8f0; color: var(--primary); }
+        button:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        .results-box {
-            margin: 20px 0;
-            padding: 15px;
-            background: #fdf2f2;
-            border-radius: 8px;
-            font-weight: bold;
-            color: var(--accent-color);
-        }
-
-        .source-footer {
-            margin-top: 30px;
-            font-size: 11px;
-            color: #7f8c8d;
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.8rem;
+            color: #94a3b8;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Twoja Tarcza Wartości</h1>
-    <p>Zaznacz (X) w każdym kwadrancie, jak blisko wartości jesteś.</p>
+<div class="card">
+    <h1>Technika "The Bull's Eye"</h1>
     
-    <canvas id="bullseyeCanvas" width="500" height="500"></canvas>
-    
-    <div id="feedback" class="results-box">
-        Kliknij w tarczę, aby oddać strzał.
+    <div class="instructions">
+        <strong>Instrukcja obsługi:</strong>
+        <ol>
+            <li>Tarcza reprezentuje Twoje wartości w 4 sferach życia. Środek ("dziesiątka") to życie w 100% zgodne z Twoimi wartościami.</li>
+            <li>Kliknij w każdym z 4 pól, aby postawić kropkę tam, gdzie Twoim zdaniem obecnie się znajdujesz.</li>
+            <li>Im dalej od środka postawisz znak, tym większy rozdźwięk czujesz między swoimi marzeniami a rzeczywistością.</li>
+        </ol>
+    </div>
+
+    <div class="canvas-container">
+        <canvas id="bullsEye" width="600" height="600"></canvas>
+    </div>
+
+    <div id="actionContainer" class="action-plan">
+        <h3 id="worstAreaTitle">Plan naprawczy</h3>
+        <p>To jest obszar, który obecnie najbardziej odbiega od Twoich wartości. Jaki jeden, mały <strong>krok behawioralny</strong> możesz wykonać w tym tygodniu, aby zbliżyć się do środka tarczy?</p>
+        <textarea id="behavioralStep" placeholder="Np. 'Zadzwonię do mamy w czwartek o 18:00' lub 'Pójdę na 15-minutowy spacer po pracy'"></textarea>
     </div>
 
     <div class="controls">
-        <button class="btn-reset" onclick="resetCanvas()">Wyczyść</button>
-        <button class="btn-pdf" onclick="generatePDF()">Pobierz raport PDF</button>
+        <button class="btn-outline" onclick="reset()">Wyczyść tarczę</button>
+        <button class="btn-main" onclick="downloadPDF()">Pobierz Raport PDF</button>
     </div>
 
-    <div class="source-footer">
+    <footer>
         Opracowano na podstawie: Lundgren, T. et al. (2012). The Bull's-Eye Values Survey.
-    </div>
+    </footer>
 </div>
 
 <script>
     const { jsPDF } = window.jspdf;
-    const canvas = document.getElementById('bullseyeCanvas');
+    const canvas = document.getElementById('bullsEye');
     const ctx = canvas.getContext('2d');
-    const centerX = 250, centerY = 250, radius = 240;
-    let points = [];
+    const actionContainer = document.getElementById('actionContainer');
+    const worstAreaTitle = document.getElementById('worstAreaTitle');
+    
+    const size = 600;
+    const center = size / 2;
+    const maxRadius = 260;
+    
+    let shots = {
+        "Praca i Edukacja": null,
+        "Relacje": null,
+        "Czas Wolny": null,
+        "Zdrowie i Rozwój": null
+    };
 
-    function drawTarget() {
-        ctx.clearRect(0, 0, 500, 500);
+    function draw() {
+        ctx.clearRect(0, 0, size, size);
         
-        // Okręgi
-        for (let i = 5; i > 0; i--) {
+        // Tło tarczy
+        ctx.beginPath();
+        ctx.arc(center, center, maxRadius, 0, Math.PI * 2);
+        ctx.fillStyle = "#ffffff";
+        ctx.fill();
+        ctx.strokeStyle = "#cbd5e1";
+        ctx.stroke();
+
+        // Okręgi pomocnicze
+        for(let i=1; i<=5; i++) {
             ctx.beginPath();
-            ctx.arc(centerX, centerY, (radius/5)*i, 0, Math.PI*2);
-            ctx.strokeStyle = '#ddd';
+            ctx.arc(center, center, (maxRadius/5)*i, 0, Math.PI*2);
             ctx.stroke();
         }
 
         // Linie podziału
         ctx.beginPath();
-        ctx.moveTo(centerX-radius, centerY); ctx.lineTo(centerX+radius, centerY);
-        ctx.moveTo(centerX, centerY-radius); ctx.lineTo(centerX, centerY+radius);
-        ctx.strokeStyle = '#2c3e50';
+        ctx.moveTo(center - maxRadius, center); ctx.lineTo(center + maxRadius, center);
+        ctx.moveTo(center, center - maxRadius); ctx.lineTo(center, center + maxRadius);
+        ctx.strokeStyle = "#1e293b";
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Etykiety
-        ctx.font = "14px Arial"; ctx.fillStyle = "#7f8c8d";
-        ctx.fillText("Praca/Edukacja", 360, 40);
-        ctx.fillText("Relacje", 40, 40);
-        ctx.fillText("Czas wolny", 40, 470);
-        ctx.fillText("Zdrowie/Rozwój", 360, 470);
+        // Czytelne Etykiety Sfer
+        ctx.font = "bold 18px Inter, sans-serif";
+        ctx.fillStyle = "#1e293b";
+        ctx.textAlign = "center";
+        
+        ctx.fillText("PRACA I EDUKACJA", center + 130, center - 130);
+        ctx.fillText("RELACJE", center - 130, center - 130);
+        ctx.fillText("CZAS WOLNY", center - 130, center + 145);
+        ctx.fillText("ZDROWIE I ROZWÓJ", center + 130, center + 145);
 
-        // Punkty
-        points.forEach(p => {
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, 10, 0, Math.PI*2);
-            ctx.fillStyle = '#e74c3c';
-            ctx.fill();
-            ctx.strokeStyle = 'white';
-            ctx.stroke();
+        // Rysowanie strzałów
+        Object.values(shots).forEach(s => {
+            if(s) {
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, 10, 0, Math.PI*2);
+                ctx.fillStyle = "#ef4444";
+                ctx.fill();
+                ctx.strokeStyle = "white";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            }
         });
     }
 
-    canvas.addEventListener('mousedown', (e) => {
+    canvas.addEventListener('click', (e) => {
         const rect = canvas.getBoundingClientRect();
-        const x = (e.clientX - rect.left) * (500 / rect.width);
-        const y = (e.clientY - rect.top) * (500 / rect.height);
+        const x = (e.clientX - rect.left) * (size / rect.width);
+        const y = (e.clientY - rect.top) * (size / rect.height);
         
-        const dist = Math.sqrt(Math.pow(x-centerX, 2) + Math.pow(y-centerY, 2));
-        if(dist <= radius) {
-            points.push({x, y, dist});
-            drawTarget();
-            const score = Math.round(100 - (dist/radius*100));
-            document.getElementById('feedback').innerText = `Ostatni wynik: ${score}/100`;
+        const dist = Math.sqrt(Math.pow(x-center, 2) + Math.pow(y-center, 2));
+        
+        if(dist <= maxRadius) {
+            let area = "";
+            if(x > center && y < center) area = "Praca i Edukacja";
+            else if(x < center && y < center) area = "Relacje";
+            else if(x < center && y > center) area = "Czas Wolny";
+            else area = "Zdrowie i Rozwój";
+
+            shots[area] = {x, y, dist};
+            draw();
+            updateActionPlan();
         }
     });
 
-    function resetCanvas() { points = []; drawTarget(); }
+    function updateActionPlan() {
+        let maxDist = -1;
+        let worstArea = "";
 
-    async function generatePDF() {
-        const doc = new jsPDF();
-        const date = new Date().toLocaleDateString();
-
-        doc.setFontSize(22);
-        doc.text("Raport: Technika Bull's Eye", 20, 20);
-        
-        doc.setFontSize(12);
-        doc.text(`Data wykonania: ${date}`, 20, 30);
-        doc.text("Metoda: Terapia Akceptacji i Zaangażowania (ACT)", 20, 37);
-
-        // Przechwycenie obrazu tarczy
-        const imgData = canvas.toDataURL('image/png');
-        doc.addImage(imgData, 'PNG', 45, 50, 120, 120);
-
-        doc.text("Analiza wyników:", 20, 185);
-        doc.setFontSize(10);
-        let yPos = 195;
-        
-        if(points.length === 0) {
-            doc.text("- Brak oddanych strzałów do analizy.", 20, yPos);
-        } else {
-            points.forEach((p, index) => {
-                const score = Math.round(100 - (p.dist/radius*100));
-                doc.text(`Strzał ${index + 1}: Wynik spójności ${score}/100`, 20, yPos);
-                yPos += 7;
-            });
+        for (const [name, data] of Object.entries(shots)) {
+            if(data && data.dist > maxDist) {
+                maxDist = data.dist;
+                worstArea = name;
+            }
         }
 
-        doc.setFontSize(9);
-        doc.setTextColor(100);
-        doc.text("Interpretacja: Im wynik bliższy 100, tym większa spójność działań z wartościami.", 20, 270);
-        doc.text("Źródło: Lundgren et al. (2012). Cognitive and Behavioral Practice.", 20, 275);
-
-        doc.save("Raport_Bulls_Eye.pdf");
+        if(worstArea) {
+            actionContainer.style.display = "block";
+            worstAreaTitle.innerText = `Obszar wymagający uwagi: ${worstArea}`;
+        }
     }
 
-    drawTarget();
+    function reset() {
+        shots = { "Praca i Edukacja": null, "Relacje": null, "Czas Wolny": null, "Zdrowie i Rozwój": null };
+        actionContainer.style.display = "none";
+        document.getElementById('behavioralStep').value = "";
+        draw();
+    }
+
+    function downloadPDF() {
+        const doc = new jsPDF();
+        doc.setFontSize(20);
+        doc.text("Raport Bull's Eye - Analiza Wartosci", 20, 20);
+        
+        const img = canvas.toDataURL('image/png');
+        doc.addImage(img, 'PNG', 40, 40, 130, 130);
+        
+        doc.setFontSize(14);
+        doc.text("Twoje wyniki (0-100% spójności):", 20, 180);
+        
+        let y = 190;
+        doc.setFontSize(11);
+        for (const [name, data] of Object.entries(shots)) {
+            const score = data ? Math.round(100 - (data.dist/maxRadius*100)) : "Nie oceniono";
+            doc.text(`${name}: ${score}%`, 20, y);
+            y += 8;
+        }
+
+        const plan = document.getElementById('behavioralStep').value;
+        if(plan) {
+            doc.setFontSize(14);
+            doc.text("Zaplanowany krok behawioralny:", 20, y + 10);
+            doc.setFontSize(11);
+            doc.text(doc.splitTextToSize(plan, 170), 20, y + 20);
+        }
+
+        doc.save("moje_wartosci.pdf");
+    }
+
+    draw();
 </script>
+
 </body>
 </html>
