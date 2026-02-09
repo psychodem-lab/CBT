@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raport Bull's Eye - Terapia ACT</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --secondary-color: #3498db;
+            --bg-color: #f4f7f6;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 650px;
+            width: 100%;
+            text-align: center;
+        }
+
+        canvas {
+            border-radius: 50%;
+            cursor: crosshair;
+            max-width: 100%;
+            height: auto;
+            border: 5px solid var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-reset { background-color: #95a5a6; color: white; }
+        .btn-pdf { background-color: var(--secondary-color); color: white; }
+        button:hover { opacity: 0.8; }
+
+        .results-box {
+            margin: 20px 0;
+            padding: 15px;
+            background: #fdf2f2;
+            border-radius: 8px;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .source-footer {
+            margin-top: 30px;
+            font-size: 11px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Twoja Tarcza Wartości</h1>
+    <p>Zaznacz (X) w każdym kwadrancie, jak blisko wartości jesteś.</p>
+    
+    <canvas id="bullseyeCanvas" width="500" height="500"></canvas>
+    
+    <div id="feedback" class="results-box">
+        Kliknij w tarczę, aby oddać strzał.
+    </div>
+
+    <div class="controls">
+        <button class="btn-reset" onclick="resetCanvas()">Wyczyść</button>
+        <button class="btn-pdf" onclick="generatePDF()">Pobierz raport PDF</button>
+    </div>
+
+    <div class="source-footer">
+        Opracowano na podstawie: Lundgren, T. et al. (2012). The Bull's-Eye Values Survey.
+    </div>
+</div>
+
+<script>
+    const { jsPDF } = window.jspdf;
+    const canvas = document.getElementById('bullseyeCanvas');
+    const ctx = canvas.getContext('2d');
+    const centerX = 250, centerY = 250, radius = 240;
+    let points = [];
+
+    function drawTarget() {
+        ctx.clearRect(0, 0, 500, 500);
+        
+        // Okręgi
+        for (let i = 5; i > 0; i--) {
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, (radius/5)*i, 0, Math.PI*2);
+            ctx.strokeStyle = '#ddd';
+            ctx.stroke();
+        }
+
+        // Linie podziału
+        ctx.beginPath();
+        ctx.moveTo(centerX-radius, centerY); ctx.lineTo(centerX+radius, centerY);
+        ctx.moveTo(centerX, centerY-radius); ctx.lineTo(centerX, centerY+radius);
+        ctx.strokeStyle = '#2c3e50';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Etykiety
+        ctx.font = "14px Arial"; ctx.fillStyle = "#7f8c8d";
+        ctx.fillText("Praca/Edukacja", 360, 40);
+        ctx.fillText("Relacje", 40, 40);
+        ctx.fillText("Czas wolny", 40, 470);
+        ctx.fillText("Zdrowie/Rozwój", 360, 470);
+
+        // Punkty
+        points.forEach(p => {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 10, 0, Math.PI*2);
+            ctx.fillStyle = '#e74c3c';
+            ctx.fill();
+            ctx.strokeStyle = 'white';
+            ctx.stroke();
+        });
+    }
+
+    canvas.addEventListener('mousedown', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX - rect.left) * (500 / rect.width);
+        const y = (e.clientY - rect.top) * (500 / rect.height);
+        
+        const dist = Math.sqrt(Math.pow(x-centerX, 2) + Math.pow(y-centerY, 2));
+        if(dist <= radius) {
+            points.push({x, y, dist});
+            drawTarget();
+            const score = Math.round(100 - (dist/radius*100));
+            document.getElementById('feedback').innerText = `Ostatni wynik: ${score}/100`;
+        }
+    });
+
+    function resetCanvas() { points = []; drawTarget(); }
+
+    async function generatePDF() {
+        const doc = new jsPDF();
+        const date = new Date().toLocaleDateString();
+
+        doc.setFontSize(22);
+        doc.text("Raport: Technika Bull's Eye", 20, 20);
+        
+        doc.setFontSize(12);
+        doc.text(`Data wykonania: ${date}`, 20, 30);
+        doc.text("Metoda: Terapia Akceptacji i Zaangażowania (ACT)", 20, 37);
+
+        // Przechwycenie obrazu tarczy
+        const imgData = canvas.toDataURL('image/png');
+        doc.addImage(imgData, 'PNG', 45, 50, 120, 120);
+
+        doc.text("Analiza wyników:", 20, 185);
+        doc.setFontSize(10);
+        let yPos = 195;
+        
+        if(points.length === 0) {
+            doc.text("- Brak oddanych strzałów do analizy.", 20, yPos);
+        } else {
+            points.forEach((p, index) => {
+                const score = Math.round(100 - (p.dist/radius*100));
+                doc.text(`Strzał ${index + 1}: Wynik spójności ${score}/100`, 20, yPos);
+                yPos += 7;
+            });
+        }
+
+        doc.setFontSize(9);
+        doc.setTextColor(100);
+        doc.text("Interpretacja: Im wynik bliższy 100, tym większa spójność działań z wartościami.", 20, 270);
+        doc.text("Źródło: Lundgren et al. (2012). Cognitive and Behavioral Practice.", 20, 275);
+
+        doc.save("Raport_Bulls_Eye.pdf");
+    }
+
+    drawTarget();
+</script>
+</body>
+</html>
