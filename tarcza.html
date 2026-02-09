@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Technika Bull's Eye - Mobilny Raport ACT</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <title>Tarcza Wartości - Wydruk ACT</title>
     <style>
         :root {
             --primary: #1e293b;
@@ -25,30 +23,23 @@
         }
 
         .container {
-            max-width: 600px;
+            max-width: 650px;
             width: 100%;
             background: white;
-            padding: 20px;
+            padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             box-sizing: border-box;
         }
 
-        h1 { font-size: 1.5rem; text-align: center; color: var(--primary); }
+        h1 { font-size: 1.6rem; text-align: center; color: var(--primary); margin-top: 0; }
 
         .instruction-box {
             background: #eff6ff;
             border-left: 4px solid var(--blue);
             padding: 15px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             margin-bottom: 20px;
-        }
-
-        /* Responsywny kontener tarczy */
-        #report-area {
-            background: white;
-            padding: 10px;
-            border-radius: 8px;
         }
 
         .canvas-wrapper {
@@ -61,34 +52,39 @@
         canvas {
             width: 100% !important;
             height: auto !important;
-            touch-action: none; /* Blokuje przewijanie strony przy dotykaniu tarczy */
+            touch-action: none;
             border: 1px solid #e2e8f0;
             border-radius: 50%;
+            background: white;
         }
 
         .plan-section {
             display: none;
-            margin-top: 20px;
-            padding: 15px;
+            margin-top: 25px;
+            padding: 20px;
             border: 2px dashed var(--accent);
             border-radius: 8px;
+            background: #fffafa;
         }
 
         textarea {
             width: 100%;
-            height: 80px;
+            height: 100px;
             margin-top: 10px;
-            padding: 10px;
+            padding: 12px;
             box-sizing: border-box;
             border: 1px solid #cbd5e1;
-            border-radius: 5px;
+            border-radius: 6px;
             font-size: 1rem;
+            font-family: inherit;
         }
 
         .buttons {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 15px;
+            margin-top: 25px;
+            width: 100%;
+            max-width: 650px;
         }
 
         button {
@@ -102,48 +98,56 @@
             transition: 0.2s;
         }
 
-        .btn-pdf { background: var(--blue); color: white; }
+        .btn-print { background: var(--blue); color: white; }
         .btn-reset { background: #94a3b8; color: white; }
-        button:active { transform: scale(0.98); }
 
         .score-list {
             margin-top: 15px;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        /* STYLE DO DRUKU */
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; border: none; width: 100%; max-width: 100%; padding: 0; }
+            .buttons, .instruction-box { display: none !important; }
+            .plan-section { display: block !important; border-color: #000; }
+            canvas { border: 1px solid #000; }
+            textarea { border: 1px solid #000; overflow: visible; }
         }
 
         @media (max-width: 480px) {
-            h1 { font-size: 1.2rem; }
-            button { padding: 12px; font-size: 0.9rem; }
+            h1 { font-size: 1.3rem; }
+            .container { padding: 15px; }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="report-area">
-        <h1>Tarcza Wartości (ACT)</h1>
-        
-        <div class="instruction-box">
-            <strong>Jak to zrobić?</strong> Kliknij w każdym z 4 pól. Środek to pełna zgodność z Twoimi wartościami. Brzeg tarczy to całkowity brak spójności. 
-        </div>
-
-        <div class="canvas-wrapper">
-            <canvas id="bullsEyeCanvas" width="600" height="600"></canvas>
-        </div>
-
-        <div id="scores" class="score-list"></div>
-
-        <div id="planSection" class="plan-section">
-            <h3 id="worstAreaTitle" style="margin:0; color: var(--accent);"></h3>
-            <p style="font-size: 0.85rem; margin: 5px 0;">To obszar najbardziej oddalony od Twoich wartości. Jaki jeden krok zrobisz w tym tygodniu?</p>
-            <textarea id="behavioralStep" placeholder="Zapisz konkretne działanie..."></textarea>
-        </div>
+<div class="container" id="printable">
+    <h1>Tarcza Wartości (The Bull's Eye)</h1>
+    
+    <div class="instruction-box">
+        <strong>Instrukcja:</strong> Kliknij w każdym z 4 pól tarczy. Im bliżej środka („dziesiątki”) się znajdziesz, tym bardziej Twoje działania są spójne z Twoimi wartościami w danej sferze życia.
     </div>
 
-    <div class="buttons">
-        <button class="btn-reset" onclick="resetAll()">Reset</button>
-        <button class="btn-pdf" onclick="saveAsPDF()">Pobierz PDF</button>
+    <div class="canvas-wrapper">
+        <canvas id="bullsEyeCanvas" width="600" height="600"></canvas>
     </div>
+
+    <div id="scores" class="score-list"></div>
+
+    <div id="planSection" class="plan-section">
+        <h3 id="worstAreaTitle" style="margin:0; color: var(--accent);">Obszar do pracy</h3>
+        <p style="margin: 8px 0;">Zidentyfikowano to pole jako najbardziej oddalone od Twoich wartości. Jaki konkretny krok podejmiesz w tym tygodniu?</p>
+        <textarea id="behavioralStep" placeholder="Wpisz tutaj swój plan działania..."></textarea>
+    </div>
+</div>
+
+<div class="buttons">
+    <button class="btn-reset" onclick="resetAll()">Resetuj tarczę</button>
+    <button class="btn-print" onclick="window.print()">Drukuj arkusz</button>
 </div>
 
 <script>
@@ -162,21 +166,21 @@
     function draw() {
         const size = 600;
         const center = 300;
-        const radius = 280;
+        const radius = 270;
 
         ctx.clearRect(0, 0, size, size);
 
-        // Rysowanie kręgów
+        // Kręgi tarczy
         for(let i=5; i>=1; i--) {
             ctx.beginPath();
             ctx.arc(center, center, (radius/5)*i, 0, Math.PI*2);
-            ctx.fillStyle = i % 2 === 0 ? '#ffffff' : '#f1f5f9';
+            ctx.fillStyle = i % 2 === 0 ? '#ffffff' : '#f8fafc';
             ctx.fill();
             ctx.strokeStyle = '#cbd5e1';
             ctx.stroke();
         }
 
-        // Osie
+        // Linie podziału
         ctx.beginPath();
         ctx.moveTo(center-radius, center); ctx.lineTo(center+radius, center);
         ctx.moveTo(center, center-radius); ctx.lineTo(center, center+radius);
@@ -184,20 +188,20 @@
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Napisy Sfer
+        // Etykiety sfer
         ctx.font = "bold 22px Arial";
-        ctx.fillStyle = "#475569";
+        ctx.fillStyle = "#1e293b";
         ctx.textAlign = "center";
-        ctx.fillText("RELACJE", center - 140, center - 140);
-        ctx.fillText("PRACA / NAUKA", center + 140, center - 140);
-        ctx.fillText("CZAS WOLNY", center - 140, center + 160);
-        ctx.fillText("ZDROWIE", center + 140, center + 160);
+        ctx.fillText("RELACJE", center - 130, center - 130);
+        ctx.fillText("PRACA / NAUKA", center + 130, center - 130);
+        ctx.fillText("CZAS WOLNY", center - 130, center + 150);
+        ctx.fillText("ZDROWIE", center + 130, center + 150);
 
-        // Strzały
+        // Rysowanie oddanych strzałów
         Object.entries(shots).forEach(([name, data]) => {
             if(data) {
                 ctx.beginPath();
-                ctx.arc(data.x, data.y, 12, 0, Math.PI*2);
+                ctx.arc(data.x, data.y, 14, 0, Math.PI*2);
                 ctx.fillStyle = "#ef4444";
                 ctx.fill();
                 ctx.strokeStyle = "white";
@@ -207,7 +211,7 @@
         });
     }
 
-    // Obsługa dotyku i myszki
+    // Obsługa dotyku i myszki (PointerEvents)
     canvas.addEventListener('pointerdown', (e) => {
         const rect = canvas.getBoundingClientRect();
         const scaleX = canvas.width / rect.width;
@@ -217,7 +221,7 @@
 
         const dist = Math.sqrt(Math.pow(x-300, 2) + Math.pow(y-300, 2));
 
-        if(dist <= 280) {
+        if(dist <= 270) {
             let area = "";
             if(x < 300 && y < 300) area = "RELACJE";
             else if(x >= 300 && y < 300) area = "PRACA / NAUKA";
@@ -226,19 +230,19 @@
 
             shots[area] = {x, y, dist};
             draw();
-            calculateResults();
+            updateResults();
         }
     });
 
-    function calculateResults() {
-        let output = "<strong>Twoje wyniki:</strong><br>";
+    function updateResults() {
+        let output = "<strong>Wyniki spójności:</strong><br>";
         let maxDist = -1;
         let worstArea = "";
 
         Object.entries(shots).forEach(([name, data]) => {
             if(data) {
-                const score = Math.round(100 - (data.dist/280*100));
-                output += `• ${name}: ${score}% spójności<br>`;
+                const score = Math.round(100 - (data.dist/270*100));
+                output += `• ${name}: ${score}%<br>`;
                 if(data.dist > maxDist) {
                     maxDist = data.dist;
                     worstArea = name;
@@ -249,25 +253,8 @@
         scoresDiv.innerHTML = output;
         if(worstArea) {
             planSection.style.display = "block";
-            document.getElementById('worstAreaTitle').innerText = `Cel: ${worstArea}`;
+            document.getElementById('worstAreaTitle').innerText = `Cel do zmiany: ${worstArea}`;
         }
-    }
-
-    async function saveAsPDF() {
-        const { jsPDF } = window.jspdf;
-        const report = document.getElementById('report-area');
-        
-        // Renderowanie obszaru HTML do obrazu (rozwiązuje problem polskich znaków)
-        const canvasImage = await html2canvas(report, { scale: 2 });
-        const imgData = canvasImage.toDataURL('image/png');
-        
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-        pdf.addImage(imgData, 'PNG', 0, 10, pdfWidth, pdfHeight);
-        pdf.save("moje_wartosci_ACT.pdf");
     }
 
     function resetAll() {
@@ -278,6 +265,7 @@
         draw();
     }
 
+    // Inicjalizacja tarczy
     draw();
 </script>
 
