@@ -159,7 +159,7 @@
     let shots = {
         "RELACJE": null,
         "PRACA / NAUKA": null,
-        "ZDROWIE / ROZWÓJ": null,
+        "ZDROWIE": null,
         "CZAS WOLNY": null
     };
 
@@ -226,7 +226,7 @@
             if(x < 300 && y < 300) area = "RELACJE";
             else if(x >= 300 && y < 300) area = "PRACA / NAUKA";
             else if(x < 300 && y >= 300) area = "CZAS WOLNY";
-            else area = "ZDROWIE / ROZWÓJ";
+            else area = "ZDROWIE";
 
             shots[area] = {x, y, dist};
             draw();
