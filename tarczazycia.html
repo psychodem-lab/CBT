@@ -3,16 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karta Pracy - Koło Życia</title>
+    <title>Karta Pracy - Koło Życia i Wartości</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
     <style>
         :root {
-            --primary-color: #5a67d8;
-            --bg-color: #f7fafc;
-            --box-bg: #e2e8f0;
-            --text-main: #2d3748;
-            --text-muted: #4a5568;
-            --border-radius: 8px;
+            --primary-dark: #0f766e;   /* Ciemny morski */
+            --satisfaction-color: rgba(20, 184, 166, 0.6); /* Jasny morski */
+            --satisfaction-border: #0d9488;
+            --importance-color: rgba(245, 158, 11, 0.3);   /* Bursztyn */
+            --importance-border: #d97706;
+            --bg-color: #f0fdfa;       /* Bardzo jasne tło */
+            --box-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-radius: 12px;
         }
 
         * {
@@ -30,30 +36,49 @@
             justify-content: center;
         }
 
-        .container {
+        #pdf-content {
             max-width: 1200px;
             width: 100%;
-            background: #ffffff;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            background: var(--box-bg);
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
         .header-instructions {
-            color: var(--primary-color);
+            color: var(--primary-dark);
             margin-bottom: 2rem;
             line-height: 1.6;
-            font-size: 1.1rem;
+            text-align: center;
         }
 
-        .instruction-box {
-            background-color: #e0e7ff;
-            color: var(--primary-color);
+        .header-instructions h2 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .legend-box {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            background-color: #f8fafc;
             padding: 1rem;
-            border-radius: var(--border-radius);
+            border-radius: 8px;
             margin-bottom: 2rem;
-            font-size: 0.95rem;
-            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .color-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
         }
 
         .main-content {
@@ -63,55 +88,55 @@
             align-items: center;
         }
 
-        @media (max-width: 992px) {
+        @media (max-width: 1024px) {
             .main-content {
                 grid-template-columns: 1fr;
             }
             .chart-container {
-                order: -1; /* Wykres na górze na mobile */
+                order: -1; 
+                max-width: 600px;
+                margin: 0 auto;
             }
         }
 
         .category-group {
             margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
         }
 
         .category-group h3 {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-            color: var(--text-main);
-        }
-
-        .inputs-row {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .input-wrapper {
-            display: flex;
-            flex-direction: column;
-            width: 50%;
-        }
-
-        .input-wrapper label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 0.25rem;
-        }
-
-        input[type="number"], select {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #cbd5e0;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
+            font-size: 1.05rem;
+            margin-bottom: 1rem;
+            color: var(--primary-dark);
             text-align: center;
-            outline: none;
-            transition: border-color 0.2s;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
         }
 
-        input[type="number"]:focus, select:focus {
-            border-color: var(--primary-color);
+        .slider-wrapper {
+            margin-bottom: 1rem;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .val-display {
+            font-weight: bold;
+        }
+
+        /* Stylizacja suwaków */
+        input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+            accent-color: var(--primary-dark);
         }
 
         .chart-container {
@@ -128,7 +153,8 @@
         }
 
         .notes-section h3 {
-            font-size: 1rem;
+            font-size: 1.2rem;
+            color: var(--primary-dark);
             margin-bottom: 0.5rem;
         }
 
@@ -136,78 +162,91 @@
             width: 100%;
             height: 150px;
             padding: 1rem;
-            border: 1px solid var(--primary-color);
-            border-radius: var(--border-radius);
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
             resize: vertical;
             font-size: 1rem;
             outline: none;
+            transition: border-color 0.2s;
         }
 
         textarea:focus {
-            box-shadow: 0 0 0 2px rgba(90, 103, 216, 0.2);
+            border-color: var(--primary-dark);
         }
 
         .footer-action {
-            margin-top: 2rem;
+            margin-top: 3rem;
             display: flex;
             justify-content: center;
         }
 
         .submit-btn {
-            background-color: #a5b4fc;
+            background-color: var(--primary-dark);
             color: #ffffff;
             border: none;
             padding: 1rem 3rem;
             font-size: 1.1rem;
             font-weight: bold;
-            border-radius: var(--border-radius);
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.2s;
-            width: 100%;
-            max-width: 400px;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 6px rgba(15, 118, 110, 0.3);
         }
 
         .submit-btn:hover {
-            background-color: #818cf8;
+            background-color: #115e59;
+        }
+        
+        .submit-btn:active {
+            transform: translateY(2px);
+        }
+
+        /* Ukryj przycisk podczas generowania PDF */
+        .pdf-hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div id="pdf-content">
     <div class="header-instructions">
-        <h2>1. Oceń poziom satysfakcji w każdym obszarze, używając skali od 0 do 10.</h2>
-        <p>0 - brak satysfakcji, 10 - pełna satysfakcja.</p>
-        <h2 style="margin-top: 1rem;">2. Następnie oceń ważność każdego obszaru, używając skali od 0 do 10.</h2>
-        <p>0 - w ogóle nieważny, 10 - bardzo ważny.</p>
+        <h2>Karta Pracy: Diagnoza Wartości i Satysfakcji</h2>
+        <p>Przesuwaj suwaki, aby ocenić w skali 0-10 swój obecny poziom <strong>Satysfakcji</strong> oraz <strong>Ważność</strong> danego obszaru w Twoim życiu.</p>
     </div>
 
-    <div class="instruction-box">
-        Wprowadź satysfakcję oraz ważność w polach liczbowych obok. Wykres zaktualizuje się automatycznie.
+    <div class="legend-box">
+        <div class="legend-item">
+            <div class="color-box" style="background-color: var(--satisfaction-border);"></div>
+            <span>Satysfakcja (Stan obecny)</span>
+        </div>
+        <div class="legend-item">
+            <div class="color-box" style="background-color: var(--importance-border);"></div>
+            <span>Ważność (Oczekiwania/Wartości)</span>
+        </div>
     </div>
 
     <div class="main-content">
         <div class="left-column" id="left-controls"></div>
 
         <div class="chart-container">
-            <canvas id="wheelChart"></canvas>
+            <canvas id="radarChart"></canvas>
         </div>
 
         <div class="right-column" id="right-controls"></div>
     </div>
 
     <div class="notes-section">
-        <h3>Notatki</h3>
-        <textarea placeholder="Miejsce na Twoje notatki"></textarea>
+        <h3>Wnioski i Notatki (Analiza luk)</h3>
+        <textarea placeholder="Zapisz tutaj swoje refleksje. W jakich obszarach luka między ważnością a satysfakcją jest największa? Jakie małe kroki możesz podjąć, aby to zmienić?"></textarea>
     </div>
 
-    <div class="footer-action">
-        <button class="submit-btn" onclick="zapiszKarte()">Zakończ kartę pracy</button>
+    <div class="footer-action" id="action-container">
+        <button class="submit-btn" onclick="generujPDF()">Zakończ i pobierz PDF</button>
     </div>
 </div>
 
 <script>
-    // Konfiguracja kategorii zgodnie z CBT / obrazkiem
     const categories = [
         "Zdrowie fizyczne", "Zdrowie psychiczne", "Relacje romantyczne", 
         "Rodzina", "Przyjaźnie", "Rozwój zawodowy", 
@@ -216,7 +255,7 @@
 
     let chartInstance = null;
 
-    // Inicjalizacja interfejsu użytkownika
+    // Inicjalizacja interfejsu (Generowanie suwaków)
     function initUI() {
         const leftCol = document.getElementById('left-controls');
         const rightCol = document.getElementById('right-controls');
@@ -225,17 +264,23 @@
             const html = `
                 <div class="category-group">
                     <h3>${cat}</h3>
-                    <div class="inputs-row">
-                        <div class="input-wrapper">
-                            <label>Satysfakcja</label>
-                            <input type="number" id="sat-${index}" min="0" max="10" value="0" onchange="updateChart()">
+                    
+                    <div class="slider-wrapper">
+                        <div class="slider-header">
+                            <span style="color: var(--satisfaction-border);">Satysfakcja</span>
+                            <span class="val-display" id="sat-val-${index}">0</span>
                         </div>
-                        <div class="input-wrapper">
-                            <label>Ważność</label>
-                            <select id="waz-${index}">
-                                ${[...Array(11).keys()].map(i => `<option value="${i}">${i}</option>`).join('')}
-                            </select>
+                        <input type="range" id="sat-${index}" min="0" max="10" value="0" 
+                               oninput="updateValue('sat', ${index}); updateChart()">
+                    </div>
+
+                    <div class="slider-wrapper">
+                        <div class="slider-header">
+                            <span style="color: var(--importance-border);">Ważność</span>
+                            <span class="val-display" id="waz-val-${index}">0</span>
                         </div>
+                        <input type="range" id="waz-${index}" min="0" max="10" value="0" 
+                               oninput="updateValue('waz', ${index}); updateChart()">
                     </div>
                 </div>
             `;
@@ -250,23 +295,43 @@
         initChart();
     }
 
-    // Inicjalizacja wykresu Chart.js (Polar Area)
+    // Aktualizacja liczby nad suwakiem
+    function updateValue(type, index) {
+        const val = document.getElementById(`${type}-${index}`).value;
+        document.getElementById(`${type}-val-${index}`).innerText = val;
+    }
+
+    // Inicjalizacja wykresu Radarowego
     function initChart() {
-        const ctx = document.getElementById('wheelChart').getContext('2d');
+        const ctx = document.getElementById('radarChart').getContext('2d');
         
         const initialData = Array(10).fill(0);
 
         chartInstance = new Chart(ctx, {
-            type: 'polarArea',
+            type: 'radar', // Wykres radarowy idealnie obrazuje nałożenie dwóch zmiennych
             data: {
                 labels: categories,
-                datasets: [{
-                    label: 'Poziom satysfakcji',
-                    data: initialData,
-                    backgroundColor: 'rgba(165, 180, 252, 0.6)', // Jasny fioletowy
-                    borderColor: 'rgba(90, 103, 216, 1)', // Ciemniejszy fioletowy/niebieski
-                    borderWidth: 1.5
-                }]
+                datasets: [
+                    {
+                        label: 'Satysfakcja',
+                        data: initialData,
+                        backgroundColor: 'rgba(20, 184, 166, 0.4)', // Teal 500
+                        borderColor: '#0d9488',
+                        pointBackgroundColor: '#0d9488',
+                        borderWidth: 2,
+                        fill: true
+                    },
+                    {
+                        label: 'Ważność',
+                        data: initialData,
+                        backgroundColor: 'rgba(245, 158, 11, 0.2)', // Amber 500 (bardziej przezroczysty)
+                        borderColor: '#d97706',
+                        pointBackgroundColor: '#d97706',
+                        borderWidth: 2,
+                        borderDash: [5, 5], // Przerywana linia dla oczekiwań/ważności
+                        fill: true
+                    }
+                ]
             },
             options: {
                 responsive: true,
@@ -276,53 +341,60 @@
                         min: 0,
                         max: 10,
                         ticks: {
-                            stepSize: 1,
-                            display: false // Ukrywamy liczby na osi by zyskać przejrzystość
-                        },
-                        grid: {
-                            color: 'rgba(165, 180, 252, 0.3)'
+                            stepSize: 2,
+                            backdropColor: 'transparent'
                         },
                         angleLines: {
-                            color: 'rgba(165, 180, 252, 0.5)'
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
                         }
                     }
                 },
                 plugins: {
                     legend: {
-                        display: false // Ukryta legenda z góry
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return `Satysfakcja: ${context.raw}/10`;
-                            }
-                        }
+                        display: false // Zastąpione własną legendą w HTML dla lepszego ostylowania
                     }
                 }
             }
         });
     }
 
-    // Logika aktualizacji danych wykresu
+    // Pobieranie danych z suwaków i aktualizacja wykresu
     function updateChart() {
-        const newData = categories.map((_, index) => {
-            let val = parseInt(document.getElementById(`sat-${index}`).value, 10);
-            if (isNaN(val) || val < 0) val = 0;
-            if (val > 10) val = 10;
-            document.getElementById(`sat-${index}`).value = val; // Korekta walidacji UI
-            return val;
-        });
+        const satisfactionData = categories.map((_, index) => parseInt(document.getElementById(`sat-${index}`).value, 10));
+        const importanceData = categories.map((_, index) => parseInt(document.getElementById(`waz-${index}`).value, 10));
 
-        chartInstance.data.datasets[0].data = newData;
+        chartInstance.data.datasets[0].data = satisfactionData;
+        chartInstance.data.datasets[1].data = importanceData;
         chartInstance.update();
     }
 
-    // Mockup zapisu
-    function zapiszKarte() {
-        alert("Karta pracy została poprawnie zwalidowana i przygotowana do zapisu przez API.");
+    // Generowanie PDF
+    function generujPDF() {
+        const element = document.getElementById('pdf-content');
+        const actionContainer = document.getElementById('action-container');
+        
+        // Ukryj przycisk na czas generowania PDF
+        actionContainer.classList.add('pdf-hidden');
+
+        // Opcje dla html2pdf
+        const opt = {
+            margin:       10,
+            filename:     'Moje_Kolo_Zycia_i_Wartosci.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // Generuj i zapisz, następnie przywróć przycisk
+        html2pdf().set(opt).from(element).save().then(() => {
+            actionContainer.classList.remove('pdf-hidden');
+        });
     }
 
-    // Uruchomienie budowy DOM
+    // Uruchomienie skryptów po załadowaniu DOM
     document.addEventListener('DOMContentLoaded', initUI);
 
 </script>
