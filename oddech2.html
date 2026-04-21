@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+    <title>Trening Oddechowy - Psychodem</title>
+    <link rel="shortcut icon" type="image/png" href="cbt.png" />
+    <style>
+        :root {
+            /* Nowoczesna, kojąca paleta barw */
+            --bg-color: #f4f7f9;
+            --surface-color: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --circle-color: #5dade2;
+            --circle-glow: rgba(93, 173, 226, 0.4);
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --mute-color: #f39c12;
+            --border-radius: 20px;
+            --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.04);
+            --shadow-inner: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 16px;
+            min-height: 100vh;
+            overflow-y: auto;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Nagłówek i Logo */
+        header {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 0 10px;
+        }
+
+        .logo-wrapper a {
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: opacity 0.2s ease;
+        }
+
+        .logo-wrapper a:hover {
+            opacity: 0.8;
+        }
+
+        .logo-wrapper img {
+            max-height: 60px;
+            width: auto;
+            border: none;
+        }
+
+        /* Główny kontener */
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            gap: 30px;
+            align-items: stretch;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Wizualizator */
+        .visualizer {
+            background: var(--surface-color);
+            border-radius: var(--border-radius);
+            padding: 40px 20px;
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 420px;
+            flex: 1 1 400px;
+        }
+
+        .visualizer-container {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .breathing-circle {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #85c1e9, var(--circle-color));
+            border-radius: 50%;
+            position: absolute;
+            z-index: 1;
+            box-shadow: 0 0 40px var(--circle-glow);
+            transform: scale(1);
+            will-change: transform;
+        }
+
+        .instruction-text {
+            position: relative;
+            z-index: 2;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #ffffff;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+            user-select: none;
+            letter-spacing: 0.5px;
+        }
+
+        /* Panel sterowania */
+        .controls {
+            background: var(--surface-color);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 420px;
+            flex: 1 1 400px;
+        }
+
+        .controls-header {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .inputs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .input-group label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 1rem; /* Zabezpieczenie przed zoomem na iOS */
+            text-align: center;
+            color: var(--text-main);
+            background-color: #f8f9fa;
+            box-shadow: var(--shadow-inner);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--circle-color);
+            box-shadow: 0 0 0 3px rgba(93, 173, 226, 0.2);
+            background-color: #fff;
+        }
+
+        .input-group.total-time-input {
+            grid-column: span 2;
+        }
+
+        /* Przyciski i Timer */
+        .session-timer {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            background: #f4f7f9;
+            padding: 12px;
+            border-radius: 12px;
+            margin: 10px 0;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button:active {
+            transform: translateY(2px);
+        }
+
+        #start-btn {
+            background-color: var(--success-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        #start-btn:hover:not(:disabled) { background-color: #219a52; }
+
+        #stop-btn {
+            background-color: var(--danger-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        #stop-btn:hover:not(:disabled) { background-color: #c0392b; }
+
+        #mute-btn {
+            width: 100%;
+            background-color: #ecf0f1;
+            color: var(--text-muted);
+            box-shadow: none;
+        }
+
+        #mute-btn:hover:not(:disabled) { background-color: #e2e6e8; }
+
+        #mute-btn.muted {
+            background-color: var(--mute-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Responsywność */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .visualizer, .controls {
+                max-width: 100%;
+                width: 100%;
+                padding: 24px 16px;
+            }
+            .visualizer-container {
+                max-width: 260px;
+            }
+            .breathing-circle {
+                width: 100px;
+                height: 100px;
+            }
+            header {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-wrapper">
+            <a href="index.html" title="Powrót do strony głównej" aria-label="Strona główna">
+                <img src="logo.png" alt="Logo Psychodem" onerror="this.style.display='none';">
+            </a>
+        </div>
+    </header>
+
+    <main class="container" role="application" aria-label="Narzędzie do treningu oddechowego">
+        <section class="visualizer" aria-labelledby="vis-title">
+            <h1 id="vis-title" style="display:none">Wizualizacja oddechu</h1>
+            <div class="visualizer-container" aria-hidden="false">
+                <div class="breathing-circle" id="circle" aria-hidden="true"></div>
+                <div class="instruction-text" id="text" aria-live="assertive">Gotowy?</div>
+            </div>
+        </section>
+
+        <aside class="controls" aria-labelledby="controls-title">
+            <h2 id="controls-title" class="controls-header">Ustawienia Treningu</h2>
+
+            <div class="inputs-grid">
+                <div class="input-group">
+                    <label for="inhale">Wdech (sek)</label>
+                    <input type="number" id="inhale" value="4" min="1" step="0.1" aria-label="Długość wdechu w sekundach">
+                </div>
+                <div class="input-group">
+                    <label for="hold1">Zatrzymaj 1 (sek)</label>
+                    <input type="number" id="hold1" value="2" min="0" step="0.1" aria-label="Czas zatrzymania po wdechu">
+                </div>
+                <div class="input-group">
+                    <label for="exhale">Wydech (sek)</label>
+                    <input type="number" id="exhale" value="6" min="1" step="0.1" aria-label="Długość wydechu w sekundach">
+                </div>
+                <div class="input-group">
+                    <label for="hold2">Zatrzymaj 2 (sek)</label>
+                    <input type="number" id="hold2" value="2" min="0" step="0.1" aria-label="Czas zatrzymania po wydechu">
+                </div>
+
+                <div class="input-group total-time-input">
+                    <label for="totalTime">Całkowity czas (min)</label>
+                    <input type="number" id="totalTime" value="2" min="0.5" step="0.5" aria-label="Całkowity czas treningu w minutach">
+                </div>
+            </div>
+
+            <div class="session-timer" aria-live="polite">
+                Pozostały czas: <span id="session-countdown">00:00</span>
+            </div>
+
+            <div class="buttons">
+                <button id="start-btn" type="button" aria-pressed="false">Rozpocznij</button>
+                <button id="stop-btn" type="button" disabled>Zakończ</button>
+            </div>
+
+            <button id="mute-btn" type="button" aria-pressed="true" class="muted">
+                <span id="mute-icon">🔊</span> Włącz dźwięk
+            </button>
+        </aside>
+    </main>
+
+<script>
+'use strict';
+
+/* --- Konfiguracja dźwięku --- */
+const FREQ_START = 164.8;
+const FREQ_END = 329.6;
+const VOLUME_MAX = 0.28;
+const FADE_MS = 200; 
+
+/* --- Elementy DOM --- */
+const circle = document.getElementById('circle');
+const textDisplay = document.getElementById('text');
+const startBtn = document.getElementById('start-btn');
+const stopBtn = document.getElementById('stop-btn');
+const muteBtn = document.getElementById('mute-btn');
+const muteIcon = document.getElementById('mute-icon');
+const inputs = document.querySelectorAll('input');
+const countdownDisplay = document.getElementById('session-countdown');
+
+let audioContext = null;
+let oscillator = null;
+let gainNode = null;
+let isRunning = false;
+let isMuted = true;
+let sessionTimerInterval = null;
+let remainingTimeMs = 0;
+let wakeLock = null;
+
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+/* --- Wake Lock API --- */
+async function requestWakeLock() {
+    if ('wakeLock' in navigator) {
+        try {
+            wakeLock = await navigator.wakeLock.request('screen');
+            wakeLock.addEventListener('release', () => {});
+        } catch (err) {
+            console.warn(`Wake Lock err: ${err.message}`);
+        }
+    }
+}
+
+async function releaseWakeLock() {
+    if (wakeLock !== null) {
+        try {
+            await wakeLock.release();
+            wakeLock = null;
+        } catch (err) {
+            console.warn(`Release Lock err: ${err.message}`);
+        }
+    }
+}
+
+/* --- Audio helpers --- */
+async function ensureAudioContext() {
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    } else if (audioContext.state === 'suspended') {
+        try { await audioContext.resume(); } catch(e){ console.warn('resume failed', e); }
+    }
+    return audioContext;
+}
+
+function createOscillatorAndGain() {
+    if (!audioContext) throw new Error('AudioContext nie istnieje');
+    const osc = audioContext.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(FREQ_START, audioContext.currentTime);
+
+    const gain = audioContext.createGain();
+    gain.gain.setValueAtTime(0.0, audioContext.currentTime);
+
+    osc.connect(gain);
+    gain.connect(audioContext.destination);
+
+    return { osc, gain };
+}
+
+function setVolume(target, durationS = 0.2) {
+    if (!gainNode) return;
+    const t = audioContext.currentTime;
+    try {
+        gainNode.gain.cancelScheduledValues(t);
+        gainNode.gain.setValueAtTime(gainNode.gain.value, t);
+        gainNode.gain.linearRampToValueAtTime(target, t + durationS);
+    } catch (e) {
+        try { gainNode.gain.linearRampToValueAtTime(target, t + durationS); } catch (err) {}
+    }
+}
+
+function transitionFrequency(targetFreq, durationMs = 0) {
+    if (!oscillator) return;
+    const durS = durationMs / 1000;
+    const t = audioContext.currentTime;
+    try {
+        oscillator.frequency.cancelScheduledValues(t);
+        oscillator.frequency.setValueAtTime(oscillator.frequency.value || FREQ_START, t);
+        if (durS > 0) oscillator.frequency.linearRampToValueAtTime(targetFreq, t + durS);
+        else oscillator.frequency.setValueAtTime(targetFreq, t);
+    } catch (e) {
+        try { oscillator.frequency.linearRampToValueAtTime(targetFreq, t + durS); } catch (err) {}
+    }
+}
+
+async function startSound() {
+    await ensureAudioContext();
+
+    if (oscillator) {
+        try { oscillator.stop(); oscillator.disconnect(); } catch (e) {}
+        oscillator = null;
+    }
+    if (gainNode) {
+        try { gainNode.disconnect(); } catch(e) {}
+        gainNode = null;
+    }
+
+    const nodes = createOscillatorAndGain();
+    oscillator = nodes.osc;
+    gainNode = nodes.gain;
+
+    oscillator.start();
+
+    if (!isMuted) {
+        setVolume(VOLUME_MAX, FADE_MS / 1000);
+    } else {
+        gainNode.gain.cancelScheduledValues(audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+    }
+    
+    transitionFrequency(FREQ_START, 0);
+}
+
+async function stopSoundAndCleanup() {
+    if (!audioContext || !gainNode) return;
+    try {
+        if (!isMuted) setVolume(0, 0.15);
+        else gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+
+        await wait(200);
+        if (oscillator) {
+            try { oscillator.stop(); } catch (e) {}
+            try { oscillator.disconnect(); } catch (e) {}
+            oscillator = null;
+        }
+        try { gainNode.disconnect(); } catch (e) {}
+        gainNode = null;
+
+        if (audioContext && typeof audioContext.close === 'function') {
+            await audioContext.close();
+        }
+    } catch (e) {
+        console.warn('Cleanup audio failed', e);
+    } finally {
+        audioContext = null;
+    }
+}
+
+/* --- Sesja oddechowa --- */
+function validateInputs(inhaleS, hold1S, exhaleS, hold2S, totalMinutes) {
+    if (!(isFinite(inhaleS) && inhaleS > 0)) return 'Wdech musi być > 0.';
+    if (!(isFinite(exhaleS) && exhaleS > 0)) return 'Wydech musi być > 0.';
+    if (!(isFinite(totalMinutes) && totalMinutes >= 0.5)) return 'Czas treningu musi wynosić min. 0.5 minuty.';
+    if (hold1S < 0 || hold2S < 0) return 'Czasy zatrzymania nie mogą być ujemne.';
+    return null;
+}
+
+function updateTimerDisplay(ms) {
+    const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    countdownDisplay.innerText = String(minutes).padStart(2,'0') + ':' + String(seconds).padStart(2,'0');
+}
+
+function toggleControls(active) {
+    startBtn.disabled = active;
+    stopBtn.disabled = !active;
+    inputs.forEach(i => i.disabled = active);
+}
+
+function forceReflow(el) {
+    void el.offsetHeight;
+}
+
+async function runBreathingLoop(inhaleMs, hold1Ms, exhaleMs, hold2Ms) {
+    while (isRunning && remainingTimeMs > 0) {
+        // WDECH
+        textDisplay.innerText = 'Wdech';
+        circle.style.transition = `transform ${inhaleMs}ms ease-in-out`;
+        forceReflow(circle);
+        circle.style.transform = 'scale(2.2)';
+        transitionFrequency(FREQ_END, inhaleMs);
+        if (!isMuted) setVolume(VOLUME_MAX, 0.1);
+        await wait(inhaleMs);
+        if (!isRunning) break;
+
+        // ZATRZYMANIE 1
+        if (hold1Ms > 0) {
+            textDisplay.innerText = 'Zatrzymaj';
+            circle.style.transition = 'none';
+            transitionFrequency(FREQ_END, 0);
+            if (!isMuted) setVolume(0.02, 0.1);
+            else setVolume(0, 0);
+            await wait(hold1Ms);
+            if (!isRunning) break;
+        }
+
+        // WYDECH
+        textDisplay.innerText = 'Wydech';
+        circle.style.transition = `transform ${exhaleMs}ms ease-in-out`;
+        forceReflow(circle);
+        circle.style.transform = 'scale(1.0)';
+        transitionFrequency(FREQ_START, exhaleMs);
+        if (!isMuted) setVolume(VOLUME_MAX, 0.1);
+        await wait(exhaleMs);
+        if (!isRunning) break;
+
+        // ZATRZYMANIE 2
+        if (hold2Ms > 0) {
+            textDisplay.innerText = 'Zatrzymaj';
+            circle.style.transition = 'none';
+            transitionFrequency(FREQ_START, 0);
+            if (!isMuted) setVolume(0.02, 0.1);
+            else setVolume(0, 0);
+            await wait(hold2Ms);
+            if (!isRunning) break;
+        }
+    }
+}
+
+async function startBreathing() {
+    if (isRunning) return;
+
+    const inhaleS = parseFloat(document.getElementById('inhale').value);
+    const hold1S = parseFloat(document.getElementById('hold1').value);
+    const exhaleS = parseFloat(document.getElementById('exhale').value);
+    const hold2S = parseFloat(document.getElementById('hold2').value);
+    const totalMinutes = parseFloat(document.getElementById('totalTime').value);
+
+    const validationError = validateInputs(inhaleS, hold1S, exhaleS, hold2S, totalMinutes);
+    if (validationError) {
+        alert(validationError);
+        return;
+    }
+
+    const inhaleMs = Math.round(inhaleS * 1000);
+    const hold1Ms = Math.round(hold1S * 1000);
+    const exhaleMs = Math.round(exhaleS * 1000);
+    const hold2Ms = Math.round(hold2S * 1000);
+
+    remainingTimeMs = Math.round(totalMinutes * 60 * 1000);
+
+    isRunning = true;
+    toggleControls(true);
+    textDisplay.innerText = 'Przygotuj się...';
+
+    await requestWakeLock();
+
+    try {
+        await startSound();
+    } catch (e) {
+        console.warn('Audio err', e);
+    }
+
+    updateTimerDisplay(remainingTimeMs);
+    sessionTimerInterval = setInterval(() => {
+        remainingTimeMs -= 1000;
+        if (remainingTimeMs < 0) remainingTimeMs = 0;
+        updateTimerDisplay(remainingTimeMs);
+        if (remainingTimeMs <= 0) {
+            clearInterval(sessionTimerInterval);
+            sessionTimerInterval = null;
+            stopBreathing('Koniec treningu!');
+        }
+    }, 1000);
+
+    try {
+        await runBreathingLoop(inhaleMs, hold1Ms, exhaleMs, hold2Ms);
+    } catch (e) {
+        console.error('Loop err', e);
+    }
+
+    if (isRunning) {
+        stopBreathing('Gotowy?');
+    }
+}
+
+async function stopBreathing(finalMessage = 'Gotowy?') {
+    if (!isRunning) {
+        await stopSoundAndCleanup();
+        await releaseWakeLock();
+        textDisplay.innerText = finalMessage;
+        updateTimerDisplay(0);
+        return;
+    }
+
+    isRunning = false;
+    toggleControls(false);
+
+    if (sessionTimerInterval) {
+        clearInterval(sessionTimerInterval);
+        sessionTimerInterval = null;
+    }
+
+    textDisplay.innerText = finalMessage;
+    circle.style.transition = 'transform 600ms ease-out';
+    forceReflow(circle);
+    circle.style.transform = 'scale(1)';
+
+    await stopSoundAndCleanup();
+    await releaseWakeLock();
+
+    if (finalMessage === 'Gotowy?') {
+        const totalMinutes = parseFloat(document.getElementById('totalTime').value) || 0;
+        updateTimerDisplay(Math.round(Math.max(0.5, totalMinutes) * 60 * 1000));
+    } else {
+        updateTimerDisplay(0);
+    }
+    toggleControls(false);
+}
+
+/* --- Mute UI --- */
+function updateMuteUI() {
+    if (isMuted) {
+        muteBtn.classList.add('muted');
+        muteBtn.innerHTML = '🔊 Włącz dźwięk';
+        muteBtn.setAttribute('aria-pressed','true');
+    } else {
+        muteBtn.classList.remove('muted');
+        muteBtn.innerHTML = '🔇 Wycisz dźwięk';
+        muteBtn.setAttribute('aria-pressed','false');
+    }
+}
+
+function toggleMute() {
+    isMuted = !isMuted;
+    updateMuteUI();
+    if (!gainNode) return;
+    if (isMuted) {
+        setVolume(0, 0.15);
+    } else {
+        setVolume(isRunning ? VOLUME_MAX : 0, 0.2);
+    }
+}
+
+/* --- Eventy --- */
+startBtn.addEventListener('click', () => startBreathing().catch(console.error));
+stopBtn.addEventListener('click', () => stopBreathing('Gotowy?').catch(console.error));
+muteBtn.addEventListener('click', toggleMute);
+
+document.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Enter') {
+        if (!isRunning && !startBtn.disabled) startBtn.click();
+    } else if (ev.key === 'Escape') {
+        if (isRunning && !stopBtn.disabled) stopBtn.click();
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const totalMinutes = parseFloat(document.getElementById('totalTime').value) || 0;
+    const initialMs = Math.round(Math.max(0.5, totalMinutes) * 60 * 1000);
+    updateTimerDisplay(initialMs);
+    updateMuteUI();
+});
+
+window.addEventListener('beforeunload', (e) => {
+    if (isRunning) { e.preventDefault(); e.returnValue = ''; }
+});
+</script>
+</body>
+</html>
