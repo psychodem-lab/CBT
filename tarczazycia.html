@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karta Pracy - Koło Życia</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #5a67d8;
+            --bg-color: #f7fafc;
+            --box-bg: #e2e8f0;
+            --text-main: #2d3748;
+            --text-muted: #4a5568;
+            --border-radius: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-instructions {
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .instruction-box {
+            background-color: #e0e7ff;
+            color: var(--primary-color);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        @media (max-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .chart-container {
+                order: -1; /* Wykres na górze na mobile */
+            }
+        }
+
+        .category-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .category-group h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .inputs-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .input-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+        }
+
+        .input-wrapper label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        input[type="number"], select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #cbd5e0;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="number"]:focus, select:focus {
+            border-color: var(--primary-color);
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .notes-section {
+            margin-top: 3rem;
+        }
+
+        .notes-section h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 1rem;
+            border: 1px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            resize: vertical;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        textarea:focus {
+            box-shadow: 0 0 0 2px rgba(90, 103, 216, 0.2);
+        }
+
+        .footer-action {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .submit-btn {
+            background-color: #a5b4fc;
+            color: #ffffff;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .submit-btn:hover {
+            background-color: #818cf8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-instructions">
+        <h2>1. Oceń poziom satysfakcji w każdym obszarze, używając skali od 0 do 10.</h2>
+        <p>0 - brak satysfakcji, 10 - pełna satysfakcja.</p>
+        <h2 style="margin-top: 1rem;">2. Następnie oceń ważność każdego obszaru, używając skali od 0 do 10.</h2>
+        <p>0 - w ogóle nieważny, 10 - bardzo ważny.</p>
+    </div>
+
+    <div class="instruction-box">
+        Wprowadź satysfakcję oraz ważność w polach liczbowych obok. Wykres zaktualizuje się automatycznie.
+    </div>
+
+    <div class="main-content">
+        <div class="left-column" id="left-controls"></div>
+
+        <div class="chart-container">
+            <canvas id="wheelChart"></canvas>
+        </div>
+
+        <div class="right-column" id="right-controls"></div>
+    </div>
+
+    <div class="notes-section">
+        <h3>Notatki</h3>
+        <textarea placeholder="Miejsce na Twoje notatki"></textarea>
+    </div>
+
+    <div class="footer-action">
+        <button class="submit-btn" onclick="zapiszKarte()">Zakończ kartę pracy</button>
+    </div>
+</div>
+
+<script>
+    // Konfiguracja kategorii zgodnie z CBT / obrazkiem
+    const categories = [
+        "Zdrowie fizyczne", "Zdrowie psychiczne", "Relacje romantyczne", 
+        "Rodzina", "Przyjaźnie", "Rozwój zawodowy", 
+        "Finanse", "Relacja ze sobą", "Czas wolny", "Poczucie sensu"
+    ];
+
+    let chartInstance = null;
+
+    // Inicjalizacja interfejsu użytkownika
+    function initUI() {
+        const leftCol = document.getElementById('left-controls');
+        const rightCol = document.getElementById('right-controls');
+
+        categories.forEach((cat, index) => {
+            const html = `
+                <div class="category-group">
+                    <h3>${cat}</h3>
+                    <div class="inputs-row">
+                        <div class="input-wrapper">
+                            <label>Satysfakcja</label>
+                            <input type="number" id="sat-${index}" min="0" max="10" value="0" onchange="updateChart()">
+                        </div>
+                        <div class="input-wrapper">
+                            <label>Ważność</label>
+                            <select id="waz-${index}">
+                                ${[...Array(11).keys()].map(i => `<option value="${i}">${i}</option>`).join('')}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            if (index < 5) {
+                leftCol.innerHTML += html;
+            } else {
+                rightCol.innerHTML += html;
+            }
+        });
+
+        initChart();
+    }
+
+    // Inicjalizacja wykresu Chart.js (Polar Area)
+    function initChart() {
+        const ctx = document.getElementById('wheelChart').getContext('2d');
+        
+        const initialData = Array(10).fill(0);
+
+        chartInstance = new Chart(ctx, {
+            type: 'polarArea',
+            data: {
+                labels: categories,
+                datasets: [{
+                    label: 'Poziom satysfakcji',
+                    data: initialData,
+                    backgroundColor: 'rgba(165, 180, 252, 0.6)', // Jasny fioletowy
+                    borderColor: 'rgba(90, 103, 216, 1)', // Ciemniejszy fioletowy/niebieski
+                    borderWidth: 1.5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        min: 0,
+                        max: 10,
+                        ticks: {
+                            stepSize: 1,
+                            display: false // Ukrywamy liczby na osi by zyskać przejrzystość
+                        },
+                        grid: {
+                            color: 'rgba(165, 180, 252, 0.3)'
+                        },
+                        angleLines: {
+                            color: 'rgba(165, 180, 252, 0.5)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false // Ukryta legenda z góry
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Satysfakcja: ${context.raw}/10`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Logika aktualizacji danych wykresu
+    function updateChart() {
+        const newData = categories.map((_, index) => {
+            let val = parseInt(document.getElementById(`sat-${index}`).value, 10);
+            if (isNaN(val) || val < 0) val = 0;
+            if (val > 10) val = 10;
+            document.getElementById(`sat-${index}`).value = val; // Korekta walidacji UI
+            return val;
+        });
+
+        chartInstance.data.datasets[0].data = newData;
+        chartInstance.update();
+    }
+
+    // Mockup zapisu
+    function zapiszKarte() {
+        alert("Karta pracy została poprawnie zwalidowana i przygotowana do zapisu przez API.");
+    }
+
+    // Uruchomienie budowy DOM
+    document.addEventListener('DOMContentLoaded', initUI);
+
+</script>
+
+</body>
+</html>
