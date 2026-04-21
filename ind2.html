@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psychodem | Psychoterapia Poznawczo-Behawioralna CBT</title>
+    <link rel="shortcut icon" type="image/png" href="cbt.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Zmienne CSS dla spójności --- */
+        :root {
+            --color-bg: #F7FBF7;
+            --color-surface: #FFFFFF;
+            --color-primary: #4CAF50;
+            --color-primary-dark: #1B5E20;
+            --color-primary-light: #E8F5E9;
+            --color-primary-hover: #388E3C;
+            --color-text: #333333;
+            --color-text-light: #555555;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.04);
+            --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --transition: 0.3s ease;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-bg); 
+            color: var(--color-text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Nagłówek i Logo --- */
+        header {
+            background-color: var(--color-bg); 
+            padding: 20px 10px 10px;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .logo-wrapper img {
+            max-height: 100px;
+            transition: transform var(--transition);
+        }
+        .logo-wrapper a:hover img {
+            transform: scale(1.03); 
+        }
+        h1 {
+            margin-top: 10px;
+            font-size: 2.3em;
+        }
+
+        /* --- Kontener Główny --- */
+        .container {
+            width: 90%; 
+            max-width: 1000px;
+            margin: 20px auto 60px;
+            padding: 20px;
+        }
+        
+        /* --- Nagłówki Sekcji --- */
+        h2 {
+            color: var(--color-primary-dark); 
+            border-bottom: 3px solid var(--color-primary-light); 
+            padding-bottom: 10px;
+            font-size: 1.8em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        p {
+            color: var(--color-text-light);
+        }
+
+        /* --- Sekcja O Nas (Accordion) --- */
+        .accordion-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .accordion-item {
+            border: none;
+            border-radius: var(--radius-md);
+            overflow: hidden; 
+            background: var(--color-surface);
+            box-shadow: var(--shadow-soft); 
+            transition: box-shadow var(--transition);
+        }
+        .accordion-item:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .accordion-header {
+            background-color: var(--color-surface);
+            color: var(--color-primary-dark);
+            padding: 20px 25px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            transition: background-color var(--transition), color var(--transition);
+            font-size: 1.15em;
+            border-left: 4px solid transparent;
+        }
+        .accordion-header:hover {
+            background-color: var(--color-primary-light);
+        }
+        .accordion-header.active {
+            background-color: var(--color-primary-light); 
+            color: var(--color-primary-dark);
+            border-left: 4px solid var(--color-primary);
+        }
+        .accordion-header span {
+            font-size: 1.5em;
+            font-weight: 300;
+            transition: transform 0.4s ease;
+            color: var(--color-primary); 
+        }
+        .accordion-header.active span {
+            transform: rotate(45deg); 
+            color: var(--color-primary-dark); 
+        }
+
+        .accordion-content {
+            padding: 0 25px;
+            background-color: var(--color-surface);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+        }
+        .accordion-content.show {
+            max-height: none; 
+            padding: 0 25px 25px 25px;
+        }
+
+        .psychologist-details {
+            display: flex;
+            align-items: flex-start; 
+            text-align: left;
+            padding-top: 15px;
+            padding-bottom: 10px;
+            border-top: 1px solid var(--color-primary-light);
+            margin-top: 5px;
+        }
+        .psychologist-details img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 25px;
+            border: 3px solid var(--color-primary-light); 
+            flex-shrink: 0;
+            box-shadow: var(--shadow-soft);
+        }
+        .psychologist-text {
+            flex: 1;
+        }
+        .psychologist-text p {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+        .psychologist-text strong {
+            color: var(--color-primary-dark);
+            font-weight: 600;
+        }
+        
+        /* === STYLE POKAŻ/UKRYJ WEWNĄTRZ === */ 
+        .read-more-content {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--color-primary-light);
+            display: none; 
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .read-more-content.expanded {
+            display: block;
+            opacity: 1;
+            max-height: none; 
+        }
+        .read-more-content p {
+            font-size: 0.95em;
+        }
+
+        .read-more-button {
+            display: inline-block;
+            color: var(--color-primary);
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            margin-top: 12px;
+            border: 2px solid var(--color-primary-light);
+            background: var(--color-surface);
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            transition: all var(--transition);
+            font-size: 0.9em;
+        }
+        .read-more-button:hover {
+            background-color: var(--color-primary-light);
+            color: var(--color-primary-dark);
+            border-color: var(--color-primary);
+        }
+        /* ======================================= */
+
+        /* --- Sekcja Biblioteka (CTA) --- */
+        hr {
+            border: 0; 
+            border-top: 1px solid #E0EBE0; 
+            margin: 50px 0;
+        }
+
+        .cta-section {
+            padding: 40px 20px; 
+            background: linear-gradient(135deg, var(--color-primary-light) 0%, #D4EED6 100%); 
+            border-radius: var(--radius-lg); 
+            box-shadow: var(--shadow-soft);
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .cta-section p {
+            font-size: 1.15em;
+            margin-bottom: 25px;
+            color: var(--color-primary-dark);
+            font-weight: 400;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: var(--color-primary);
+            color: white;
+            padding: 16px 40px;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+            transition: background-color var(--transition), transform 0.2s;
+            font-size: 1.1em;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+        }
+        .cta-button:hover {
+            background-color: var(--color-primary-hover); 
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        /* --- Sekcja Kontakt --- */
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .contact-item {
+            background-color: var(--color-surface);
+            padding: 25px;
+            border: 1px solid var(--color-primary-light);
+            border-radius: var(--radius-md); 
+            transition: transform var(--transition), box-shadow var(--transition);
+            box-shadow: var(--shadow-soft);
+            text-align: center;
+        }
+        .contact-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--color-primary);
+        }
+        .contact-item strong {
+            display: block;
+            color: var(--color-primary-dark);
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .contact-item a, .contact-item p {
+            color: var(--color-text);
+            text-decoration: none;
+            font-size: 1em;
+            transition: color var(--transition);
+            margin: 0;
+        }
+        .contact-item a:hover {
+            color: var(--color-primary);
+        }
+
+        /* --- Stopka --- */
+        footer {
+            background-color: transparent; 
+            color: var(--color-text-light);
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px; 
+            font-size: 0.9em;
+        }
+
+        /* --- Responsywność --- */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 10px; 
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            .accordion-header {
+                font-size: 1.05em;
+                padding: 16px 20px;
+            }
+            .psychologist-details {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .psychologist-details img {
+                margin-right: 0;
+                margin-bottom: 20px;
+                width: 120px;
+                height: 120px;
+            }
+            .contact-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-wrapper">
+            <a href="index.html" title="Strona Główna">
+                <img src="logo.png" alt="Logo Psychodem">
+            </a>
+        </div>
+        <h1></h1>
+    </header>
+
+    <div class="container">
+
+        <h2>🌿 Pomoc psychologiczna i psychoterapia</h2>
+        <p style="margin-bottom: 30px;">Zachęcamy do zapoznania się z informacjami o nas. Kliknij w wybraną osobę, aby poznać szczegóły:</p>
+
+        <div class="accordion-list">
+            
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    Natalia Demeńczuk - Psycholog, Psychoterapeuta CBT
+                    <span>+</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="psychologist-details">
+                        <img src="Natalia.jpg" alt="Natalia">
+                        <div class="psychologist-text">
+                            <p><strong>Specjalizacja:</strong> Terapia lęku, depresji, osoby dorosłe, młodzież</p>
+                            <p><strong>O mnie:</strong> W swojej praktyce koncentruję się na skutecznym stosowaniu technik poznawczo-behawioralnych, pomagając dorosłym i młodzieży.</p>
+                            
+                            <button class="read-more-button" onclick="toggleReadMore(this)">Pokaż Pełny Opis</button>
+
+                            <div class="read-more-content">
+                                <p><strong>Dłuższy opis/Edukacja:</strong> Ukończyłam jednolite studia magisterskie w 2015 r. na specjalności kliniczno-sądowej. Dodatkowo kontynuowałam kształcenie na studiach podyplomowych w zakresie „Psychogeriatrii z elementami neuropsychologii” w Medycznym Centrum Kształcenia Podyplomowego Uniwersytetu Jagiellońskiego. Jestem członkinią Polskiego Towarzystwa Terapii Poznawczej i Behawioralnej. Obecnie doskonalę swoje kompetencje w trakcie uczęszczania do szkoły psychoterapii poznawczo-behawioralnej SP USWPS. Posiadam wieloletnie doświadczenie w pracy z różnymi grupami wiekowymi zarówno w terapii grupowej, jak i indywidualnej. Moje podejście opiera się na empiryzmie i empatycznej profesjonalnej współpracy, tworząc bezpieczną przestrzeń dla rozwiązywania trudności związanych m.in. z lękiem, depresją, zaburzeniami adaptacyjnymi, radzeniem sobie ze stresem i innymi trudnościami natury psychologicznej. W roli psychologa skupiam się na pomocy w odkrywaniu nowych sposobów myślenia i adaptacyjnych strategii radzenia sobie z problemami. Współpracuję z otwartością, kładąc nacisk na psychoedukację i korzystając z empirycznie potwierdzonych metod. Przez ostatnie lata zdobywałam doświadczenie w różnych placówkach pomocy psychologicznej, świadcząc wsparcie indywidualne, pracując w środowisku, angażując się w prace z rodzinami pacjentów oraz prowadząc zajęcia grupowe. Moje holistyczne podejście i zaangażowanie pozwalają dostosować terapię do indywidualnych potrzeb każdego klienta. W wolnym czasie rozwijam zainteresowania kinem, fantastyką naukową, malarstwem i ogrodnictwem.</p>
+                                <p><strong>Dodatkowe informacje:</strong> Pracuję pod stałą superwizją.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    Łukasz Demeńczuk - Psycholog, Psychoterapeuta CBT
+                    <span>+</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="psychologist-details">
+                        <img src="lukasz.jpg" alt="Łukasz">
+                        <div class="psychologist-text">
+                            <p><strong>Specjalizacja:</strong>  Osoby do wczesnej dorosłości, zaburzenia lękowe, OCD</p>
+                            <p><strong>O mnie:</strong> Prowadzę terapię indywidualną, wykorzystując metody CBT. Moim głównym celem jest poprawa jakości życia klienta.</p>
+
+                            <button class="read-more-button" onclick="toggleReadMore(this)">Pokaż Pełny Opis</button>
+
+                            <div class="read-more-content">
+                                <p><strong>Dłuższy opis/Edukacja:</strong> Ukończyłem jednolite studia magisterskie na kierunku Psychologia o specjalności kliniczno sądowej oraz szkołę psychoterapii poznawczej i behawioralnej ukończonej certyfikatem PTTPB nr 1044.
+
+W trakcie swojej pracy koncentruje się na dobrym zrozumieniu drugiej osoby i trudności, z którymi się zmaga. Przywiązuje szczególną wagę na czynniki, które podtrzymują problem. Dzięki temu mogę precyzyjnie dopasować strategię pomocy. 
+
+Moim głównym celem jest zwiększenie jakości życia osoby, która korzysta z moich usług. Ważne jest dla mnie aby czas terapii był jak najlepiej wykorzystany, w oparciu o wartości szacunku oraz szczerości.
+
+W trakcie trwania ścieżki zawodowej miałem doświadczenia z osobami z każdego przedziału wiekowego, dlatego w trakcie udzielania nawet indywidualnej pomocy angażuje pozostałych członków systemu rodzinnego. Stąd głównie pracuje z dziećmi, młodzieżą oraz młodymi dorosłymi.
+
+Moja praca jest poddawana superwizji a swoją wiedzę i umiejętności nieustannie rozwijam, co wpływa pozytywnie na jakość mojej pracy. 
+
+Osobiście jestem miłośnikiem przyrody oraz muzyki. Uważam kontakt z naturą za najlepszy relaks a grę na instrumencie jako świetny trening umysłu oraz przyjemną rozrywkę. 
+</p>
+                                <p><strong>Dodatkowe informacje:</strong> Pracuję pod stałą superwizją.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <hr>
+
+        <div class="cta-section">
+            <p>Skorzystaj z darmowych materiałów, ćwiczeń i narzędzi, które pomogą Ci w pracy nad sobą.</p> 
+            <a href="Biblioteka.html" class="cta-button">Narzędziownik</a> 
+        </div>
+
+        <h2>📞 Skontaktuj się z Nami</h2>
+        <p style="text-align: center; margin-bottom: 40px;">Napisz SMS lub email, aby umówić pierwszą wizytę. Pracujemy online oraz stacjonarnie.</p> 
+
+        <div class="contact-info">
+            <div class="contact-item">
+                <strong>E-mail</strong>
+                <p><a href="mailto:psychologdemenczuk@gmail.com">psychologdemenczuk@gmail.com</a></p>
+            </div>
+            <div class="contact-item">
+                <strong>Kontakt SMS / Telefon</strong>
+                <p><a href="tel:+48791788947">+48 791 788 947</a></p>
+            </div>
+            <div class="contact-item">
+                <strong>Lokalizacja</strong>
+                <p>Online / Gabinet: Przemyśl, ul. Moniuszki 3/3</p>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p></p>
+    </footer>
+
+    <script>
+        /**
+         * Funkcja przełączająca widoczność treści w głównej harmonijce (accordion).
+         * Zamyka wszystkie inne elementy.
+         */
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            const isActive = header.classList.contains('active');
+
+            // Zamykanie wszystkich innych harmonijek
+            document.querySelectorAll('.accordion-header').forEach(h => {
+                h.classList.remove('active');
+                h.nextElementSibling.classList.remove('show');
+                
+                // Opcjonalnie: Zresetuj wewnętrzne przyciski "Pokaż więcej"
+                const readMoreButton = h.nextElementSibling.querySelector('.read-more-button');
+                const readMoreContent = h.nextElementSibling.querySelector('.read-more-content');
+                if (readMoreButton && readMoreContent) {
+                     readMoreContent.classList.remove('expanded');
+                     readMoreButton.textContent = 'Pokaż Pełny Opis';
+                }
+            });
+
+            // Otwieranie klikniętej harmonijki
+            if (!isActive) {
+                header.classList.add('active');
+                content.classList.add('show');
+            }
+        }
+
+        /**
+         * NOWA FUNKCJA: Przełączająca widoczność sekcji 'O mnie' (Pokaż więcej).
+         * Działa wewnątrz otwartej harmonijki.
+         */
+        function toggleReadMore(button) {
+            const content = button.nextElementSibling; // To jest div.read-more-content
+            
+            // Zmieniamy tekst na przycisku i przełączamy klasę 'expanded'
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                button.textContent = 'Pokaż Pełny Opis';
+            } else {
+                content.classList.add('expanded');
+                button.textContent = 'Ukryj Opis';
+            }
+        }
+    </script>
+</body>
+</html>
