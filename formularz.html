@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zapis Przebiegu Terapii Poznawczo-Behawioralnej</title>
+    <style>
+        :root {
+            --primary: #2b6cb0;
+            --primary-dark: #1a4373;
+            --bg-main: #f7fafc;
+            --bg-card: #ffffff;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            font-size: 24px;
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 18px;
+            margin: 25px 0 15px 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        h3 {
+            font-size: 15px;
+            color: var(--text-main);
+            margin: 15px 0 10px 0;
+        }
+
+        .instruction {
+            font-style: italic;
+            color: var(--text-muted);
+            font-size: 13px;
+            background: #edf2f7;
+            padding: 10px;
+            border-left: 4px solid var(--primary);
+            margin-bottom: 15px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="number"], input[type="date"], select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-top: 5px;
+            transform: scale(1.1);
+        }
+
+        /* Sekcja ABC Diagram */
+        .abc-diagram {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .abc-box {
+            background: white;
+            border: 1px solid #94a3b8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .abc-box h4 {
+            color: var(--primary);
+            font-size: 14px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .abc-grid-three {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        /* Dynamiczne listy */
+        .dynamic-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 14px;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-danger { background: #e53e3e; color: white; }
+        .btn-danger:hover { background: #9b2c2c; }
+        .btn-success { background: #38a169; color: white; }
+        .btn-success:hover { background: #22543d; }
+
+        .toolbar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+            border: 1px solid var(--border);
+        }
+
+        .session-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        /* Style wydruku PDF */
+        @media print {
+            body { background: white; padding: 0; font-size: 12px; }
+            .container { box-shadow: none; padding: 0; max-width: 100%; }
+            .toolbar, .btn, .btn-danger, .instruction { display: none !important; }
+            textarea { min-height: 60px; height: auto; }
+            .abc-diagram { background: transparent; border: 1px solid #000; }
+            .abc-box { border: 1px solid #000; box-shadow: none; }
+            .page-break { page-break-before: always; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Drukuj / Zapisz PDF</button>
+        <button class="btn btn-success" onclick="exportToJSON()">💾 Zapisz jako JSON</button>
+        <button class="btn" onclick="document.getElementById('fileInput').click()">📂 Wczytaj plik JSON</button>
+        <input type="file" id="fileInput" style="display:none" accept=".json" onchange="importFromJSON(event)">
+    </div>
+
+    <div class="container">
+        <form id="cbtForm">
+            <h1>Zapis Przebiegu Terapii Poznawczo-Behawioralnej</h1>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="terapeuta">Terapeuta:</label>
+                    <input type="text" id="terapeuta">
+                </div>
+                <div class="form-group">
+                    <label for="pacjent">Pacjent (inicjały lub imię):</label>
+                    <input type="text" id="pacjent">
+                </div>
+                <div class="form-group">
+                    <label for="wiek">Wiek (około):</label>
+                    <input type="text" id="wiek">
+                </div>
+                <div class="form-group">
+                    <label for="sesje_liczba">Liczba odbytych sesji:</label>
+                    <input type="number" id="sesje_liczba">
+                </div>
+                <div class="form-group">
+                    <label for="terapia_od">Czas terapii od:</label>
+                    <input type="date" id="terapia_od">
+                </div>
+                <div class="form-group">
+                    <label for="terapia_do">Czas terapii do:</label>
+                    <input type="date" id="terapia_do">
+                </div>
+                <div class="form-group full-width">
+                    <label for="status_terapii">Status terapii:</label>
+                    <select id="status_terapii">
+                        <option value="w_trakcie">W trakcie</option>
+                        <option value="zakonczona">Zakończona</option>
+                        <option value="przerwana">Przerwana w trakcie</option>
+                    </select>
+                </div>
+                <div class="form-group full-width">
+                    <label for="uwagi_wstepne">Uwagi (np. pytania do superwizji, nagrania sesji):</label>
+                    <textarea id="uwagi_wstepne"></textarea>
+                </div>
+            </div>
+
+            <h2>Autorefleksja przed superwizją</h2>
+            <div class="checkbox-group">
+                <input type="checkbox" id="auto_q1">
+                <label for="auto_q1">Co jest problemem w pracy z tym pacjentem - na jakie pytania chciał/a/bym uzyskać odpowiedź?</label>
+            </div>
+            <div class="form-group full-width" style="margin-bottom:15px;">
+                <textarea id="auto_q1_text" placeholder="Rozwiń myśl..."></textarea>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="auto_q2">
+                <label for="auto_q2">Jeśli został sformułowany problem pacjenta (diagnoza kliniczna) - czy przejrzałam/em materiały dotyczące terapii CBT w tym problemie (literatura, materiały z zajęć)?</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="auto_q3">
+                <label for="auto_q3">Czy pacjent jest bezpieczny - czy mam dane dotyczące ryzyka samobójstwa, zachowań ryzykownych?</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="auto_q4">
+                <label for="auto_q4">Czy znam model teoretyczny najlepiej opisujący problem pacjenta?</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="auto_q5">
+                <label for="auto_q5">Czy w konceptualizacji uwzględniłam/em mechanizmy - procesy podtrzymujące problem pacjenta?</label>
+            </div>
+
+            <div class="form-grid" style="margin-top:15px;">
+                <div class="form-group full-width">
+                    <label for="interwencja_najlepiej">Na którą z moich interwencji pacjent zareagował najlepiej? Czy mam pomysł dlaczego?</label>
+                    <textarea id="interwencja_najlepiej"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="interwencja_najgorzej">Na którą z moich interwencji pacjent zareagował najgorzej? Czy mam pomysł dlaczego?</label>
+                    <textarea id="interwencja_najgorzej"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="relacja_trudnosci">Jak oceniam relację terapeutyczną i z jakimi zjawiskami w tej relacji mam trudność?</label>
+                    <textarea id="relacja_trudnosci"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="wlasne_abc">Jak wygląda moje własne ABC na myśl o (superwizji) terapii tego pacjenta?</label>
+                    <textarea id="wlasne_abc"></textarea>
+                </div>
+            </div>
+
+            <div class="page-break"></div>
+
+            <h2>1. Pierwszy Etap Terapii</h2>
+            <h3>1.1. Ogólna Diagnoza Kliniczna</h3>
+            
+            <div class="form-group full-width">
+                <label for="zglaszane_problemy">Zgłaszane problemy, powód przyjścia:</label>
+                <div class="instruction">Opisz skargę w sposób umożliwiający wyobrażenie sobie, jak pacjent rozumie własny problem (nie tylko cytat).</div>
+                <textarea id="zglaszane_problemy"></textarea>
+            </div>
+
+            <div class="form-group full-width" style="margin-top:15px;">
+                <label for="wywiad_ogolny">Informacje ogólne (wykształcenie, sytuacja zawodowa, rodzinna, materialna, prawna, historia leczenia):</label>
+                <div class="instruction">Wskazanie potencjalnych czynników środowiskowych i biologicznych. Pamiętaj: brak chorób/kłopotów to również ważna informacja!</div>
+                <textarea id="wywiad_ogolny"></textarea>
+            </div>
+
+            <div class="form-group full-width" style="margin-top:15px;">
+                <label for="stan_psychiczny">Badanie stanu psychicznego, diagnoza nozologiczna:</label>
+                <div class="instruction">Zapis objawów psychopatologicznych stwierdzonych podczas badania oraz wywiadu przed rozpoczęciem terapii.</div>
+                <textarea id="stan_psychiczny"></textarea>
+            </div>
+
+            <h3>Diagnoza wstępna (według ICD lub DSM):</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="diagnoza_dominujaca">Zaburzenie dominujące w obrazie klinicznym:</label>
+                    <input type="text" id="diagnoza_dominujaca">
+                </div>
+                <div class="form-group">
+                    <label for="diagnoza_wspolwystepujace">Zaburzenia współwystępujące:</label>
+                    <input type="text" id="diagnoza_wspolwystepujace">
+                </div>
+                <div class="form-group">
+                    <label for="diagnoza_osobowosc">Zaburzenia osobowości:</label>
+                    <input type="text" id="diagnoza_osobowosc">
+                </div>
+                <div class="form-group">
+                    <label for="choroby_somatyczne">Choroby somatyczne:</label>
+                    <input type="text" id="choroby_somatyczne">
+                </div>
+            </div>
+
+            <h3>Ogólne funkcjonowanie w sferze:</h3>
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label for="funkcjonowanie_rodzina">Rodzinnej (relacje z bliskimi):</label>
+                    <textarea id="funkcjonowanie_rodzina"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="funkcjonowanie_zawodowa">Zawodowej / szkolnej:</label>
+                    <textarea id="funkcjonowanie_zawodowa"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="funkcjonowanie_spoleczna">Społecznej:</label>
+                    <textarea id="funkcjonowanie_spoleczna"></textarea>
+                </div>
+            </div>
+
+            <div class="page-break"></div>
+
+            <h3>1.2. Wyodrębnienie problemów do terapii</h3>
+            <div class="instruction">Typowe aktualne problemy i trudne sytuacje (lista). Przy każdym podaj nasilenie/dyskomfort na skali 0-10 lub 0-100.</div>
+            
+            <div id="lista-problemow-container">
+                </div>
+            <button type="button" class="btn btn-primary" onclick="addProblemRow()">➕ Dodaj problem do listy</button>
+
+            <div class="form-group full-width" style="margin-top:20px;">
+                <label for="problem_dominujacy_konceptualizacja">PROBLEM DOMINUJĄCY WYBRANY DO KONCEPTUALIZACJI:</label>
+                <div class="instruction">Analiza niespójności (np. problem najistotniejszy dla pacjenta, który nie generuje największego dyskomfortu).</div>
+                <textarea id="problem_dominujacy_konceptualizacja"></textarea>
+            </div>
+
+            <div class="form-grid" style="margin-top:15px;">
+                <div class="form-group full-width">
+                    <label for="miara_rozwiazania">Co byłoby MIARĄ rozwiązania/ustąpienia problemu?</label>
+                    <textarea id="miara_rozwiazania"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="ilustracja_tydzien">Jakie sytuacje w ciągu ubiegłego tygodnia stanowią najlepszą ilustrację PROBLEMU?</label>
+                    <textarea id="ilustracja_tydzien"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="ilustracja_blizej">Której z tych sytuacji pacjent chciałby się przyjrzeć bliżej z powodu „C” (dyskomfort, powtarzalność)?</label>
+                    <textarea id="ilustracja_blizej"></textarea>
+                </div>
+            </div>
+
+            <div class="page-break"></div>
+
+            <h2>1.3. Konceptualizacja (Poziom I: Model ABC)</h2>
+            <div class="instruction">Tworzenie modelu poznawczego/behawioralnego na podstawie konkretnej, wybranej sytuacji problemowej.</div>
+
+            <div class="abc-diagram">
+                <div class="abc-box">
+                    <h4>Sytuacja ilustrująca problem</h4>
+                    <textarea id="abc_sytuacja" placeholder="Np. Mateusz jest w swoim pokoju, próbuje się uczyć na sprawdzian z fizyki..."></textarea>
+                </div>
+                
+                <div class="abc-box">
+                    <h4>Czynnik wyzwalający</h4>
+                    <textarea id="abc_czynnik" placeholder="Np. Siedzi przy biurku, ma otwarte książki, czyta kilka razy i nie może się skupić..."></textarea>
+                </div>
+
+                <div class="abc-box">
+                    <h4>Automatyczne myśli</h4>
+                    <textarea id="abc_mysli" placeholder="Np. Nie dam sobie rady, to jest za trudne, nic nie umiem, jestem beznadziejny..."></textarea>
+                </div>
+
+                <div class="abc-grid-three">
+                    <div class="abc-box">
+                        <h4>Zachowanie</h4>
+                        <textarea id="abc_zachowanie" placeholder="Np. Wybuch płaczem, pójście spać..."></textarea>
+                    </div>
+                    <div class="abc-box">
+                        <h4>Objawy fizjologiczne</h4>
+                        <textarea id="abc_fizjologia" placeholder="Np. Zmęczenie, napięcie w ciele, brak koncentracji..."></textarea>
+                    </div>
+                    <div class="abc-box">
+                        <h4>Emocje</h4>
+                        <textarea id="abc_emocje" placeholder="Np. Smutek (7/10), lęk..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="typowe_mysli">Typowe automatyczne myśli w podobnych sytuacjach:</label>
+                    <textarea id="typowe_mysli"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="typowe_emocje">Typowe emocje:</label>
+                    <textarea id="typowe_emocje"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="typowe_reakcje_fizj">Reakcje fizjologiczne:</label>
+                    <textarea id="typowe_reakcje_fizj"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="strategie_behawioralne">Podstawowe strategie behawioralne (w tym zachowania zabezpieczające):</label>
+                    <textarea id="strategie_behawioralne"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="konsekwencje_zachowan">Konsekwencje zachowań (np. wzmocnienia pozytywne i negatywne):</label>
+                    <textarea id="konsekwencje_zachowan"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="analiza_lancuchowa">Analiza funkcjonalna A-B-C sytuacji problemowej (analiza łańcuchowa), jeśli wykonano:</label>
+                    <textarea id="analiza_lancuchowa"></textarea>
+                </div>
+            </div>
+
+            <div class="page-break"></div>
+
+            <h2>Drugi Poziom Konceptualizacji</h2>
+            <div class="instruction">Schematy poznawcze, typowe wzorce reagowania w przeszłości i ich uwarunkowania.</div>
+
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label for="przekonania_kluczowe">Przekonania kluczowe (schematy poznawcze):</label>
+                    <textarea id="przekonania_kluczowe"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="przekonania_warunkowe">Przekonania warunkowe, pośredniczące (zasady):</label>
+                    <textarea id="przekonania_warunkowe"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="znieksztalcenia_poznawcze">Zniekształcenia i ograniczenia poznawcze (uwzględnić wnioski z testów):</label>
+                    <textarea id="znieksztalcenia_poznawcze"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="p2_strategie_behawioralne">Podstawowe strategie behawioralne stosowane przez pacjenta i ich rola w podtrzymywaniu problemu:</label>
+                    <textarea id="p2_strategie_behawioralne"></textarea>
+                </div>
+            </div>
+
+            <h3>Zidentyfikowane procesy transdiagnostyczne podtrzymujące problem:</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="trans_unikanie">Unikanie poznawcze:</label>
+                    <textarea id="trans_unikanie"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="trans_zamartwianie">Zamartwianie, ruminacje:</label>
+                    <textarea id="trans_zamartwianie"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="trans_historia">Historia uczenia/wzmocnienia:</label>
+                    <textarea id="trans_historia"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="trans_perfekcjonizm">Perfekcjonizm:</label>
+                    <textarea id="trans_perfekcjonizm"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="trans_zagrozenie">Monitorowanie zagrożenia (ukierunkowanie uwagi):</label>
+                    <textarea id="trans_zagrozenie"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="trans_inne">Inne:</label>
+                    <textarea id="trans_inne"></textarea>
+                </div>
+            </div>
+
+            <div class="page-break"></div>
+
+            <h2>Profil Rozwojowy i Podsumowanie</h2>
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label for="profil_przeszlosc">Przeszłość i związki z innymi (rodzice, rodzeństwo, rówieśnicy, autorytety, znaczenie nadane przeszłości):</label>
+                    <textarea id="profil_przeszlosc"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="profil_traumy">Istotne wydarzenia i przeżycia traumatyczne (ich związek z obecnym stanem):</label>
+                    <textarea id="profil_traumy"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="profil_wyzwalacze">Czynniki wyzwalające obecne zaburzenie (mechanizm działania bodźca):</label>
+                    <textarea id="profil_wyzwalacze"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="czynniki_negatywne">Czynniki, które mogą negatywnie wpływać na przebieg terapii:</label>
+                    <textarea id="czynniki_negatywne"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="zasoby_rezyliencja">Zasoby, rezyliencja - czynniki pozytywnie wpływające:</label>
+                    <textarea id="zasoby_rezyliencja"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="dodatkowe_narzedzia">Dodatkowe informacje, zastosowane narzędzia diagnostyczne, wyniki badań:</label>
+                    <textarea id="dodatkowe_narzedzia"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="podsumowanie_konceptualizacji">Podsumowanie konceptualizacji (synteza, odniesienia do literatury/modeli):</label>
+                    <textarea id="podsumowanie_konceptualizacji"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="cele_terapii">Cele terapii (uzgodnione z pacjentem, spójne z listą problemów):</label>
+                    <textarea id="cele_terapii"></textarea>
+                </div>
+            </div>
+
+            <div class="page-break"></div>
+
+            <h2>2. Drugi Etap Terapii</h2>
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label for="plan_terapii">Plan terapii (protokoły badawcze, uzasadnienie wyboru lub autorski plan działań):</label>
+                    <textarea id="plan_terapii"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="narzedzia_oceny_zmian">Narzędzia oceny stanu psychicznego / sposób monitorowania zmian:</label>
+                    <textarea id="narzedzia_oceny_zmian"></textarea>
+                </div>
+            </div>
+
+            <h3>II.2 Realizacja planu - Opis kolejnych sesji, zastosowanych interwencji</h3>
+            <div class="instruction">Dla każdej sesji podaj: plan sesji, wykonane interwencje, wnioski, pracę osobistą pacjenta oraz refleksje terapeuty.</div>
+            
+            <div id="sesje-container">
+                </div>
+            <button type="button" class="btn btn-primary" onclick="addSessionCard()">➕ Dodaj opis sesji / bloku sesji</button>
+
+            <div class="page-break"></div>
+
+            <h2>3. Trzeci Etap Terapii</h2>
+            <h3>Osiągnięte cele:</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="cele_wg_pacjenta">Według pacjenta:</label>
+                    <textarea id="cele_wg_pacjenta"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="cele_wg_terapeuty">Według terapeuty:</label>
+                    <textarea id="cele_wg_terapeuty"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="cele_wg_narzedzi">Według narzędzi oceny (wartości przed i po terapii):</label>
+                    <textarea id="cele_wg_narzedzi"></textarea>
+                </div>
+            </div>
+
+            <h3>Zmiany, które podczas terapii zaszły w zakresie:</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="zmiana_poznawcza">Funkcjonowania poznawczego pacjenta:</label>
+                    <textarea id="zmiana_poznawcza"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="zmiana_emocji">Emocji:</label>
+                    <textarea id="zmiana_emocji"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="zmiana_zachowan">Zachowań:</label>
+                    <textarea id="zmiana_zachowan"></textarea>
+                </div>
+            </div>
+
+            <h3>Mechanizmy zmian (lub braku zmian):</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="mech_pacjent">Według pacjenta:</label>
+                    <textarea id="mech_pacjent"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="mech_terapeuta">Według terapeuty (odniesienie do konceptualizacji):</label>
+                    <textarea id="mech_terapeuta"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="zapobieganie_nawrotom">Zastosowane strategie „zapobiegania nawrotom” i zalecenia:</label>
+                    <textarea id="zapobieganie_nawrotom"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="trudnosci_terapia">Trudności, które wystąpiły podczas terapii (z odniesieniem do konceptualizacji):</label>
+                    <textarea id="trudnosci_terapia"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="relacja_ocena_koncowa">Relacja terapeutyczna (ocena czynników po stronie pacjenta i terapeuty):</label>
+                    <textarea id="relacja_ocena_koncowa"></textarea>
+                </div>
+            </div>
+
+            <h2>4. Podsumowanie Terapii - Wnioski</h2>
+            <div class="form-group full-width">
+                <label for="podsumowanie_koncowe_wnioski">Wnioski końcowe do dokumentacji medycznej:</label>
+                <textarea id="podsumowanie_koncowe_wnioski"></textarea>
+            </div>
+            <div class="form-group full-width" style="margin-top:15px;">
+                <label for="literatura_wykorzystana">Literatura (wykorzystane materiały teoretyczne i protokoły):</label>
+                <textarea id="literatura_wykorzystana"></textarea>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Liczniki dla elementów dynamicznych
+        let problemCount = 0;
+        let sessionCount = 0;
+
+        // Dynamiczne dodawanie problemów do listy (Sekcja 1.2)
+        function addProblemRow(text = '', scale = '') {
+            problemCount++;
+            const container = document.getElementById('lista-problemow-container');
+            const row = document.createElement('div');
+            row.className = 'dynamic-row';
+            row.id = `problem_row_${problemCount}`;
+            row.innerHTML = `
+                <input type="text" class="prob-desc" placeholder="Opis problemu / trudnej sytuacji" style="flex: 3;" value="${text}">
+                <input type="text" class="prob-scale" placeholder="Nasilenie (0-100)" style="flex: 1;" value="${scale}">
+                <button type="button" class="btn btn-danger" onclick="removeElement('${row.id}')">Usuń</button>
+            `;
+            container.appendChild(row);
+        }
+
+        // Dynamiczne dodawanie kart opisów sesji (Sekcja II.2)
+        function addSessionCard(title = '', content = '') {
+            sessionCount++;
+            const container = document.getElementById('sesje-container');
+            const card = document.createElement('div');
+            card.className = 'session-card';
+            card.id = `session_card_${sessionCount}`;
+            card.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <input type="text" class="sess-title" placeholder="Numer sesji / Temat przewodni (np. Sesje 1-3, Sesja 4)" style="font-weight:bold; font-size:15px; flex:2;" value="${title}">
+                    <button type="button" class="btn btn-danger" style="padding: 5px 10px; margin-left:10px;" onclick="removeElement('${card.id}')">Usuń blok</button>
+                </div>
+                <textarea class="sess-content" placeholder="Przebieg, interwencje, wnioski, praca własna..." style="min-height:100px;">${content}</textarea>
+            `;
+            container.appendChild(card);
+        }
+
+        function removeElement(id) {
+            const element = document.getElementById(id);
+            if(element) element.remove();
+        }
+
+        // --- OBSŁUGA JSON ---
+
+        // Eksport całego formularza do pliku tekstowego JSON
+        function exportToJSON() {
+            const formData = {};
+            
+            // Pobieranie standardowych pól wejściowych
+            const standardInputs = document.querySelectorAll('#cbtForm input:not(.prob-desc):not(.prob-scale):not(.sess-title), #cbtForm textarea:not(.sess-content), #cbtForm select');
+            standardInputs.forEach(input => {
+                if (input.type === 'checkbox') {
+                    formData[input.id] = input.checked;
+                } else {
+                    formData[input.id] = input.value;
+                }
+            });
+
+            // Pobieranie listy dynamicznych problemów
+            formData.problems = [];
+            const problemRows = document.querySelectorAll('#lista-problemow-container .dynamic-row');
+            problemRows.forEach(row => {
+                formData.problems.push({
+                    desc: row.querySelector('.prob-desc').value,
+                    scale: row.querySelector('.prob-scale').value
+                });
+            });
+
+            // Pobieranie struktury wpisów sesyjnych
+            formData.sessions = [];
+            const sessionCards = document.querySelectorAll('#sesje-container .session-card');
+            sessionCards.forEach(card => {
+                formData.sessions.push({
+                    title: card.querySelector('.sess-title').value,
+                    content: card.querySelector('.sess-content').value
+                });
+            });
+
+            // Budowanie i pobieranie pliku
+            const jsonString = JSON.stringify(formData, null, 2);
+            const blob = new Blob([jsonString], { type: "application/json" });
+            const link = document.createElement("a");
+            
+            const clientName = document.getElementById('pacjent').value || 'pacjent';
+            link.download = `CBT_Terapia_${clientName.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0,10)}.json`;
+            link.href = URL.createObjectURL(blob);
+            link.click();
+        }
+
+        // Import danych z pliku JSON i odtworzenie struktury dokumentu
+        function importFromJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    // Czyszczenie i odbudowa list dynamicznych
+                    document.getElementById('lista-problemow-container').innerHTML = '';
+                    document.getElementById('sesje-container').innerHTML = '';
+                    problemCount = 0;
+                    sessionCount = 0;
+
+                    // Uzgodnienie wartości podstawowych pól formularza
+                    for (const key in data) {
+                        if (key !== 'problems' && key !== 'sessions') {
+                            const element = document.getElementById(key);
+                            if (element) {
+                                if (element.type === 'checkbox') {
+                                    element.checked = data[key];
+                                } else {
+                                    element.value = data[key];
+                                }
+                            }
+                        }
+                    }
+
+                    // Odtwarzanie wierszy listy problemów
+                    if (data.problems && Array.isArray(data.problems)) {
+                        data.problems.forEach(p => addProblemRow(p.desc, p.scale));
+                    }
+
+                    // Odtwarzanie struktury kart sesji
+                    if (data.sessions && Array.isArray(data.sessions)) {
+                        data.sessions.forEach(s => addSessionCard(s.title, s.content));
+                    }
+
+                    alert('Dane formularza zostały pomyślnie zaimportowane!');
+                } catch (error) {
+                    alert('Wystąpił błąd podczas parsowania pliku JSON. Upewnij się, że plik jest prawidłowy.');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Inicjalizacja formularza pustymi polami dynamicznymi na start
+        window.onload = function() {
+            addProblemRow();
+            addSessionCard('Sesje 1-3 (Diagnoza i kontrakt)', '');
+        };
+    </script>
+</body>
+</html>
