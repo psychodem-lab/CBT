@@ -1,1 +1,743 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Myślę, Czuję, Działam - Moduł 7: Samookaleczenia</title>
+    <style>
+        :root {
+            --primary-color: #d97736;
+            --primary-light: #fdf6f0;
+            --text-color: #2c3e50;
+            --border-color: #bdc3c7;
+            --bg-color: #fafafa;
+            --card-bg: #ffffff;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 40px 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        header h2 {
+            margin: 10px 0 5px 0;
+            font-size: 1.5rem;
+            font-weight: 400;
+        }
+
+        header .author {
+            font-style: italic;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .session-title {
+            background-color: #34495e;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-top: 50px;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+        }
+
+        .exercise-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .exercise-card h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.25rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .story-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #34495e;
+            padding: 15px 20px;
+            margin: 20px 0;
+            font-style: italic;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .story-title {
+            font-weight: bold;
+            font-style: normal;
+            color: #34495e;
+            margin-bottom: 5px;
+        }
+
+        .important-box {
+            background-color: var(--primary-light);
+            border: 1px dashed var(--primary-color);
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+
+        .important-box h4 {
+            margin: 0 0 10px 0;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .important-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .question-group {
+            margin-top: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: vertical;
+            font-family: inherit;
+            margin-bottom: 15px;
+        }
+
+        textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 5px rgba(217, 119, 54, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #34495e;
+            font-weight: 600;
+        }
+
+        .checkbox-cell {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .checkbox-container {
+            display: block;
+            margin: 5px 0;
+        }
+
+        .function-tag {
+            display: block;
+            background: #eef2f7;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin: 4px 0;
+            font-size: 0.9rem;
+        }
+
+        input[type="checkbox"] {
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 10px; margin: 10px auto; }
+            table, thead, tbody, th, td, tr { display: block; }
+            th { text-align: right; }
+            td { text-align: left; border-top: none; position: relative; padding-left: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>MYŚLĘ, CZUJĘ, DZIAŁAM</h1>
+        <h2>Ćwiczenia — Moduł 7: Problemy związane z samookaleczeniami</h2>
+        <div class="author">Autor: Nina Szalas</div>
+    </header>
+
+    <div class="session-title">Sesja 1: Co warto wiedzieć o samookaleczeniach?</div>
+
+    <div class="exercise-card">
+        <h3>Ćwiczenie I. Co to są samookaleczenia?</h3>
+        <p>Zastanów się i odpowiedz na poniższe pytania:</p>
+        
+        <div class="question-group">
+            <label>Co to są samookaleczenia?</label>
+            <textarea placeholder="Wpisz swoje przemyślenia..."></textarea>
+        </div>
+
+        <div class="question-group">
+            <label>Jakie są cechy samookaleczeń?</label>
+            <textarea placeholder="Wpisz swoje przemyślenia..."></textarea>
+        </div>
+
+        <div class="question-group">
+            <label>Co odróżnia samookaleczenia od przypadkowego zranienia?</label>
+            <textarea placeholder="Wpisz swoje przemyślenia..."></textarea>
+        </div>
+
+        <div class="important-box">
+            <h4>Warto zapamiętać! Cechy samookaleczeń:</h4>
+            <ul>
+                <li><strong>celowość</strong> – osoba ich dokonująca ma na celu zranienie siebie</li>
+                <li><strong>dobrowolność</strong> – przeprowadzone zostają z własnej woli, a nie pod przymusem</li>
+                <li>prowadzą do uszkodzenia ciała</li>
+                <li>nie mają na celu samobójstwa*</li>
+                <li>w danej kulturze są uznawane za niemieszczące się w normie</li>
+                <li>mogą przybierać różne formy</li>
+            </ul>
+            <p style="font-size: 0.85rem; margin-top: 10px; font-style: italic;">*czasem zachowanie samookaleczające bywa sposobem na popełnienie samobójstwa</p>
+        </div>
+
+        <div class="question-group">
+            <label>Zastanów się: Dlaczego ludzie dokonują samookaleczeń?</label>
+            <textarea placeholder="Wpisz swoje przemyślenia..."></textarea>
+        </div>
+    </div>
+
+    <div class="exercise-card">
+        <h3>Ćwiczenie II. Jakie są następstwa samookaleczeń?</h3>
+        <p>Zastanów się i wpisz do tabeli:</p>
+        
+        <label>Jakie korzyści i straty wynikają z samookaleczeń na tu i teraz?</label>
+        <table>
+            <thead>
+                <tr>
+                    <th>Korzyści „tu i teraz”</th>
+                    <th>Straty „tu i teraz”</th>
+                    <th>W jakich sytuacjach?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><textarea placeholder="Wpisz..."></textarea></td>
+                    <td><textarea placeholder="Wpisz..."></textarea></td>
+                    <td><textarea placeholder="Wpisz..."></textarea></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="important-box">
+            <h4>Warto zapamiętać!</h4>
+            <ul>
+                <li><strong>Funkcja zachowania</strong> to wszystko to, co sprawia, że dane zachowanie się powtarza.</li>
+                <li><strong>Funkcja samookaleczeń</strong> pokazuje do czego samookaleczenia są komuś „potrzebne”, do czego są używane.</li>
+            </ul>
+        </div>
+
+        <label>Jakie korzyści i straty wynikają z samookaleczeń, gdy ktoś dokonuje ich przez dłuższy czas, np. przez kilka lat?</label>
+        <table>
+            <thead>
+                <tr>
+                    <th>Korzyści „na przyszłość”</th>
+                    <th>Straty „na przyszłość”</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><textarea placeholder="Wpisz..."></textarea></td>
+                    <td><textarea placeholder="Wpisz..."></textarea></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="exercise-card">
+        <h3>Ćwiczenie III. Jak samookaleczenia są używane do radzenia sobie z emocjami?</h3>
+        <p>Zastanów się: W jaki sposób niektórzy przez samookaleczenia radzą sobie z emocjami?</p>
+
+        <div class="story-box">
+            <div class="story-title">Historia Michała:</div>
+            Michał od rana nie wiedział, co ze sobą zrobić. Słuchał muzyki, próbował grać na komputerze, ale nic nie pomagało. Michał czuł się „kompletnie pusty w środku”, jak by był „zupełnie obok swojego życia”. Nic go nie cieszyło ani nie smuciło. Ta pustka była nie do wytrzymania. Wziął więc zapalniczkę i zaczął przypalać sobie przedramię. Poczuł ból, „nareszcie coś”. Wraz z bólem przyszła energia do działania.
+        </div>
+
+        <div class="question-group">
+            <label>Dlaczego Michał się okaleczył?</label>
+            <textarea placeholder="Odpowiedź..."></textarea>
+        </div>
+
+        <div class="story-box">
+            <div class="story-title">Historia Asi:</div>
+            Asia pokłóciła się z koleżanką z klasy. Wracała do domu zezłoszczona i smutna. Czuła, że te emocje wypełniają ją całą i są nie do wytrzymania. Po powrocie do domu szybko poszła do swojego pokoju, odkręciła ostrze od temperówki i zrobiła trzy nacięcia na ręce. Miała wrażenie, że przecinając skórę, wypuszcza nagromadzone w niej emocje. Przy trzecim nacięciu poczuła ulgę, spokój i odprężenie.
+        </div>
+
+        <div class="question-group">
+            <label>Dlaczego Asia się okaleczyła?</label>
+            <textarea placeholder="Odpowiedź..."></textarea>
+        </div>
+
+        <div class="question-group">
+            <label>Do czego Michał, a do czego Asia użyli samookaleczeń? Co się w nich zmieniło po ich dokonaniu?</label>
+            <textarea placeholder="Odpowiedź..."></textarea>
+        </div>
+
+        <div class="important-box">
+            <h4>Warto zapamiętać!</h4>
+            <p>Samookaleczenia bywają używane do radzenia sobie z emocjami, aby:</p>
+            <ul>
+                <li>przestać czuć emocje, które są nieprzyjemne i trudne</li>
+                <li>rozładować napięcie i lęk</li>
+                <li>poczuć ulgę i odprężyć się</li>
+                <li>poczuć cokolwiek, choćby ból</li>
+                <li>dostarczyć silnych bodźców</li>
+                <li>wywołać przyjemny stan</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="exercise-card">
+        <h3>Ćwiczenie IV. Jak samookaleczenia są używane do komunikowania i wywierania wpływu na innych?</h3>
+        
+        <div class="question-group">
+            <label>Co samookaleczenia mogą komunikować innym osobom? W jaki sposób przez samookaleczenia można wywierać wpływ na innych?</label>
+            <textarea placeholder="Wpisz swoje przemyślenia..."></textarea>
+        </div>
+
+        <div class="story-box">
+            <div class="story-title">Historia Ani:</div>
+            Ania zezłościła się na mamę, która nie pozwoliła jej wyjść z koleżankami na imprezę. W pokoju zrobiła pięć nacięć na ręce, aż polała się z nich krew. Nie wycierając jej, poszła do kuchni, w której była mama i zaczęła robić sobie herbatę. Mama, gdy zobaczyła rękę Ani, wystraszyła się i chciała opatrzyć jej rany. Ania zaczęła krzyczeć na mamę: „Zostaw mnie! To wszystko przez ciebie! Najpierw mnie zdenerwowałaś, a teraz chcesz mi pomagać?”. Tydzień później, gdy Ania chciała iść na imprezę, mama nie powiedziała już ani słowa.
+        </div>
+
+        <div class="question-group">
+            <label>Dlaczego Ania się okaleczyła? Co się zmieniło w jej życiu i co uzyskała tym zachowaniem?</label>
+            <textarea placeholder="Odpowiedź..."></textarea>
+        </div>
+
+        <div class="story-box">
+            <div class="story-title">Historia Bartka:</div>
+            Bartek od dawna czuł się bardzo smutny. Coraz gorzej szło mu z nauką, mama ostatnio nie miała dla niego czasu, z kolegami nie układało się najlepiej. Nie chciał się skarżyć, bo był nauczony, że zawsze powinien sobie radzić sam z kłopotami. Pewnego wieczoru zrobił sobie nacięcie na nadgarstku. Następnego dnia zainteresowała się tym mama i zapisała Bartka do psychologa. Również wychowawczyni w szkole zauważyła nacięcie, porozmawiała z Bartkiem i pomogła mu ustalić daty poprawek.
+        </div>
+
+        <div class="question-group">
+            <label>Dlaczego Bartek się okaleczył? Co się zmieniło w jego życiu? Co jego zachowanie mówiło innym?</label>
+            <textarea placeholder="Odpowiedź..."></textarea>
+        </div>
+
+        <div class="important-box">
+            <h4>Warto zapamiętać!</h4>
+            <p>Samookaleczenia bywają używane do komunikacji i wywierania wpływu na innych, aby:</p>
+            <ul>
+                <li>zasygnalizować cierpienie otoczeniu;</li>
+                <li>zwrócić na siebie uwagę innych ludzi, zakomunikować im coś;</li>
+                <li>wywrzeć wpływ, sprawić, aby inni zachowali się w określony sposób.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="exercise-card">
+        <h3>Ćwiczenie V. Jak samookaleczenia są używane do karania siebie?</h3>
+        <h3>& Ćwiczenie VI. Jak samookaleczenia są używane do uzyskiwania poczucia kontroli?</h3>
+
+        <div class="story-box">
+            <div class="story-title">Historia Basi (Samokaranie):</div>
+            Basia pokłóciła się z mamą. W kłótni powiedziała mamie, że jej nienawidzi i że wolałaby mieć inną mamę. Po kłótni Basia poszła do pokoju, żałując swoich słów. W głowie kłębiły się myśli: „Jestem beznadziejna! Jestem okropną córką! Zawsze muszę ją ranić...” Basia wyjęła żyletkę i zrobiła dwa nacięcia, mówiąc do siebie: „Dobrze ci tak! Zasłużyłaś na to!” Patrząc na płynącą krew, poczuła się oczyszczona i gotowa na przeproszenie mamy.
+        </div>
+
+        <div class="question-group">
+            <label>Dlaczego Basia się okaleczyła? Co było jej motywacją?</label>
+            <textarea placeholder="Odpowiedź..."></textarea>
+        </div>
+
+        <div class="story-box">
+            <div class="story-title">Historia Antka (Poczucie kontroli):</div>
+            Tego dnia od samego rana Antkowi nic nie wychodziło. Najpierw dostał 1 z matematyki, z której zawsze dostawał 4 i 5, potem spadł mu telefon i pękła obudowa, a na koniec tata przyszedł powiedzieć, że babcia trafiła do szpitala. Tego było dla Antka już za dużo. Miał poczucie, że wali mu się jedna rzecz za drugą i nad niczym już nie panuje. Wówczas rozbił szklankę i szkłem wyrył na skórze napis STOP. Pomyślał: „Chociaż na to mam wpływ” i odetchnął z ulgą.
+        </div>
+
+        <div class="question-group">
+            <label>Dlaczego Antek się okaleczył? W czym pomogły mu okaleczenia?</label>
+            <textarea placeholder="Odpowiedź..."></textarea>
+        </div>
+
+        <div class="important-box">
+            <h4>Warto zapamiętać! Samokaranie:</h4>
+            <ul>
+                <li>Ukarać siebie za coś</li>
+                <li>Znaleźć powód/uzasadnienie do zaopiekowania się sobą</li>
+                <li>Oczyścić siebie, swoje ciało</li>
+            </ul>
+        </div>
+
+        <div class="important-box">
+            <h4>Warto zapamiętać! Poczucie kontroli:</h4>
+            <ul>
+                <li>Zogniskować ból, żeby lepiej go kontrolować</li>
+                <li>Zapanować nad własnym ciałem i bólem</li>
+                <li>Odnaleźć poczucie kontroli i/lub autonomii w swoim życiu</li>
+                <li>Mieć wpływ na siebie</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="exercise-card">
+        <h3>Ćwiczenie VII. Jak samookaleczenia są używane do radzenia sobie z traumatycznymi, urazowymi doświadczeniami?</h3>
+
+        <div class="story-box">
+            <div class="story-title">Historia Piotrka:</div>
+            Piotrek, od czasu gdy chodził do przedszkola, był bardzo często bity przez tatę. Zdarzyło się nawet, że tata w nerwach złamał mu rękę i trzeba było jechać do szpitala. Rodzice Piotrka rozwiedli się, gdy Piotrek poszedł do pierwszej klasy i od tamtej chwili chłopiec nie widział taty. Pewnego dnia Piotrek odebrał telefon i w słuchawce usłyszał głos taty, który proponował spotkanie. Piotrkowi zrobiło się gorąco, serce zaczęło mu szybko bić, a w gardle czuł ucisk. Ledwo wydukał odpowiedź. Cały wieczór nie mógł się uspokoić, przypominały mu się obrazy związane z krzykami i biciem. W końcu odkręcił ostrze temperówki i przeciął skórę. Powoli zaczął wracać do rzeczywistości i się uspokajać.
+        </div>
+
+        <div class="question-group">
+            <label>Dlaczego Piotrek się okaleczył? W czym mu pomogły okaleczenia?</label>
+            <textarea placeholder="Odpowiedź..."></textarea>
+        </div>
+
+        <div class="important-box">
+            <h4>Warto zapamiętać!</h4>
+            <p>Samookaleczenia bywają używane do radzenia sobie z wcześniejszymi doświadczeniami traumatycznymi, aby:</p>
+            <ul>
+                <li>Odtworzyć traumatyczne, urazowe doświadczenia</li>
+                <li>Uwolnić się od trudnych wspomnień, doświadczeń</li>
+                <li>Zasygnalizować swoje cierpienie otoczeniu</li>
+                <li>Ukarać innych, np. swojego prześladowcę</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="exercise-card">
+        <h3>Ćwiczenie VIII. „Trening czyni mistrza”, czyli praca własna – dlaczego się okaleczasz? Funkcje Twoich samookaleczeń</h3>
+        <p><em>(O swoich obserwacjach i przemyśleniach możesz porozmawiać z Twoim terapeutą, jeśli uczestniczysz w terapii indywidualnej)</em></p>
+        <p>W tabeli przedstawiono wszystkie omówione funkcje. Przeczytaj uważnie i zaznacz, które z tych funkcji pojawiają się u Ciebie:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Funkcja</th>
+                    <th>Opis szczegółowy</th>
+                    <th>Czy pojawia się u Ciebie?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Radzenie sobie z emocjami</strong></td>
+                    <td>
+                        • przestać czuć emocje, które są nieprzyjemne i trudne<br>
+                        • rozładować napięcie i lęk<br>
+                        • poczuć ulgę i odprężyć się<br>
+                        • poczuć cokolwiek, choćby ból<br>
+                        • dostarczyć silnych bodźców<br>
+                        • wywołać przyjemny stan
+                    </td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td><strong>Komunikacja i wywieranie wpływu</strong></td>
+                    <td>
+                        • zasygnalizować cierpienie otoczeniu<br>
+                        • zwrócić na siebie uwagę innych ludzi, zakomunikować im coś<br>
+                        • wywrzeć wpływ, sprawić, aby inni zachowali się w określony sposób
+                    </td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td><strong>Samokaranie</strong></td>
+                    <td>
+                        • ukarać siebie za coś<br>
+                        • znaleźć powód/uzasadnienie do zaopiekowania się sobą<br>
+                        • oczyścić siebie, swoje ciało
+                    </td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td><strong>Poczucie kontroli</strong></td>
+                    <td>
+                        • zogniskować ból, żeby lepiej go kontrolować<br>
+                        • zapanować nad własnym ciałem i bólem<br>
+                        • odnaleźć poczucie kontroli i/lub autonomii w swoim życiu<br>
+                        • mieć wpływ na siebie
+                    </td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td><strong>Radzenie sobie z traumą</strong></td>
+                    <td>
+                        • odtworzyć traumatyczne, urazowe doświadczenia<br>
+                        • uwolnić się od trudnych wspomnień, doświadczeń<br>
+                        • zasygnalizować swoje cierpienie otoczeniu<br>
+                        • ukarać innych, np. swojego prześladowcę
+                    </td>
+                    <td class="checkbox-cell"><input type="checkbox"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="session-title">Sesja 2: Jak zastąpić samookaleczenia innymi umiejętnościami?</div>
+
+    <div class="exercise-card">
+        <h3>Ćwiczenie I. Co to jest trening umiejętności zastępczych?</h3>
+        
+        <div class="question-group">
+            <label>Z czym kojarzy Ci się trening umiejętności zastępczych w kontekście samookaleczeń?</label>
+            <textarea placeholder="Wpisz..."></textarea>
+        </div>
+        <div class="question-group">
+            <label>Co można spróbować zastąpić czym?</label>
+            <textarea placeholder="Wpisz..."></textarea>
+        </div>
+        <div class="question-group">
+            <label>Kiedy warto trenować takie umiejętności?</label>
+            <textarea placeholder="Wpisz..."></textarea>
+        </div>
+
+        <div class="important-box">
+            <h4>Warto zapamiętać!</h4>
+            <ul>
+                <li>Trening umiejętności zastępczych ma pomóc w zastąpieniu samookaleczeń innymi czynnościami, które nie będą miały tylu negatywnych konsekwencji.</li>
+                <li>Umiejętności te można wykorzystać, kiedy przychodzi ochota na dokonanie samookaleczenia.</li>
+                <li>Warto się ich uczyć, kiedy jesteś spokojny(-a) i skupiony(-a), wówczas łatwiej Ci będzie z nich skorzystać, kiedy pojawią się silne emocje.</li>
+                <li>Warto wypróbować różne sposoby, zanim znajdziesz te najbardziej odpowiednie dla Ciebie.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="exercise-card">
+        <h3>Ćwiczenie II. Co to są negatywne zachowania zastępcze?</h3>
+        
+        <div class="important-box">
+            <h4>Warto zapamiętać!</h4>
+            <ul>
+                <li><strong>Negatywne zachowania zastępcze</strong> to czynności, które można wykonywać w zastępstwie samookaleczeń. Jest to metoda, która może być stosowana przez krótki czas w sytuacji, kiedy masz ochotę się okaleczyć.</li>
+                <li>Zachowania te mają za zadanie spowodować ból, jednak nie zostawiają trwałych śladów i nie uszkadzają tkanek.</li>
+                <li><strong>Ich wadą</strong> jest jednak to, że w dalszym ciągu polegają na zadawaniu sobie samemu bólu i nie poprawiają myślenia o sobie.</li>
+            </ul>
+        </div>
+
+        <p>Przeczytaj przykłady i zaznacz te, które wydają się możliwe do zastosowania przez Ciebie. Możesz dopisać też własne pomysły:</p>
+        
+        <div style="background: #fdfdfd; padding: 15px; border: 1px solid #e0e0e0; border-radius: 6px;">
+            <label class="checkbox-container"><input type="checkbox"> Pstrykaj gumką w nadgarstek.</label>
+            <label class="checkbox-container"><input type="checkbox"> Przyłóż kostkę lodu w miejsce, gdzie chciał(a)byś się zranić.</label>
+            <label class="checkbox-container"><input type="checkbox"> Trzymaj kostkę lodu w dłoni, w ustach (na języku, pod językiem, dociśniętą do zębów).</label>
+            <label class="checkbox-container"><input type="checkbox"> Włóż dłonie do lodowatej wody.</label>
+            <label class="checkbox-container"><input type="checkbox"> Rozgryż pieprz, ziele angielskie lub inne gorzkie przyprawy.</label>
+            <label class="checkbox-container"><input type="checkbox"> Klaskaj w dłonie, aż ścierpną.</label>
+            <label class="checkbox-container"><input type="checkbox"> Pomasuj, uciśnij miejsce, które chciałbyś skaleczyć.</label>
+            <label class="checkbox-container"><input type="checkbox"> Weź lodowaty lub gorący prysznic.</label>
+            <label class="checkbox-container"><input type="checkbox"> Płucz usta bardzo mocnym płynem do zębów.</label>
+            <label class="checkbox-container"><input type="checkbox"> Pisz po ciele czerwonym długopisem, markerem.</label>
+            <label class="checkbox-container"><input type="checkbox"> Przyklej plastry w miejsca, gdzie planujesz okaleczenie.</label>
+            <label class="checkbox-container"><input type="checkbox"> Posmaruj miejsca wcześniejszych ran lub blizn maścią rozgrzewającą.</label>
+            <label class="checkbox-container"><input type="checkbox"> Pogładź miejsca wcześniejszych ran lub blizn miękkim przedmiotem.</label>
+            <label class="checkbox-container"><input type="checkbox"> Szczegółowo opisz, w jaki sposób chciał(-a)byś się okaleczyć.</label>
+        </div>
+
+        <div class="question-group" style="margin-top:20px;">
+            <label>Inne własne pomysły:</label>
+            <textarea placeholder="Wpisz tutaj..."></textarea>
+        </div>
+
+        <p>Zastanów się i zapisz wnioski w tabeli:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Zalety stosowania tej techniki</th>
+                    <th>Wady stosowania tej techniki</th>
+                    <th>W jakich sytuacjach / dla jakich funkcji mogą być pomocne?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><textarea placeholder="Wpisz zalety..."></textarea></td>
+                    <td><textarea placeholder="Wpisz wady..."></textarea></td>
+                    <td>
+                        <textarea placeholder="Wpisz sytuacje..."></textarea>
+                        <span class="font-weight:bold;">Wybierz funkcje:</span><br>
+                        <label><input type="checkbox"> Radzenie sobie z emocjami</label><br>
+                        <label><input type="checkbox"> Komunikacja i wpływ</label><br>
+                        <label><input type="checkbox"> Samokaranie</label><br>
+                        <label><input type="checkbox"> Poczucie kontroli</label><br>
+                        <label><input type="checkbox"> Radzenie sobie z traumą</label>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="exercise-card">
+        <h3>Ćwiczenie III. Jak z akceptacją przeżywać to, co się w Tobie dzieje?</h3>
+        <div class="story-box" style="border-left-color: var(--primary-color); font-style: normal;">
+            <strong>Instrukcja ćwiczenia:</strong><br>
+            Zrób kilka głębokich wdechów i powoli wypuszczaj powietrze. Wyobraź sobie, że wraz z wdechem zapalasz w sobie światło i oglądasz swoje myśli i emocje. Przyglądaj im się uważnie jedna po drugiej, bez oceniania, czy są dobre, czy złe, wartościowe czy bezwartościowe... Następnie zastanów się, które chciałbyś zachować, a które są niepomocne. Te niepomocne wyrzucaj z siebie wraz z wydychanym powietrzem. Zobacz, jak odchodzą, a Ciebie wypełnia spokój. Powtórz to ćwiczenie kilka razy, aż zostanie w Tobie tylko to, co pomocne.
+        </div>
+
+        <p>Zastanów się i zapisz wnioski w tabeli:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Zalety stosowania tej techniki</th>
+                    <th>Wady stosowania tej techniki</th>
+                    <th>Wybierz funkcje samookaleczeń, dla których technika może być pomocna:</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><textarea placeholder="Wpisz zalety..."></textarea></td>
+                    <td><textarea placeholder="Wpisz wady..."></textarea></td>
+                    <td>
+                        <label><input type="checkbox"> Radzenie sobie z emocjami</label><br>
+                        <label><input type="checkbox"> Komunikacja i wywieranie wpływu</label><br>
+                        <label><input type="checkbox"> Samokaranie</label><br>
+                        <label><input type="checkbox"> Poczucie kontroli</label><br>
+                        <label><input type="checkbox"> Radzenie sobie z doświadczeniami traumatycznymi</label>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="exercise-card">
+        <h3>Ćwiczenie IV. Jak gromadzić pozytywne wyobrażenia?</h3>
+        <div class="story-box" style="border-left-color: var(--primary-color); font-style: normal;">
+            <strong>Instrukcja ćwiczenia:</strong><br>
+            Wypisz 10 przyjemnych doświadczeń, które przytrafiły Ci się w życiu. Następnie wybierz spośród nich jedno i opisz szczegółowo, zwracając uwagę na przeżywane wówczas emocje. Przypomnij sobie, co wtedy widziałeś, słyszałeś, co czułeś. Zastanów się, gdzie w ciele najbardziej odczuwałeś przyjemność i odprężenie, a może ekscytację? Opisz te uczucia.
+        </div>
+
+        <div class="question-group">
+            <label>Twoje szczegółowe pozytywne wyobrażenie/opis doświadczenia:</label>
+            <textarea style="min-height: 150px;" placeholder="Zacznij opisywać tutaj..."></textarea>
+        </div>
+
+        <p>Zastanów się i zapisz wnioski w tabeli:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Zalety stosowania tej techniki</th>
+                    <th>Wady stosowania tej techniki</th>
+                    <th>Dla jakich funkcji samookaleczeń może być pomocna?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><textarea placeholder="Wpisz zalety..."></textarea></td>
+                    <td><textarea placeholder="Wpisz wady..."></textarea></td>
+                    <td>
+                        <label><input type="checkbox"> Radzenie sobie z emocjami</label><br>
+                        <label><input type="checkbox"> Komunikacja i wpływ na innych</label><br>
+                        <label><input type="checkbox"> Samokaranie</label><br>
+                        <label><input type="checkbox"> Poczucie kontroli</label><br>
+                        <label><input type="checkbox"> Radzenie sobie z traumą</label>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="exercise-card">
+        <h3>Ćwiczenie V. Jak mówić o tym, czego potrzebujesz?</h3>
+        <p>Zastanów się: Czego może potrzebować osoba, która ma ochotę się okaleczyć? Wpisz potrzeby powiązane z daną funkcją, a następnie zaproponuj, jak mogłaby brzmieć bezpośrednia prośba o realizację tej potrzeby:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Funkcja / Podłoże</th>
+                    <th>Potrzeba (Czego potrzebuję?)</th>
+                    <th>Prośba związana z realizacją potrzeby (Jak o to poprosić?)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Radzenie sobie z emocjami</strong></td>
+                    <td><textarea placeholder="Wpisz potrzebę..."></textarea></td>
+                    <td><textarea placeholder="Wpisz propozycję prośby..."></textarea></td>
+                </tr>
+                <tr>
+                    <td><strong>Komunikacja i wywieranie wpływu</strong></td>
+                    <td><textarea placeholder="Wpisz potrzebę..."></textarea></td>
+                    <td><textarea placeholder="Wpisz propozycję prośby..."></textarea></td>
+                </tr>
+                <tr>
+                    <td><strong>Samokaranie</strong></td>
+                    <td><textarea placeholder="Wpisz potrzebę..."></textarea></td>
+                    <td><textarea placeholder="Wpisz propozycję prośby..."></textarea></td>
+                </tr>
+                <tr>
+                    <td><strong>Poczucie kontroli</strong></td>
+                    <td><textarea placeholder="Wpisz potrzebę..."></textarea></td>
+                    <td><textarea placeholder="Wpisz propozycję prośby..."></textarea></td>
+                </tr>
+                <tr>
+                    <td><strong>Radzenie sobie z traumą</strong></td>
+                    <td><textarea placeholder="Wpisz potrzebę..."></textarea></td>
+                    <td><textarea placeholder="Wpisz propozycję prośby..."></textarea></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <p>Materiały edukacyjno-terapeutyczne oparte na programie „Myślę, czuję, działam”</p>
+    </footer>
+
+</div>
+
+</body>
+</html>
