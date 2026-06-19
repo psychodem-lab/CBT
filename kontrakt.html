@@ -204,13 +204,31 @@
             background-color: #c0392b;
         }
 
-        /* Ukrywanie przycisków podczas drukowania */
+        /* Ukrywanie przycisków podczas drukowania + FIX DLA APPLE WEBKIT */
         @media print {
-            body { background: white; padding: 0; }
-            .page-wrapper { box-shadow: none; padding: 0; max-width: 100%; }
-            .actions, .sig-actions { display: none !important; }
-            textarea { border: 1px solid #000; }
-            .sig-canvas { border: 1px solid #000; }
+            body { 
+                display: block !important; /* Fix dla ucinania stron w Safari */
+                background: white; 
+                padding: 0; 
+            }
+            .page-wrapper { 
+                display: block !important; /* Fix dla układu wielostronicowego */
+                box-shadow: none; 
+                padding: 0; 
+                max-width: 100%; 
+            }
+            .actions, .sig-actions { 
+                display: none !important; 
+            }
+            textarea { 
+                border: 1px solid #000; 
+                overflow: visible !important; /* Wymuszenie widoczności tekstu */
+                height: auto; 
+                resize: none;
+            }
+            .sig-canvas { 
+                border: 1px solid #000; 
+            }
         }
 
         /* Dostosowanie mobilne */
@@ -238,11 +256,16 @@
         </div>
 
         <div style="margin-bottom: 2rem; line-height: 1.6; font-size: 0.95rem;">
-            <p>Kiedy czujemy się przygnębieni, możemy myśleć o zadawaniu sobie bólu lub nawet zabiciu siebie. Faktycznie, myśli samobójcze są jednym z możliwych objawów depresji. Takie myśli czy impulsy mogą się zdarzyć, ale bardzo ważne jest to, żebyśmy mogli o nich rozmawiać. Najważniejsze jest twoje bezpieczeństwo. Dlatego będziemy rozmawiać o różnych trudnych sprawach, nawet o chęci odebrania sobie życia. Za chwilę umówimy się, że będziemy robić wszystko, żeby poradzić sobie w trudnej sytuacji. W umowie przyjrzymy się, kiedy miałeś/aś myśli samobójcze w przeszłości, jakiego rodzaju myśli pomogły Ci je przezwyciężyć i stworzymy plan reagowania w sytuacjach, kiedy takie myśli i impulsy pojawia się podczas trwania naszej wspólnej pracy.</p>
+            <p>Kiedy czujemy się przygnębieni, możemy myśleć o zadawaniu sobie bólu lub nawet zabiciu siebie.
+            Faktycznie, myśli samobójcze są jednym z możliwych objawów depresji. Takie myśli czy impulsy mogą się zdarzyć, ale bardzo ważne jest to, żebyśmy mogli o nich rozmawiać.
+            Najważniejsze jest twoje bezpieczeństwo. Dlatego będziemy rozmawiać o różnych trudnych sprawach, even o chęci odebrania sobie życia.
+            Za chwilę umówimy się, że będziemy robić wszystko, żeby poradzić sobie w trudnej sytuacji.
+            W umowie przyjrzymy się, kiedy miałeś/aś myśli samobójcze w przeszłości, jakiego rodzaju myśli pomogły Ci je przezwyciężyć i stworzymy plan reagowania w sytuacjach, kiedy takie myśli i impulsy pojawia się podczas trwania naszej wspólnej pracy.</p>
         </div>
 
         <div class="question-row">
-            <label class="q-text">Proszę opisz sytuację, jeżeli taka istnieje, w której poczułaś impuls do popełnienia samobójstwa w ostatnim okresie. Jeśli było ich kilka, pomyśl o najgorszej z nich.</label>
+            <label class="q-text">Proszę opisz sytuację, jeżeli taka istnieje, w której poczułaś impuls do popełnienia samobójstwa w ostatnim okresie.
+            Jeśli było ich kilka, pomyśl o najgorszej z nich.</label>
             <textarea id="cnt-q1" class="contract-input" rows="3"></textarea>
         </div>
 
@@ -280,18 +303,17 @@
 
         <div class="contract-agreement">
             <p>Obiecuję że nie popełnię samobójstwa i będę rozmawiał/a o myślach i tendencjach samobójczych z lekarzem/psychologiem/terapeutą/pracownikiem socjalnym.</p>
-                        <div class="sig-container">
+            <div class="sig-container">
                 <canvas id="canvas-sig1" class="sig-canvas" width="400" height="150"></canvas>
                 <div class="sig-actions">
                     <button type="button" class="btn-clear-sig" onclick="clearCanvas('canvas-sig1')">Wyczyść podpis</button>
                 </div>
             </div>
-            
         </div>
 
         <div class="contract-agreement">
             <p>Obiecuję że powiem innym dorosłym, że bardzo źle się czuję i poproszę, żeby zawiadomili mojego lekarza/terapeutę.</p>
-         <div class="sig-container">
+            <div class="sig-container">
                 <canvas id="canvas-sig2" class="sig-canvas" width="400" height="150"></canvas>
                 <div class="sig-actions">
                     <button type="button" class="btn-clear-sig" onclick="clearCanvas('canvas-sig2')">Wyczyść podpis</button>
@@ -301,7 +323,7 @@
 
         <div class="contract-agreement">
             <p>Obiecuję, że jeżeli nikogo nie będzie w pobliżu, to w przypadku ostrych myśli samobójczych sam/a zgłoszę się na ostry dyżur do szpitala.</p>
-          <div class="sig-container">
+            <div class="sig-container">
                 <canvas id="canvas-sig3" class="sig-canvas" width="400" height="150"></canvas>
                 <div class="sig-actions">
                     <button type="button" class="btn-clear-sig" onclick="clearCanvas('canvas-sig3')">Wyczyść podpis</button>
@@ -311,7 +333,7 @@
 
         <div class="contract-agreement">
             <p>Obiecuję że nie posiadam dostępu do broni ani innych zabójczych środków.</p>
-          <div class="sig-container">
+            <div class="sig-container">
                 <canvas id="canvas-sig4" class="sig-canvas" width="400" height="150"></canvas>
                 <div class="sig-actions">
                     <button type="button" class="btn-clear-sig" onclick="clearCanvas('canvas-sig4')">Wyczyść podpis</button>
@@ -333,7 +355,7 @@
         <button class="btn btn-csv" onclick="exportCSV()">Eksport CSV (Excel)</button>
         <button class="btn btn-clear" onclick="clearData()">Wyczyść dane</button>
     </div>
-    </div>
+</div>
 
 <script>
     // --- OBSŁUGA PODPISÓW (CANVAS) ---
@@ -346,13 +368,10 @@
         ctx.lineWidth = 2;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
-
         let isDrawing = false;
 
-        // Funkcja korygująca pozycję myszy/dotyku ze względu na CSS responsywność
         function getCoordinates(event) {
             const rect = canvas.getBoundingClientRect();
-            // Stosunek wymiarów realnych do rozmiaru wyrenderowanego
             const scaleX = canvas.width / rect.width;
             const scaleY = canvas.height / rect.height;
 
@@ -377,7 +396,7 @@
             const pos = getCoordinates(e);
             ctx.beginPath();
             ctx.moveTo(pos.x, pos.y);
-            e.preventDefault(); // Blokuje scrollowanie na telefonie
+            e.preventDefault();
         }
 
         function draw(e) {
@@ -395,28 +414,46 @@
             }
         }
 
-        // Eventy myszy
         canvas.addEventListener('mousedown', startDrawing);
         canvas.addEventListener('mousemove', draw);
         canvas.addEventListener('mouseup', stopDrawing);
         canvas.addEventListener('mouseout', stopDrawing);
 
-        // Eventy dotykowe (mobilne)
         canvas.addEventListener('touchstart', startDrawing, { passive: false });
         canvas.addEventListener('touchmove', draw, { passive: false });
         canvas.addEventListener('touchend', stopDrawing);
         canvas.addEventListener('touchcancel', stopDrawing);
     }
 
-    // Inicjalizacja wszystkich 4 canvasów po załadowaniu strony
+    // Inicjalizacja komponentów po załadowaniu strony
     document.addEventListener("DOMContentLoaded", function() {
         initSignatureCanvas('canvas-sig1');
         initSignatureCanvas('canvas-sig2');
         initSignatureCanvas('canvas-sig3');
         initSignatureCanvas('canvas-sig4');
-    });
 
-    // --- FUNKCJE PRZYCISKÓW ---
+        // --- SKRYPT DYNAMICZNEGO ROZCIĄGANIA PÓL TEXTAREA DLA SYSTEMÓW APPLE ---
+        const textareas = document.querySelectorAll('textarea');
+        
+        function adjustHeight(el) {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+        }
+
+        textareas.forEach(textarea => {
+            // Dostosowanie przy pisaniu
+            textarea.addEventListener('input', function() {
+                adjustHeight(this);
+            });
+            // Wstępne dostosowanie na starcie
+            adjustHeight(textarea);
+        });
+
+        // Wymuszenie przeliczenia wysokości tuż przed wywołaniem okna druku w Safari
+        window.addEventListener('beforeprint', function() {
+            textareas.forEach(textarea => adjustHeight(textarea));
+        });
+    });
 
     // Czyszczenie pojedynczego podpisu
     window.clearCanvas = function(canvasId) {
@@ -427,12 +464,11 @@
         }
     };
 
-    // Oblicz wynik (Dla kontraktu nie ma wyników punktowych, ukryłem przycisk w CSS, ale funkcja zapobiega błędom)
     window.calculateCurrent = function() {
         alert("Ten formularz nie wymaga obliczeń matematycznych. Skup się na wypełnieniu i podpisaniu kontraktu.");
     };
 
-    // Eksport do PDF (wykorzystuje załączoną bibliotekę html2pdf)
+    // Eksport do PDF
     window.exportPDF = function() {
         const element = document.getElementById('content-to-export');
         const opt = {
@@ -442,17 +478,15 @@
             html2canvas:  { scale: 2, useCORS: true },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
-        // Tymczasowe ukrycie przycisków przed generowaniem PDF
         const actionsElements = document.querySelectorAll('.actions, .sig-actions');
         actionsElements.forEach(el => el.style.display = 'none');
 
         html2pdf().set(opt).from(element).save().then(() => {
-            // Przywrócenie przycisków
             actionsElements.forEach(el => el.style.display = '');
         });
     };
 
-    // Eksport do CSV (zbiera tekstowe odpowiedzi)
+    // Eksport do CSV
     window.exportCSV = function() {
         const data = [
             ["Pole", "Wartość"],
@@ -467,10 +501,8 @@
             ["Podpis osoby pomagającej (imię/nazwisko)", document.getElementById('cnt-therapist').value],
             ["Notatki klinicysty", document.getElementById('note-contract').value]
         ];
-
-        let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // Dodane BOM dla polskich znaków w Excelu
+        let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
         data.forEach(function(rowArray) {
-            // Czyszczenie znaków nowej linii z pól tekstowych, żeby nie psuć CSV
             const cleanRow = rowArray.map(item => `"${(item || '').replace(/"/g, '""').replace(/\n/g, ' ')}"`);
             csvContent += cleanRow.join(";") + "\r\n";
         });
@@ -487,11 +519,14 @@
     // Czyszczenie całego formularza
     window.clearData = function() {
         if(confirm("Czy na pewno chcesz wyczyścić cały formularz i podpisy?")) {
-            // Czyść inputy i textare'y
             const inputs = document.querySelectorAll('#t-contract input[type="text"], #t-contract textarea');
-            inputs.forEach(input => input.value = '');
-            
-            // Czyść canvasy
+            inputs.forEach(input => {
+                input.value = '';
+                // Reset wysokości pól textarea do domyślnych wartości z CSS
+                if(input.tagName.toLowerCase() === 'textarea') {
+                    input.style.height = '';
+                }
+            });
             clearCanvas('canvas-sig1');
             clearCanvas('canvas-sig2');
             clearCanvas('canvas-sig3');
