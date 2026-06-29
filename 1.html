@@ -35,12 +35,9 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
         body { font-family: 'Inter', sans-serif; }
-        
-        /* Delikatne ukrycie paska przewijania dla czystszego UI */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen">
@@ -49,204 +46,198 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
+        // --- KROK 1: TWORZENIE POKOJU ---
+        function CreateRoom({ setStep, setRoomInfo }) {
+            const [name, setName] = useState('Sesja CBT - Jan Kowalski');
+            const [members, setMembers] = useState(2);
+            const [duration, setDuration] = useState(60);
+            const [password, setPassword] = useState('');
+            const [generatedLink, setGeneratedLink] = useState('');
+
+            const handleCreate = (e) => {
+                e.preventDefault();
+                const roomId = Math.random().toString(36).substring(2, 9);
+                const link = `https://therapyspace.app/room/${roomId}`;
+                
+                setRoomInfo({ name, members, duration, password, link, roomId });
+                setGeneratedLink(link);
+            };
+
+            return (
+                <div class="flex items-center justify-center min-h-screen p-4">
+                    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 w-full max-w-md">
+                        <h1 class="text-2xl font-semibold text-slate-800 mb-6 text-center">Stwórz przestrzeń</h1>
+                        
+                        {!generatedLink ? (
+                            <form onSubmit={handleCreate} class="space-y-5">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-500 mb-1">Nazwa pokoju</label>
+                                    <input type="text" value={name} onChange={e => setName(e.target.value)} tabularIndex="1" required
+                                        class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="w-1/2">
+                                        <label class="block text-sm font-medium text-slate-500 mb-1">Maks. osób</label>
+                                        <input type="number" value={members} onChange={e => setMembers(e.target.value)} min="2" max="10" required
+                                            class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
+                                    </div>
+                                    <div class="w-1/2">
+                                        <label class="block text-sm font-medium text-slate-500 mb-1">Czas (min)</label>
+                                        <input type="number" value={duration} onChange={e => setDuration(e.target.value)} min="15" step="15" required
+                                            class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-500 mb-1">Hasło dostępu</label>
+                                    <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Np. 1234" required
+                                        class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
+                                </div>
+                                <button type="submit" 
+                                    class="w-full bg-slate-800 hover:bg-slate-700 text-white font-medium py-3 rounded-lg transition-colors mt-4">
+                                    Generuj pokój
+                                </button>
+                            </form>
+                        ) : (
+                            <div class="text-center space-y-6">
+                                <div class="bg-therapy-50 text-therapy-900 p-4 rounded-lg border border-therapy-100 text-left">
+                                    <p class="text-sm mb-2 text-therapy-600 font-medium">Link dla pacjenta:</p>
+                                    <code class="block bg-white p-2 rounded border border-therapy-100 text-sm break-all font-mono mb-3">{generatedLink}</code>
+                                    <p class="text-xs text-slate-500">Hasło do pokoju: <span class="font-bold text-slate-700">{password}</span></p>
+                                </div>
+                                <button onClick={() => setStep(2)} 
+                                    class="w-full bg-therapy-500 hover:bg-therapy-600 text-white font-medium py-3 rounded-lg transition-colors shadow-sm">
+                                    Przejdź do logowania pacjenta →
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        // --- KROK 2: LOGOWANIE Z LINKU ---
+        function JoinRoom({ roomInfo, setStep, setUserInfo }) {
+            const [nickname, setNickname] = useState('');
+            const [inputPassword, setInputPassword] = useState('');
+            const [error, setError] = useState('');
+
+            const handleJoin = (e) => {
+                e.preventDefault();
+                if (inputPassword !== roomInfo.password) {
+                    setError('Nieprawidłowe hasło. Wpisz hasło ustawione w Kroku 1.');
+                    return;
+                }
+                setUserInfo({ nickname });
+                setStep(3);
+            };
+
+            return (
+                <div class="flex items-center justify-center min-h-screen p-4">
+                    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 w-full max-w-md">
+                        <div class="text-center mb-6">
+                            <h1 class="text-2xl font-semibold text-slate-800">Dołącz do sesji</h1>
+                            <p class="text-slate-500 text-sm mt-2">Pokój: <span class="font-medium text-slate-700">{roomInfo?.name}</span></p>
+                        </div>
+                        
+                        <form onSubmit={handleJoin} class="space-y-5">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-500 mb-1">Twój Nick / Imię</label>
+                                <input type="text" value={nickname} onChange={e => setNickname(e.target.value)} required placeholder="Np. Pacjent Tomek"
+                                    class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-500 mb-1">Hasło</label>
+                                <input type="password" value={inputPassword} onChange={e => {setInputPassword(e.target.value); setError('');}} required placeholder="Wpisz hasło z Kroku 1"
+                                    class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
+                                {error && <p class="text-red-500 text-xs mt-2 font-medium">{error}</p>}
+                            </div>
+                            <button type="submit" 
+                                class="w-full bg-slate-800 hover:bg-slate-700 text-white font-medium py-3 rounded-lg transition-colors mt-4">
+                                Wejdź do pokoju
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            );
+        }
+
+        // --- KROK 3: PANEL WSPÓŁPRACY ---
+        function Workspace({ roomInfo, userInfo, setStep }) {
+            const [content, setContent] = useState('Oto Wasza wspólna przestrzeń CBT.\n\n[Sytuacja / Wyzwalacz]:\n\n[Myśli automatyczne]:\n\n[Emocje i odczucia z ciała]:\n\n[Alternatywna, racjonalna perspektywa]:');
+            const [timeLeft, setTimeLeft] = useState((roomInfo?.duration || 60) * 60);
+
+            useEffect(() => {
+                const timer = setInterval(() => {
+                    setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+                }, 1000);
+                return () => clearInterval(timer);
+            }, []);
+
+            const formatTime = (seconds) => {
+                const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+                const s = (seconds % 60).toString().padStart(2, '0');
+                return `${m}:${s}`;
+            };
+
+            return (
+                <div class="h-screen flex flex-col bg-slate-50">
+                    <header class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shrink-0 shadow-sm">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-therapy-100 flex items-center justify-center text-therapy-600 font-bold">
+                                {userInfo?.nickname?.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                                <h2 class="font-semibold text-slate-800">{roomInfo?.name}</h2>
+                                <p class="text-xs text-slate-500">Uczestnik: {userInfo?.nickname}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-6">
+                            <div class="text-right">
+                                <span class="text-[10px] text-slate-400 uppercase tracking-wider font-bold block">Czas sesji</span>
+                                <div class={`text-xl font-mono font-medium ${timeLeft < 300 ? 'text-red-500 font-bold animate-pulse' : 'text-slate-700'}`}>
+                                    {formatTime(timeLeft)}
+                                </div>
+                            </div>
+                            <button onClick={() => setStep(1)} class="text-sm px-4 py-2 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors">
+                                Wyjdź
+                            </button>
+                        </div>
+                    </header>
+
+                    <main class="flex-1 overflow-hidden p-4 md:p-8 flex justify-center">
+                        <div class="w-full max-w-4xl bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col overflow-hidden">
+                            <div class="h-10 bg-slate-50 border-b border-slate-100 flex items-center px-4 gap-2 shrink-0">
+                                <span class="relative flex h-2 w-2">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                </span>
+                                <span class="text-xs text-slate-400 font-medium">Połączenie aktywne • Obie osoby w pokoju</span>
+                            </div>
+
+                            <textarea 
+                                value={content}
+                                onChange={(e) => setContent(e.target.value)}
+                                class="flex-1 w-full p-8 resize-none outline-none text-slate-700 text-lg leading-relaxed bg-transparent font-light"
+                                placeholder="Zacznij pisać tutaj..."
+                            ></textarea>
+                        </div>
+                    </main>
+                </div>
+            );
+        }
+
+        // --- GŁÓWNY ZARZĄDCA STANU APLIKACJI ---
         function App() {
-            // Zarządzanie stanem aplikacji (Ekrany 1, 2, 3)
             const [step, setStep] = useState(1);
             const [roomInfo, setRoomInfo] = useState(null);
             const [userInfo, setUserInfo] = useState(null);
 
-            // Ekran 1: Tworzenie pokoju (Widok Administratora/Terapeuty)
-            const CreateRoom = () => {
-                const [name, setName] = useState('Sesja CBT - Jan Kowalski');
-                const [members, setMembers] = useState(2);
-                const [duration, setDuration] = useState(60);
-                const [password, setPassword] = useState('');
-                const [generatedLink, setGeneratedLink] = useState('');
-
-                const handleCreate = (e) => {
-                    e.preventDefault();
-                    // Generowanie losowego identyfikatora pokoju
-                    const roomId = Math.random().toString(36).substring(2, 9);
-                    const link = `https://therapyspace.app/room/${roomId}`;
-                    setGeneratedLink(link);
-                    setRoomInfo({ name, members, duration, password, link, roomId });
-                };
-
-                return (
-                    <div class="flex items-center justify-center min-h-screen p-4">
-                        <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 w-full max-w-md transition-all">
-                            <h1 class="text-2xl font-semibold text-slate-800 mb-6 text-center">Stwórz przestrzeń</h1>
-                            
-                            {!generatedLink ? (
-                                <form onSubmit={handleCreate} class="space-y-5">
-                                    <div>
-                                        <label class="block text-sm font-medium text-slate-500 mb-1">Nazwa pokoju</label>
-                                        <input type="text" value={name} onChange={e => setName(e.target.value)} required
-                                            class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
-                                    </div>
-                                    <div class="flex gap-4">
-                                        <div class="w-1/2">
-                                            <label class="block text-sm font-medium text-slate-500 mb-1">Maks. osób</label>
-                                            <input type="number" value={members} onChange={e => setMembers(e.target.value)} min="2" max="10" required
-                                                class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
-                                        </div>
-                                        <div class="w-1/2">
-                                            <label class="block text-sm font-medium text-slate-500 mb-1">Czas (min)</label>
-                                            <input type="number" value={duration} onChange={e => setDuration(e.target.value)} min="15" step="15" required
-                                                class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-slate-500 mb-1">Hasło dostępu</label>
-                                        <input type="password" value={password} onChange={e => setPassword(e.target.value)} required
-                                            class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
-                                    </div>
-                                    <button type="submit" 
-                                        class="w-full bg-slate-800 hover:bg-slate-700 text-white font-medium py-3 rounded-lg transition-colors mt-4">
-                                        Generuj pokój
-                                    </button>
-                                </form>
-                            ) : (
-                                <div class="text-center space-y-6 animate-fade-in">
-                                    <div class="bg-therapy-50 text-therapy-900 p-4 rounded-lg border border-therapy-100">
-                                        <p class="text-sm mb-2 text-therapy-600">Skopiuj link i wyślij pacjentowi:</p>
-                                        <code class="block bg-white p-2 rounded border border-therapy-100 text-sm">{generatedLink}</code>
-                                    </div>
-                                    <button onClick={() => setStep(2)} 
-                                        class="w-full bg-therapy-500 hover:bg-therapy-600 text-white font-medium py-3 rounded-lg transition-colors">
-                                        Symuluj dołączenie pacjenta (Krok 2)
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                );
-            };
-
-            // Ekran 2: Logowanie z linku (Widok Pacjenta/Uczestnika)
-            const JoinRoom = () => {
-                const [nickname, setNickname] = useState('');
-                const [inputPassword, setInputPassword] = useState('');
-                const [error, setError] = useState('');
-
-                const handleJoin = (e) => {
-                    e.preventDefault();
-                    if (inputPassword !== roomInfo.password) {
-                        setError('Nieprawidłowe hasło');
-                        return;
-                    }
-                    setUserInfo({ nickname });
-                    setStep(3);
-                };
-
-                return (
-                    <div class="flex items-center justify-center min-h-screen p-4">
-                        <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 w-full max-w-md">
-                            <div class="text-center mb-6">
-                                <h1 class="text-2xl font-semibold text-slate-800">Dołącz do sesji</h1>
-                                <p class="text-slate-500 text-sm mt-2">Pokój: <span class="font-medium text-slate-700">{roomInfo.name}</span></p>
-                            </div>
-                            
-                            <form onSubmit={handleJoin} class="space-y-5">
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-500 mb-1">Twój Nick / Imię</label>
-                                    <input type="text" value={nickname} onChange={e => setNickname(e.target.value)} required placeholder="Np. Jan"
-                                        class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-500 mb-1">Hasło</label>
-                                    <input type="password" value={inputPassword} onChange={e => {setInputPassword(e.target.value); setError('');}} required
-                                        class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
-                                    {error && <p class="text-red-500 text-xs mt-1">{error}</p>}
-                                </div>
-                                <button type="submit" 
-                                    class="w-full bg-slate-800 hover:bg-slate-700 text-white font-medium py-3 rounded-lg transition-colors mt-4">
-                                    Wejdź do pokoju
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                );
-            };
-
-            // Ekran 3: Główny panel współpracy
-            const Workspace = () => {
-                const [content, setContent] = useState('Tutaj wspólnie pracujemy nad myślami automatycznymi...\n\nSytuacja:\n\nMyśl:\n\nEmocja:\n\nOdpowiedź racjonalna:');
-                const [timeLeft, setTimeLeft] = useState(roomInfo.duration * 60);
-
-                // Prosty timer
-                useEffect(() => {
-                    const timer = setInterval(() => {
-                        setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-                    }, 1000);
-                    return () => clearInterval(timer);
-                }, []);
-
-                const formatTime = (seconds) => {
-                    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-                    const s = (seconds % 60).toString().padStart(2, '0');
-                    return `${m}:${s}`;
-                };
-
-                return (
-                    <div class="h-screen flex flex-col bg-slate-50">
-                        {/* Minimalistyczny Header */}
-                        <header class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shrink-0">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full bg-therapy-100 flex items-center justify-center text-therapy-600 font-bold">
-                                    {userInfo.nickname.charAt(0).toUpperCase()}
-                                </div>
-                                <div>
-                                    <h2 class="font-semibold text-slate-800">{roomInfo.name}</h2>
-                                    <p class="text-xs text-slate-500">Zalogowano jako: {userInfo.nickname}</p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-center gap-6">
-                                <div class="text-right">
-                                    <span class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Pozostały czas</span>
-                                    <div class={`text-xl font-mono ${timeLeft < 300 ? 'text-red-500' : 'text-slate-800'}`}>
-                                        {formatTime(timeLeft)}
-                                    </div>
-                                </div>
-                                <button onClick={() => setStep(1)} class="text-sm px-4 py-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-md transition-colors border border-transparent">
-                                    Zakończ
-                                </button>
-                            </div>
-                        </header>
-
-                        {/* Obszar roboczy */}
-                        <main class="flex-1 overflow-hidden p-4 md:p-8 flex justify-center">
-                            <div class="w-full max-w-4xl bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col overflow-hidden relative">
-                                
-                                {/* Wskaźniki obecności u góry edytora */}
-                                <div class="h-10 bg-slate-50 border-b border-slate-100 flex items-center px-4 gap-2 shrink-0">
-                                    <span class="relative flex h-3 w-3">
-                                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                      <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                                    </span>
-                                    <span class="text-xs text-slate-500">Terapeuta pisze...</span>
-                                </div>
-
-                                {/* Główny notatnik */}
-                                <textarea 
-                                    value={content}
-                                    onChange={(e) => setContent(e.target.value)}
-                                    class="flex-1 w-full p-8 resize-none outline-none text-slate-700 text-lg leading-relaxed bg-transparent"
-                                    placeholder="Zacznij pisać tutaj..."
-                                ></textarea>
-                            </div>
-                        </main>
-                    </div>
-                );
-            };
-
-            // Renderowanie warunkowe na podstawie kroku
             return (
-                <div class="font-sans antialiased text-slate-800">
-                    {step === 1 && <CreateRoom />}
-                    {step === 2 && <JoinRoom />}
-                    {step === 3 && <Workspace />}
+                <div class="font-sans antialiased bg-slate-50 text-slate-800">
+                    {step === 1 && <CreateRoom setStep={setStep} setRoomInfo={setRoomInfo} />}
+                    {step === 2 && <JoinRoom roomInfo={roomInfo} setStep={setStep} setUserInfo={setUserInfo} />}
+                    {step === 3 && <Workspace roomInfo={roomInfo} userInfo={userInfo} setStep={setStep} />}
                 </div>
             );
         }
