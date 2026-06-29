@@ -12,6 +12,8 @@
     
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -64,48 +66,48 @@
             };
 
             return (
-                <div class="flex items-center justify-center min-h-screen p-4">
-                    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 w-full max-w-md">
-                        <h1 class="text-2xl font-semibold text-slate-800 mb-6 text-center">Stwórz przestrzeń</h1>
+                <div className="flex items-center justify-center min-h-screen p-4">
+                    <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 w-full max-w-md">
+                        <h1 className="text-2xl font-semibold text-slate-800 mb-6 text-center">Stwórz przestrzeń</h1>
                         
                         {!generatedLink ? (
-                            <form onSubmit={handleCreate} class="space-y-5">
+                            <form onSubmit={handleCreate} className="space-y-5">
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-500 mb-1">Nazwa pokoju</label>
-                                    <input type="text" value={name} onChange={e => setName(e.target.value)} tabularIndex="1" required
-                                        class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
+                                    <label className="block text-sm font-medium text-slate-500 mb-1">Nazwa pokoju</label>
+                                    <input type="text" value={name} onChange={e => setName(e.target.value)} required
+                                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
                                 </div>
-                                <div class="flex gap-4">
-                                    <div class="w-1/2">
-                                        <label class="block text-sm font-medium text-slate-500 mb-1">Maks. osób</label>
+                                <div className="flex gap-4">
+                                    <div className="w-1/2">
+                                        <label className="block text-sm font-medium text-slate-500 mb-1">Maks. osób</label>
                                         <input type="number" value={members} onChange={e => setMembers(e.target.value)} min="2" max="10" required
-                                            class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
+                                            className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
                                     </div>
-                                    <div class="w-1/2">
-                                        <label class="block text-sm font-medium text-slate-500 mb-1">Czas (min)</label>
+                                    <div className="w-1/2">
+                                        <label className="block text-sm font-medium text-slate-500 mb-1">Czas (min)</label>
                                         <input type="number" value={duration} onChange={e => setDuration(e.target.value)} min="15" step="15" required
-                                            class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
+                                            className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-500 mb-1">Hasło dostępu</label>
+                                    <label className="block text-sm font-medium text-slate-500 mb-1">Hasło dostępu</label>
                                     <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Np. 1234" required
-                                        class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
+                                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
                                 </div>
                                 <button type="submit" 
-                                    class="w-full bg-slate-800 hover:bg-slate-700 text-white font-medium py-3 rounded-lg transition-colors mt-4">
+                                    className="w-full bg-slate-800 hover:bg-slate-700 text-white font-medium py-3 rounded-lg transition-colors mt-4">
                                     Generuj pokój
                                 </button>
                             </form>
                         ) : (
-                            <div class="text-center space-y-6">
-                                <div class="bg-therapy-50 text-therapy-900 p-4 rounded-lg border border-therapy-100 text-left">
-                                    <p class="text-sm mb-2 text-therapy-600 font-medium">Link dla pacjenta:</p>
-                                    <code class="block bg-white p-2 rounded border border-therapy-100 text-sm break-all font-mono mb-3">{generatedLink}</code>
-                                    <p class="text-xs text-slate-500">Hasło do pokoju: <span class="font-bold text-slate-700">{password}</span></p>
+                            <div className="text-center space-y-6">
+                                <div className="bg-therapy-50 text-therapy-900 p-4 rounded-lg border border-therapy-100 text-left">
+                                    <p className="text-sm mb-2 text-therapy-600 font-medium">Link dla pacjenta:</p>
+                                    <code className="block bg-white p-2 rounded border border-therapy-100 text-sm break-all font-mono mb-3">{generatedLink}</code>
+                                    <p className="text-xs text-slate-500">Hasło do pokoju: <span className="font-bold text-slate-700">{password}</span></p>
                                 </div>
                                 <button onClick={() => setStep(2)} 
-                                    class="w-full bg-therapy-500 hover:bg-therapy-600 text-white font-medium py-3 rounded-lg transition-colors shadow-sm">
+                                    className="w-full bg-therapy-500 hover:bg-therapy-600 text-white font-medium py-3 rounded-lg transition-colors shadow-sm">
                                     Przejdź do logowania pacjenta →
                                 </button>
                             </div>
@@ -132,27 +134,27 @@
             };
 
             return (
-                <div class="flex items-center justify-center min-h-screen p-4">
-                    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 w-full max-w-md">
-                        <div class="text-center mb-6">
-                            <h1 class="text-2xl font-semibold text-slate-800">Dołącz do sesji</h1>
-                            <p class="text-slate-500 text-sm mt-2">Pokój: <span class="font-medium text-slate-700">{roomInfo?.name}</span></p>
+                <div className="flex items-center justify-center min-h-screen p-4">
+                    <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 w-full max-w-md">
+                        <div className="text-center mb-6">
+                            <h1 className="text-2xl font-semibold text-slate-800">Dołącz do sesji</h1>
+                            <p className="text-slate-500 text-sm mt-2">Pokój: <span className="font-medium text-slate-700">{roomInfo?.name}</span></p>
                         </div>
                         
-                        <form onSubmit={handleJoin} class="space-y-5">
+                        <form onSubmit={handleJoin} className="space-y-5">
                             <div>
-                                <label class="block text-sm font-medium text-slate-500 mb-1">Twój Nick / Imię</label>
+                                <label className="block text-sm font-medium text-slate-500 mb-1">Twój Nick / Imię</label>
                                 <input type="text" value={nickname} onChange={e => setNickname(e.target.value)} required placeholder="Np. Pacjent Tomek"
-                                    class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
+                                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-500 mb-1">Hasło</label>
+                                <label className="block text-sm font-medium text-slate-500 mb-1">Hasło</label>
                                 <input type="password" value={inputPassword} onChange={e => {setInputPassword(e.target.value); setError('');}} required placeholder="Wpisz hasło z Kroku 1"
-                                    class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
-                                {error && <p class="text-red-500 text-xs mt-2 font-medium">{error}</p>}
+                                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
+                                {error && <p className="text-red-500 text-xs mt-2 font-medium">{error}</p>}
                             </div>
                             <button type="submit" 
-                                class="w-full bg-slate-800 hover:bg-slate-700 text-white font-medium py-3 rounded-lg transition-colors mt-4">
+                                className="w-full bg-slate-800 hover:bg-slate-700 text-white font-medium py-3 rounded-lg transition-colors mt-4">
                                 Wejdź do pokoju
                             </button>
                         </form>
@@ -165,6 +167,7 @@
         function Workspace({ roomInfo, userInfo, setStep }) {
             const [content, setContent] = useState('Oto Wasza wspólna przestrzeń CBT.\n\n[Sytuacja / Wyzwalacz]:\n\n[Myśli automatyczne]:\n\n[Emocje i odczucia z ciała]:\n\n[Alternatywna, racjonalna perspektywa]:');
             const [timeLeft, setTimeLeft] = useState((roomInfo?.duration || 60) * 60);
+            const [isExporting, setIsExporting] = useState(false);
 
             useEffect(() => {
                 const timer = setInterval(() => {
@@ -179,46 +182,118 @@
                 return `${m}:${s}`;
             };
 
+            // Funkcja generująca piękny szablon dokumentu i eksportująca do PDF
+            const handleExportPDF = () => {
+                setIsExporting(true);
+                
+                // Tworzymy w pamięci tymczasowy element HTML sformatowany pod wydruk A4
+                const element = document.createElement('div');
+                
+                // Formatujemy tekst z textarea, zamieniając entery na tagi <br>
+                const formattedContent = content.replace(/\n/g, '<br>');
+
+                element.innerHTML = `
+                    <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 50px; color: #1e293b; background: #ffffff;">
+                        <div style="border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px;">
+                            <h1 style="font-size: 26px; font-weight: 700; color: #0c4a6e; margin: 0 0 8px 0;">${roomInfo?.name || 'Sesja Terapeutyczna'}</h1>
+                            <p style="font-size: 14px; color: #64748b; margin: 0;">Podsumowanie sesji psychoterapii poznawczo-behawioralnej (CBT)</p>
+                        </div>
+                        
+                        <div style="margin-bottom: 30px; background: #f8fafc; padding: 15px; border-radius: 8px; font-size: 13px; color: #475569;">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="padding: 4px 0;"><strong>Uczestnik sesji:</strong> ${userInfo?.nickname}</td>
+                                    <td style="padding: 4px 0; text-align: right;"><strong>Data wygenerowania:</strong> ${new Date().toLocaleDateString('pl-PL')}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 4px 0;"><strong>Status dokumentu:</strong> Zapisany pomyślnie</td>
+                                    <td style="padding: 4px 0; text-align: right;"><strong>Platforma:</strong> TherapySpace</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div style="font-size: 15px; line-height: 1.8; color: #334155; min-height: 400px;">
+                            ${formattedContent}
+                        </div>
+
+                        <div style="margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 15px; text-align: center; font-size: 11px; color: #94a3b8;">
+                            Dokument wygenerowany automatycznie przez aplikację TherapySpace. Treści zawarte w dokumencie są objęte tajemnicą lekarską/terapeutyczną.
+                        </div>
+                    </div>
+                `;
+
+                const opt = {
+                    margin:       10,
+                    filename:     `Sesja_CBT_${userInfo?.nickname || 'Pacjent'}_${new Date().toISOString().slice(0,10)}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                // Uruchomienie procesu zapisu i reset stanu przycisku
+                html2pdf().from(element).set(opt).save().then(() => {
+                    setIsExporting(false);
+                }).catch(() => {
+                    setIsExporting(false);
+                });
+            };
+
             return (
-                <div class="h-screen flex flex-col bg-slate-50">
-                    <header class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shrink-0 shadow-sm">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-full bg-therapy-100 flex items-center justify-center text-therapy-600 font-bold">
+                <div className="h-screen flex flex-col bg-slate-50">
+                    <header className="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shrink-0 shadow-sm">
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-full bg-therapy-100 flex items-center justify-center text-therapy-600 font-bold">
                                 {userInfo?.nickname?.charAt(0).toUpperCase()}
                             </div>
                             <div>
-                                <h2 class="font-semibold text-slate-800">{roomInfo?.name}</h2>
-                                <p class="text-xs text-slate-500">Uczestnik: {userInfo?.nickname}</p>
+                                <h2 className="font-semibold text-slate-800">{roomInfo?.name}</h2>
+                                <p className="text-xs text-slate-500">Uczestnik: {userInfo?.nickname}</p>
                             </div>
                         </div>
                         
-                        <div class="flex items-center gap-6">
-                            <div class="text-right">
-                                <span class="text-[10px] text-slate-400 uppercase tracking-wider font-bold block">Czas sesji</span>
-                                <div class={`text-xl font-mono font-medium ${timeLeft < 300 ? 'text-red-500 font-bold animate-pulse' : 'text-slate-700'}`}>
+                        <div className="flex items-center gap-4">
+                            <div className="text-right mr-2">
+                                <span className="text-[10px] text-slate-400 uppercase tracking-wider font-bold block">Czas sesji</span>
+                                <div className={`text-xl font-mono font-medium ${timeLeft < 300 ? 'text-red-500 font-bold animate-pulse' : 'text-slate-700'}`}>
                                     {formatTime(timeLeft)}
                                 </div>
                             </div>
-                            <button onClick={() => setStep(1)} class="text-sm px-4 py-2 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors">
+
+                            {/* NOWY PRZYCISK: EKSPORT DO PDF */}
+                            <button 
+                                onClick={handleExportPDF} 
+                                disabled={isExporting}
+                                className="text-sm px-4 py-2 bg-therapy-500 hover:bg-therapy-600 text-white font-medium rounded-lg transition-colors flex items-center gap-2 shadow-sm disabled:opacity-50"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                {isExporting ? 'Generowanie...' : 'Eksportuj do PDF'}
+                            </button>
+
+                            <button onClick={() => setStep(1)} className="text-sm px-4 py-2 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors">
                                 Wyjdź
                             </button>
                         </div>
                     </header>
 
-                    <main class="flex-1 overflow-hidden p-4 md:p-8 flex justify-center">
-                        <div class="w-full max-w-4xl bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col overflow-hidden">
-                            <div class="h-10 bg-slate-50 border-b border-slate-100 flex items-center px-4 gap-2 shrink-0">
-                                <span class="relative flex h-2 w-2">
-                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                  <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                                </span>
-                                <span class="text-xs text-slate-400 font-medium">Połączenie aktywne • Obie osoby w pokoju</span>
+                    <main className="flex-1 overflow-hidden p-4 md:p-8 flex justify-center">
+                        <div className="w-full max-w-4xl bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col overflow-hidden">
+                            <div className="h-10 bg-slate-50 border-b border-slate-100 flex items-center px-4 justify-between shrink-0">
+                                <div className="flex items-center gap-2">
+                                    <span className="relative flex h-2 w-2">
+                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                    </span>
+                                    <span className="text-xs text-slate-400 font-medium">Połączenie aktywne • Obie osoby w pokoju</span>
+                                </div>
+                                <span className="text-[11px] text-slate-400 italic">Wpisane zmiany zapisują się automatycznie</span>
                             </div>
 
                             <textarea 
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
-                                class="flex-1 w-full p-8 resize-none outline-none text-slate-700 text-lg leading-relaxed bg-transparent font-light"
+                                className="flex-1 w-full p-8 resize-none outline-none text-slate-700 text-lg leading-relaxed bg-transparent font-light"
                                 placeholder="Zacznij pisać tutaj..."
                             ></textarea>
                         </div>
@@ -234,7 +309,7 @@
             const [userInfo, setUserInfo] = useState(null);
 
             return (
-                <div class="font-sans antialiased bg-slate-50 text-slate-800">
+                <div className="font-sans antialiased bg-slate-50 text-slate-800">
                     {step === 1 && <CreateRoom setStep={setStep} setRoomInfo={setRoomInfo} />}
                     {step === 2 && <JoinRoom roomInfo={roomInfo} setStep={setStep} setUserInfo={setUserInfo} />}
                     {step === 3 && <Workspace roomInfo={roomInfo} userInfo={userInfo} setStep={setStep} />}
