@@ -36,36 +36,39 @@
         
         body { 
             font-family: 'Inter', sans-serif; 
-            overscroll-behavior-y: none; /* Zapobiega "pull-to-refresh" na urządzeniach mobilnych */
+            overscroll-behavior-y: none;
         }
         
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
-        /* Style specyficzne dla Tablicy */
         #canvasWrapper {
             position: relative;
-            background-color: #ffffff;
+            background-color: #f1f5f9; /* Ciemniejsze tło za tablicą */
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            /* Zapewnia skalowanie na małych urządzeniach */
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
             width: 100%;
             height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            touch-action: none;
         }
         
+        #canvasContainer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: 0 0;
+            will-change: transform;
+            /* Subtelny cień oddzielający wirtualne płótno od tła */
+            box-shadow: 0 0 20px rgba(0,0,0,0.05); 
+            background: white;
+        }
+
         canvas {
             display: block;
-            cursor: crosshair;
-            touch-action: none; /* KLUCZOWE NA MOBILE: blokuje scrollowanie palcem przy rysowaniu */
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
+            touch-action: none;
         }
         
         .dynamic-textarea {
@@ -85,13 +88,12 @@
             box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
 
-        /* Usprawnienie mobilnego paska narzędzi */
         .mobile-tool-scroll {
             -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
         }
         .mobile-tool-scroll::-webkit-scrollbar {
-            display: none; /* Chrome, Safari */
+            display: none;
         }
     </style>
 </head>
@@ -124,16 +126,13 @@
                 navigator.clipboard.writeText(message).then(() => {
                     setCopied(true);
                     setTimeout(() => setCopied(false), 2500);
-                }).catch((err) => {
-                    console.error('Błąd podczas kopiowania: ', err);
-                });
+                }).catch((err) => console.error(err));
             };
 
             return (
                 <div className="flex items-center justify-center min-h-screen p-4 sm:p-6">
                     <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 sm:p-8 w-full max-w-md">
                         <h1 className="text-2xl font-semibold text-slate-800 mb-6 text-center">Stwórz przestrzeń</h1>
-                        
                         {!generatedLink ? (
                             <form onSubmit={handleCreate} className="space-y-5">
                                 <div>
@@ -158,39 +157,22 @@
                                     <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Np. 1234" required
                                         className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
                                 </div>
-                                <button type="submit" 
-                                    className="w-full bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-white font-medium py-3 sm:py-4 rounded-xl transition-all mt-4">
-                                    Generuj pokój
-                                </button>
+                                <button type="submit" className="w-full bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-white font-medium py-3 sm:py-4 rounded-xl transition-all mt-4">Generuj pokój</button>
                             </form>
                         ) : (
                             <div className="text-center space-y-6">
                                 <div className="bg-therapy-50 text-therapy-900 p-5 rounded-xl border border-therapy-100 text-left">
                                     <p className="text-sm mb-2 text-therapy-600 font-medium">Link do pokoju:</p>
-                                    <button 
-                                        type="button"
-                                        onClick={handleCopyMessage}
-                                        className="w-full block bg-white hover:bg-slate-100 p-3 rounded-lg border border-therapy-100 text-sm break-all font-mono mb-3 text-left transition-colors relative group focus:outline-none"
-                                        title="Kliknij, aby skopiować pełną wiadomość"
-                                    >
+                                    <button type="button" onClick={handleCopyMessage} className="w-full block bg-white hover:bg-slate-100 p-3 rounded-lg border border-therapy-100 text-sm break-all font-mono mb-3 text-left transition-colors relative group focus:outline-none">
                                         <code className="text-slate-700 pointer-events-none block overflow-hidden text-ellipsis whitespace-nowrap">{generatedLink}</code>
-                                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs bg-slate-800 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                                            Kopiuj wszystko
-                                        </span>
+                                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs bg-slate-800 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">Kopiuj wszystko</span>
                                     </button>
                                     <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center min-h-[20px] gap-2">
                                         <p className="text-sm text-slate-600">Hasło: <span className="font-bold text-slate-800">{password}</span></p>
-                                        {copied && (
-                                            <span className="text-xs text-emerald-600 font-semibold animate-pulse bg-emerald-50 px-2 py-1 rounded">
-                                                Skopiowano pomyślnie!
-                                            </span>
-                                        )}
+                                        {copied && <span className="text-xs text-emerald-600 font-semibold animate-pulse bg-emerald-50 px-2 py-1 rounded">Skopiowano!</span>}
                                     </div>
                                 </div>
-                                <button onClick={() => setStep(2)} 
-                                    className="w-full bg-therapy-500 hover:bg-therapy-600 active:scale-[0.98] text-white font-medium py-3 sm:py-4 rounded-xl transition-all shadow-sm">
-                                    Przejdź do logowania →
-                                </button>
+                                <button onClick={() => setStep(2)} className="w-full bg-therapy-500 hover:bg-therapy-600 active:scale-[0.98] text-white font-medium py-3 sm:py-4 rounded-xl transition-all shadow-sm">Przejdź do logowania →</button>
                             </div>
                         )}
                     </div>
@@ -221,7 +203,6 @@
                             <h1 className="text-2xl font-semibold text-slate-800">Dołącz do sesji</h1>
                             <p className="text-slate-500 text-sm mt-2">Pokój: <span className="font-medium text-slate-700">{roomInfo?.name}</span></p>
                         </div>
-                        
                         <form onSubmit={handleJoin} className="space-y-5">
                             <div>
                                 <label className="block text-sm font-medium text-slate-500 mb-1">Twój Nick / Imię</label>
@@ -234,30 +215,73 @@
                                     className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
                                 {error && <p className="text-red-500 text-sm mt-2 font-medium bg-red-50 p-2 rounded-lg">{error}</p>}
                             </div>
-                            <button type="submit" 
-                                className="w-full bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-white font-medium py-3 sm:py-4 rounded-xl transition-all mt-4">
-                                Wejdź do pokoju
-                            </button>
+                            <button type="submit" className="w-full bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-white font-medium py-3 sm:py-4 rounded-xl transition-all mt-4">Wejdź do pokoju</button>
                         </form>
                     </div>
                 </div>
             );
         }
 
-        // --- KOMPONENT TABLICY (ZMINIEJSZONY PANEL + POINTER EVENTS) ---
+        // --- KOMPONENT TABLICY (NIESKOŃCZONY ZOOM I PAN) ---
         function Whiteboard({ userInfo }) {
             const canvasRef = useRef(null);
             const wrapperRef = useRef(null);
+            const containerRef = useRef(null);
             const isInitialized = useRef(false);
+
+            // Stan kamery - używamy state, aby przyciski mogły się aktualizować
+            const [zoomLevel, setZoomLevel] = useState(1);
+            
+            // Kamera jako Ref dla pętli zdarzeń rysowania bez re-renderowania
+            const camera = useRef({ x: 0, y: 0, scale: 1 });
+            const pointers = useRef(new Map()); // Do obsługi gestów
+
+            const updateTransform = () => {
+                if (containerRef.current) {
+                    containerRef.current.style.transform = `translate(${camera.current.x}px, ${camera.current.y}px) scale(${camera.current.scale})`;
+                    setZoomLevel(camera.current.scale);
+                }
+            };
+
+            const handleZoom = (delta) => {
+                const center = {
+                    x: wrapperRef.current.clientWidth / 2,
+                    y: wrapperRef.current.clientHeight / 2
+                };
+                
+                let newScale = camera.current.scale * delta;
+                newScale = Math.max(0.1, Math.min(newScale, 5)); // Limit od 10% do 500%
+
+                const scaleRatio = newScale / camera.current.scale;
+                
+                camera.current.x = center.x - (center.x - camera.current.x) * scaleRatio;
+                camera.current.y = center.y - (center.y - camera.current.y) * scaleRatio;
+                camera.current.scale = newScale;
+                updateTransform();
+            };
+
+            const centerCanvas = () => {
+                if (!wrapperRef.current || !canvasRef.current) return;
+                camera.current = {
+                    x: (wrapperRef.current.clientWidth - canvasRef.current.width) / 2,
+                    y: (wrapperRef.current.clientHeight - canvasRef.current.height) / 2,
+                    scale: 1
+                };
+                updateTransform();
+            };
 
             useEffect(() => {
                 if (isInitialized.current) return;
                 isInitialized.current = true;
 
                 const canvas = canvasRef.current;
+                const canvasContainer = containerRef.current;
                 const canvasWrapper = wrapperRef.current;
                 const ctx = canvas.getContext('2d', { willReadFrequently: true });
                 
+                // Ustawienie początkowe na środek gigantycznego płótna
+                centerCanvas();
+
                 const toolSelect = document.getElementById('toolSelect');
                 const colorPicker = document.getElementById('colorPicker');
                 const brushSize = document.getElementById('brushSize');
@@ -288,20 +312,23 @@
                 let arrowEnd = {x: 0, y: 0};
                 let arrowControl = {x: 0, y: 0};
 
-                // Ustaw początkowy kolor tła
+                // Zmienne dla gestów
+                let initialPinchDistance = null;
+                let initialCameraScale = 1;
+                let initialPinchCenter = null;
+                let initialCameraPos = {x: 0, y: 0};
+                let lastPanPos = {x: 0, y: 0};
+
                 ctx.fillStyle = "white";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 saveState();
 
-                // Funkcja pomocnicza do pobierania współrzędnych z obsługą skalowania CSS (szczególnie na urządzeniach mobilnych)
-                function getCoords(e) {
-                    const rect = canvas.getBoundingClientRect();
-                    const scaleX = canvas.width / rect.width;
-                    const scaleY = canvas.height / rect.height;
-                    return {
-                        x: (e.clientX - rect.left) * scaleX,
-                        y: (e.clientY - rect.top) * scaleY
-                    };
+                // FUNKCJA PRZELICZAJĄCA WSPÓŁRZĘDNE Z UWZGLĘDNIENIEM KAMERY/ZOOMU
+                function getCoords(clientX, clientY) {
+                    const rect = canvasWrapper.getBoundingClientRect(); 
+                    const x = (clientX - rect.left - camera.current.x) / camera.current.scale;
+                    const y = (clientY - rect.top - camera.current.y) / camera.current.scale;
+                    return { x, y };
                 }
 
                 function saveState() {
@@ -326,6 +353,8 @@
                     if (isTransforming) commitTransform();
                     if (currentTextarea) commitText();
                     if (isEditingArrow) commitArrow();
+                    // Ustaw kursor na rączkę jeśli narzędzie pan
+                    canvasWrapper.style.cursor = toolSelect.value === 'pan' ? 'grab' : 'crosshair';
                 });
 
                 function commitTransform() {
@@ -348,24 +377,22 @@
                     ctx.rotate(selAngle);
                     ctx.drawImage(offscreenCanvas, -selW / 2, -selH / 2, selW, selH);
                     
-                    // Rysowanie ramki zaznaczenia
-                    ctx.setLineDash([5, 5]);
+                    ctx.setLineDash([5 / camera.current.scale, 5 / camera.current.scale]);
                     ctx.strokeStyle = "#0ea5e9";
-                    ctx.lineWidth = 2;
+                    ctx.lineWidth = 2 / camera.current.scale; // Skalowanie grubości ramki
                     ctx.strokeRect(-selW / 2, -selH / 2, selW, selH);
                     ctx.setLineDash([]);
                     
-                    // Uchwyt zmiany rozmiaru
+                    const handleSize = 12 / camera.current.scale;
                     ctx.fillStyle = "#0ea5e9";
-                    ctx.fillRect(selW / 2 - 6, selH / 2 - 6, 12, 12);
+                    ctx.fillRect(selW / 2 - handleSize/2, selH / 2 - handleSize/2, handleSize, handleSize);
                     
-                    // Uchwyt obrotu
                     ctx.beginPath();
-                    ctx.arc(0, -selH / 2 - 25, 8, 0, Math.PI * 2);
+                    ctx.arc(0, -selH / 2 - (25/camera.current.scale), 8/camera.current.scale, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.beginPath();
                     ctx.moveTo(0, -selH / 2);
-                    ctx.lineTo(0, -selH / 2 - 25);
+                    ctx.lineTo(0, -selH / 2 - (25/camera.current.scale));
                     ctx.stroke();
                     ctx.restore();
                 }
@@ -404,11 +431,11 @@
                     
                     if (drawControlDot) {
                         context.beginPath();
-                        context.arc(control.x, control.y, 10, 0, Math.PI * 2);
+                        context.arc(control.x, control.y, 10 / camera.current.scale, 0, Math.PI * 2);
                         context.fillStyle = "#0ea5e9";
                         context.fill();
                         context.strokeStyle = "#ffffff";
-                        context.lineWidth = 2;
+                        context.lineWidth = 2 / camera.current.scale;
                         context.stroke();
                     }
                     context.restore();
@@ -423,23 +450,18 @@
                         ctx.fillStyle = currentTextarea.style.color;
                         ctx.textBaseline = 'top';
                         
-                        // Przeliczenie relatywnych współrzędnych pola textarea na wewnętrzne wymiary tablicy
-                        const rect = canvas.getBoundingClientRect();
-                        const scaleX = canvas.width / rect.width;
-                        const scaleY = canvas.height / rect.height;
-                        
-                        const padding = 8 * scaleX; 
-                        const x = (parseInt(currentTextarea.style.left) * scaleX) + padding;
-                        const y = (parseInt(currentTextarea.style.top) * scaleY) + padding;
-                        const maxWidth = (currentTextarea.clientWidth * scaleX) - (padding * 2);
+                        const padding = 8;
+                        const x = parseInt(currentTextarea.style.left) + padding;
+                        const y = parseInt(currentTextarea.style.top) + padding;
+                        const maxWidth = currentTextarea.clientWidth - (padding * 2);
                         const lineHeight = fontSize * 1.3;
                         
                         drawWrappedText(ctx, text, x, y, maxWidth, lineHeight);
                         saveState();
                     }
                     
-                    if (currentTextarea.parentNode === canvasWrapper) {
-                        canvasWrapper.removeChild(currentTextarea);
+                    if (currentTextarea.parentNode === canvasContainer) {
+                        canvasContainer.removeChild(currentTextarea);
                     }
                     currentTextarea = null;
                 }
@@ -447,17 +469,13 @@
                 function drawWrappedText(context, text, x, y, maxWidth, lineHeight) {
                     const paragraphs = text.split('\n');
                     let currentY = y;
-                    
                     for (let p = 0; p < paragraphs.length; p++) {
                         const words = paragraphs[p].split(' ');
                         let line = '';
-
                         for (let n = 0; n < words.length; n++) {
                             const testLine = line + words[n] + ' ';
                             const metrics = context.measureText(testLine);
-                            const testWidth = metrics.width;
-                            
-                            if (testWidth > maxWidth && n > 0) {
+                            if (metrics.width > maxWidth && n > 0) {
                                 context.fillText(line, x, currentY);
                                 line = words[n] + ' ';
                                 currentY += lineHeight;
@@ -470,18 +488,47 @@
                     }
                 }
 
-                // ZASTĄPIENIE ZDARZEŃ MYSZY POINTER EVENTS API DLA WSPARCIA MOBILNEGO
+                // GŁÓWNA OBSŁUGA GESTÓW I POINTER EVENTS
                 const handlePointerDown = (e) => {
-                    e.preventDefault(); // Blokuje domyślne akcje przeglądarki na urządzeniach dotykowych
-                    canvas.setPointerCapture(e.pointerId); // Utrzymuje wskaźnik nawet gdy ucieknie z tablicy
+                    e.preventDefault();
+                    canvasWrapper.setPointerCapture(e.pointerId);
                     
-                    const coords = getCoords(e);
+                    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+                    // Logika dwóch palców (ZOOM / PAN)
+                    if (pointers.current.size === 2) {
+                        const pts = Array.from(pointers.current.values());
+                        initialPinchDistance = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+                        initialCameraScale = camera.current.scale;
+                        initialPinchCenter = {
+                            x: (pts[0].x + pts[1].x) / 2,
+                            y: (pts[0].y + pts[1].y) / 2
+                        };
+                        initialCameraPos = { x: camera.current.x, y: camera.current.y };
+                        
+                        // Przerwanie rysowania jeśli zaczęto mazać
+                        if (isDrawing) {
+                            isDrawing = false;
+                            ctx.putImageData(snapshot, 0, 0); // Cofnięcie kropki z pierwszego palca
+                        }
+                        return;
+                    }
+
+                    // Obsługa jednego punktu
+                    const currentTool = toolSelect.value;
+                    const coords = getCoords(e.clientX, e.clientY);
+
+                    if (currentTool === 'pan') {
+                        lastPanPos = { x: e.clientX, y: e.clientY };
+                        canvasWrapper.style.cursor = 'grabbing';
+                        return;
+                    }
                     
                     if (currentTextarea) commitText();
 
                     if (isEditingArrow) {
                         const dist = Math.sqrt(Math.pow(coords.x - arrowControl.x, 2) + Math.pow(coords.y - arrowControl.y, 2));
-                        if (dist < 20) { // Zwiększono margines błędu kliknięcia dla palców
+                        if (dist < 30 / camera.current.scale) {
                             isDraggingArrowControl = true;
                             return;
                         } else {
@@ -498,13 +545,14 @@
                         let rx = dx * Math.cos(-selAngle) - dy * Math.sin(-selAngle);
                         let ry = dx * Math.sin(-selAngle) + dy * Math.cos(-selAngle);
                         
-                        let distRotate = Math.sqrt(rx * rx + (ry + selH / 2 + 25) * (ry + selH / 2 + 25));
+                        let distRotate = Math.sqrt(rx * rx + (ry + selH / 2 + (25/camera.current.scale)) * (ry + selH / 2 + (25/camera.current.scale)));
                         let distResize = Math.sqrt((rx - selW / 2) * (rx - selW / 2) + (ry - selH / 2) * (ry - selH / 2));
                         
-                        if (distRotate < 25) { // Zwiększony hitbox dla palców
+                        let hitbox = 25 / camera.current.scale;
+                        if (distRotate < hitbox) {
                             activeTransformMode = 'rotate';
                             return;
-                        } else if (distResize < 25) { // Zwiększony hitbox dla palców
+                        } else if (distResize < hitbox) {
                             activeTransformMode = 'resize';
                             return;
                         } else if (rx >= -selW / 2 && rx <= selW / 2 && ry >= -selH / 2 && ry <= selH / 2) {
@@ -529,10 +577,9 @@
                     ctx.lineJoin = 'round';
                     ctx.setLineDash([]);
                     
-                    if (toolSelect.value !== 'select' && toolSelect.value !== 'text' && toolSelect.value !== 'arrow') {
+                    if (currentTool !== 'select' && currentTool !== 'text' && currentTool !== 'arrow') {
                         ctx.beginPath();
-                        // Rysowanie kropki po samym kliknięciu
-                        if(toolSelect.value === 'pen'){
+                        if(currentTool === 'pen'){
                             ctx.moveTo(startX, startY);
                             ctx.lineTo(startX, startY);
                             ctx.stroke();
@@ -542,7 +589,50 @@
 
                 const handlePointerMove = (e) => {
                     e.preventDefault();
-                    const coords = getCoords(e);
+                    if (!pointers.current.has(e.pointerId)) return;
+                    
+                    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+                    // Obsługa dwóch palców (Gesty Zoom/Pan)
+                    if (pointers.current.size === 2) {
+                        const pts = Array.from(pointers.current.values());
+                        const currentDistance = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+                        const currentCenter = {
+                            x: (pts[0].x + pts[1].x) / 2,
+                            y: (pts[0].y + pts[1].y) / 2
+                        };
+
+                        const scaleFactor = currentDistance / initialPinchDistance;
+                        let newScale = initialCameraScale * scaleFactor;
+                        newScale = Math.max(0.1, Math.min(newScale, 5));
+
+                        const rect = wrapperRef.current.getBoundingClientRect();
+                        const centerRelX = initialPinchCenter.x - rect.left;
+                        const centerRelY = initialPinchCenter.y - rect.top;
+                        
+                        const scaleRatio = newScale / initialCameraScale;
+                        
+                        camera.current.scale = newScale;
+                        camera.current.x = (currentCenter.x - rect.left) - (centerRelX - initialCameraPos.x) * scaleRatio;
+                        camera.current.y = (currentCenter.y - rect.top) - (centerRelY - initialCameraPos.y) * scaleRatio;
+                        
+                        updateTransform();
+                        return;
+                    }
+
+                    // Przesuwanie Rączką (1 palec)
+                    const currentTool = toolSelect.value;
+                    if (currentTool === 'pan' && pointers.current.size === 1 && e.buttons > 0) {
+                        const dx = e.clientX - lastPanPos.x;
+                        const dy = e.clientY - lastPanPos.y;
+                        camera.current.x += dx;
+                        camera.current.y += dy;
+                        lastPanPos = { x: e.clientX, y: e.clientY };
+                        updateTransform();
+                        return;
+                    }
+
+                    const coords = getCoords(e.clientX, e.clientY);
 
                     if (isEditingArrow && isDraggingArrowControl) {
                         arrowControl.x = coords.x;
@@ -569,19 +659,16 @@
                             let rx = dx * Math.cos(-selAngle) - dy * Math.sin(-selAngle);
                             let ry = dx * Math.sin(-selAngle) + dy * Math.cos(-selAngle);
                             
-                            selW = Math.max(30, Math.abs(rx) * 2);
-                            selH = Math.max(30, Math.abs(ry) * 2);
+                            selW = Math.max(30/camera.current.scale, Math.abs(rx) * 2);
+                            selH = Math.max(30/camera.current.scale, Math.abs(ry) * 2);
                         }
                         drawTransforming();
                         return;
                     }
 
                     if (!isDrawing) return;
-                    const currentTool = toolSelect.value;
                     
-                    if (currentTool !== 'pen') {
-                        ctx.putImageData(snapshot, 0, 0);
-                    }
+                    if (currentTool !== 'pen') ctx.putImageData(snapshot, 0, 0);
 
                     if (currentTool === 'pen') {
                         ctx.lineTo(coords.x, coords.y);
@@ -597,24 +684,32 @@
                         let tempControl = { x: (startX + coords.x) / 2, y: (startY + coords.y) / 2 };
                         drawCurvedArrow(ctx, {x: startX, y: startY}, tempControl, {x: coords.x, y: coords.y}, colorPicker.value, brushSize.value, false);
                     } else if (currentTool === 'select' || currentTool === 'text') {
-                        ctx.setLineDash([6, 6]);
+                        ctx.setLineDash([6 / camera.current.scale, 6 / camera.current.scale]);
                         ctx.strokeStyle = currentTool === 'select' ? "#0ea5e9" : colorPicker.value;
-                        ctx.lineWidth = 2;
+                        ctx.lineWidth = 2 / camera.current.scale;
                         ctx.strokeRect(startX, startY, coords.x - startX, coords.y - startY);
                     }
                 };
 
                 const handlePointerUp = (e) => {
                     e.preventDefault();
-                    canvas.releasePointerCapture(e.pointerId);
-                    const coords = getCoords(e);
+                    pointers.current.delete(e.pointerId);
+                    
+                    if (pointers.current.size === 0) {
+                        canvasWrapper.releasePointerCapture(e.pointerId);
+                    }
+
+                    if (toolSelect.value === 'pan') {
+                        canvasWrapper.style.cursor = 'grab';
+                        return;
+                    }
 
                     if (isEditingArrow && isDraggingArrowControl) {
                         isDraggingArrowControl = false;
                         return;
                     }
 
-                    if (isTransforming) {
+                    if (isTransforming && activeTransformMode) {
                         activeTransformMode = null;
                         return;
                     }
@@ -623,13 +718,13 @@
                     isDrawing = false;
 
                     const currentTool = toolSelect.value;
+                    const coords = getCoords(e.clientX, e.clientY);
 
                     if (currentTool === 'arrow') {
                         ctx.putImageData(snapshot, 0, 0);
                         arrowStart = { x: startX, y: startY };
                         arrowEnd = { x: coords.x, y: coords.y };
                         
-                        // Zabezpieczenie przed stworzeniem strzałki z jednego kliknięcia
                         if(Math.abs(startX - coords.x) < 5 && Math.abs(startY - coords.y) < 5) {
                             isEditingArrow = false;
                             return;
@@ -641,23 +736,17 @@
                     } else if (currentTool === 'text') {
                         ctx.putImageData(snapshot, 0, 0);
                         
-                        const rect = canvas.getBoundingClientRect();
-                        const scaleX = rect.width / canvas.width;
-                        const scaleY = rect.height / canvas.height;
+                        let x = Math.min(startX, coords.x);
+                        let y = Math.min(startY, coords.y);
+                        let w = Math.abs(coords.x - startX);
+                        let h = Math.abs(coords.y - startY);
                         
-                        let clientStartX = (startX * scaleX);
-                        let clientStartY = (startY * scaleY);
-                        let clientEndX = (coords.x * scaleX);
-                        let clientEndY = (coords.y * scaleY);
-                        
-                        let x = Math.min(clientStartX, clientEndX);
-                        let y = Math.min(clientStartY, clientEndY);
-                        let w = Math.abs(clientEndX - clientStartX);
-                        let h = Math.abs(clientEndY - clientStartY);
-                        
-                        if (w < 40 || h < 40) { w = 250; h = 100; }
+                        if (w < 40/camera.current.scale || h < 40/camera.current.scale) { 
+                            w = 250/camera.current.scale; 
+                            h = 100/camera.current.scale; 
+                        }
 
-                        const fontSize = Math.max(16, brushSize.value * 4); // Lepsza widoczność czcionki mobilnie
+                        const fontSize = Math.max(16, brushSize.value * 4);
                         const textarea = document.createElement('textarea');
                         textarea.className = 'dynamic-textarea';
                         textarea.style.left = `${x}px`;
@@ -668,14 +757,15 @@
                         textarea.style.fontSize = `${fontSize}px`;
                         textarea.placeholder = "Zacznij pisać...";
 
-                        canvasWrapper.appendChild(textarea);
+                        // DOŁĄCZAMY DO KONTENERA SKALOWANEGO
+                        canvasContainer.appendChild(textarea);
                         textarea.focus();
                         currentTextarea = textarea;
                     } else if (currentTool === 'select') {
                         let w = Math.abs(coords.x - startX);
                         let h = Math.abs(coords.y - startY);
                         
-                        if (w > 10 && h > 10) {
+                        if (w > 10/camera.current.scale && h > 10/camera.current.scale) {
                             selX = Math.min(startX, coords.x);
                             selY = Math.min(startY, coords.y);
                             selW = w;
@@ -700,17 +790,47 @@
                     }
                 };
 
-                // Rejestracja zdarzeń dotykowych / rysikowych / myszy
-                canvas.addEventListener('pointerdown', handlePointerDown);
-                canvas.addEventListener('pointermove', handlePointerMove);
-                canvas.addEventListener('pointerup', handlePointerUp);
-                canvas.addEventListener('pointercancel', handlePointerUp);
+                // Zdarzenia dla Wrapper'a aby łapać ruchy poza obszarem płótna
+                canvasWrapper.addEventListener('pointerdown', handlePointerDown);
+                canvasWrapper.addEventListener('pointermove', handlePointerMove);
+                canvasWrapper.addEventListener('pointerup', handlePointerUp);
+                canvasWrapper.addEventListener('pointercancel', handlePointerUp);
+                canvasWrapper.addEventListener('pointerout', (e) => {
+                    // Opcjonalne zabezpieczenie, zdejmujemy z rejestru jeśli wyjedzie
+                    // if (!e.relatedTarget) handlePointerUp(e);
+                });
+
+                // Zoom kółkiem myszy
+                const handleWheel = (e) => {
+                    e.preventDefault();
+                    if (e.ctrlKey) {
+                        // Zoom myszką wokół kursora
+                        const rect = wrapperRef.current.getBoundingClientRect();
+                        const pointerX = e.clientX - rect.left;
+                        const pointerY = e.clientY - rect.top;
+
+                        const zoomDelta = e.deltaY > 0 ? 0.9 : 1.1;
+                        let newScale = camera.current.scale * zoomDelta;
+                        newScale = Math.max(0.1, Math.min(newScale, 5));
+                        
+                        const scaleRatio = newScale / camera.current.scale;
+                        
+                        camera.current.x = pointerX - (pointerX - camera.current.x) * scaleRatio;
+                        camera.current.y = pointerY - (pointerY - camera.current.y) * scaleRatio;
+                        camera.current.scale = newScale;
+                        updateTransform();
+                    } else {
+                        // Zwykłe przewijanie kółkiem (pan)
+                        camera.current.x -= e.deltaX;
+                        camera.current.y -= e.deltaY;
+                        updateTransform();
+                    }
+                };
+                canvasWrapper.addEventListener('wheel', handleWheel, { passive: false });
 
                 const handleKeyDown = (e) => {
                     if (document.activeElement.tagName === 'TEXTAREA') return;
-                    if (e.ctrlKey && e.key.toLowerCase() === 'z') {
-                        undo();
-                    }
+                    if (e.ctrlKey && e.key.toLowerCase() === 'z') { undo(); }
                     else if (e.ctrlKey && e.key.toLowerCase() === 'c') {
                         if (isTransforming) {
                             internalClipboard = oCtx.getImageData(0, 0, offscreenCanvas.width, offscreenCanvas.height);
@@ -733,8 +853,14 @@
                             if (isTransforming) commitTransform();
                             if (isEditingArrow) commitArrow();
                             
-                            selX = canvas.width / 2 - clipboardW / 2;
-                            selY = canvas.height / 2 - clipboardH / 2;
+                            // Wklejenie na środek widoku kamery
+                            const center = getCoords(
+                                wrapperRef.current.getBoundingClientRect().left + wrapperRef.current.clientWidth/2,
+                                wrapperRef.current.getBoundingClientRect().top + wrapperRef.current.clientHeight/2
+                            );
+                            
+                            selX = center.x - clipboardW / 2;
+                            selY = center.y - clipboardH / 2;
                             selW = clipboardW;
                             selH = clipboardH;
                             selAngle = 0;
@@ -761,7 +887,7 @@
                     if (isTransforming) isTransforming = false;
                     if (isEditingArrow) isEditingArrow = false;
                     if (currentTextarea) {
-                        if (currentTextarea.parentNode === canvasWrapper) canvasWrapper.removeChild(currentTextarea);
+                        if (currentTextarea.parentNode === canvasContainer) canvasContainer.removeChild(currentTextarea);
                         currentTextarea = null;
                     }
                     ctx.fillStyle = "white";
@@ -781,10 +907,11 @@
 
                 return () => {
                     document.removeEventListener('keydown', handleKeyDown);
-                    canvas.removeEventListener('pointerdown', handlePointerDown);
-                    canvas.removeEventListener('pointermove', handlePointerMove);
-                    canvas.removeEventListener('pointerup', handlePointerUp);
-                    canvas.removeEventListener('pointercancel', handlePointerUp);
+                    canvasWrapper.removeEventListener('pointerdown', handlePointerDown);
+                    canvasWrapper.removeEventListener('pointermove', handlePointerMove);
+                    canvasWrapper.removeEventListener('pointerup', handlePointerUp);
+                    canvasWrapper.removeEventListener('pointercancel', handlePointerUp);
+                    canvasWrapper.removeEventListener('wheel', handleWheel);
                 };
             }, [userInfo]);
 
@@ -792,15 +919,16 @@
                 <div className="flex flex-col md:flex-row gap-3 md:gap-5 h-full w-full justify-center items-stretch relative">
                     
                     {/* RESPONSYWNY PANEL NARZĘDZI */}
-                    <div className="md:w-60 bg-white border border-slate-200 p-3 md:p-4 rounded-xl flex flex-row md:flex-col gap-3 md:gap-4 shadow-sm shrink-0 overflow-x-auto md:overflow-y-auto mobile-tool-scroll z-10 w-full md:h-full max-h-[140px] md:max-h-[800px] items-center md:items-stretch">
+                    <div className="md:w-64 bg-white border border-slate-200 p-3 md:p-4 rounded-xl flex flex-row md:flex-col gap-3 md:gap-4 shadow-sm shrink-0 overflow-x-auto md:overflow-y-auto mobile-tool-scroll z-10 w-full md:h-full max-h-[140px] md:max-h-[800px] items-center md:items-stretch">
                         
                         <div className="hidden md:block font-bold text-slate-800 border-b border-slate-100 pb-2 uppercase tracking-wider text-xs">
                             Narzędzia pracy
                         </div>
                         
-                        <div className="flex-col md:flex-col flex gap-1 min-w-[100px]">
+                        <div className="flex-col md:flex-col flex gap-1 min-w-[120px]">
                             <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider hidden md:block">Narzędzie:</label>
                             <select id="toolSelect" className="w-full p-2 border border-slate-200 rounded-lg bg-slate-50 hover:bg-white focus:ring-2 focus:ring-therapy-100 outline-none cursor-pointer text-sm font-medium transition-colors">
+                                <option value="pan">🖐️ Rączka (Przesuń)</option>
                                 <option value="pen">✏️ Pędzel</option>
                                 <option value="rect">🟦 Prostokąt</option>
                                 <option value="circle">⭕ Koło</option>
@@ -825,17 +953,48 @@
                                 ↩ Cofnij
                             </button>
                             <button id="clearBtn" className="flex-1 md:w-full bg-red-50 text-red-600 border border-red-100 font-semibold text-xs md:text-sm py-2 px-3 rounded-lg hover:bg-red-100 transition active:scale-[0.96]">
-                                🗑 Wyczyść
+                                🗑 Wyczyść całą
                             </button>
                         </div>
                         
-                        {/* Ukryty przycisk eksportu */}
                         <button id="downloadJpg" className="hidden" aria-hidden="true"></button>
                     </div>
 
                     {/* OBSZAR PŁÓTNA */}
-                    <div id="canvasWrapper" ref={wrapperRef} className="shadow-md flex-1 relative bg-white border border-slate-200 rounded-xl overflow-hidden touch-none h-full min-h-[400px]">
-                        <canvas ref={canvasRef} id="board" width="1400" height="900" className="touch-none bg-white rounded-xl"></canvas>
+                    <div className="flex-1 relative border border-slate-200 rounded-xl overflow-hidden shadow-md bg-slate-200 min-h-[400px]">
+                        
+                        <div id="canvasWrapper" ref={wrapperRef}>
+                            <div id="canvasContainer" ref={containerRef}>
+                                {/* Płótno o ogromnej powierzchni (wirtualny stół) */}
+                                <canvas ref={canvasRef} id="board" width="3000" height="2000"></canvas>
+                            </div>
+                        </div>
+
+                        {/* Nakładka UI Kamery (Zoom Controls) */}
+                        <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm shadow-lg rounded-xl border border-slate-200 flex items-center p-1 z-50">
+                            <button 
+                                onClick={() => handleZoom(0.8)} 
+                                className="w-8 h-8 flex justify-center items-center rounded-lg hover:bg-slate-100 text-slate-600 font-bold active:scale-95"
+                                title="Oddal (Możesz też użyć gestu dwoma palcami)"
+                            >
+                                −
+                            </button>
+                            <button 
+                                onClick={centerCanvas}
+                                className="px-2 text-[10px] sm:text-xs font-mono font-medium text-slate-600 hover:text-therapy-600 active:scale-95 w-14 text-center cursor-pointer"
+                                title="Kliknij, aby wyśrodkować na obszarze roboczym"
+                            >
+                                {Math.round(zoomLevel * 100)}%
+                            </button>
+                            <button 
+                                onClick={() => handleZoom(1.2)} 
+                                className="w-8 h-8 flex justify-center items-center rounded-lg hover:bg-slate-100 text-slate-600 font-bold active:scale-95"
+                                title="Przybliż (Możesz też użyć gestu dwoma palcami)"
+                            >
+                                +
+                            </button>
+                        </div>
+                        
                     </div>
                 </div>
             );
@@ -846,7 +1005,7 @@
             const [content, setContent] = useState('');
             const [timeLeft, setTimeLeft] = useState((roomInfo?.duration || 60) * 60);
             const [isExporting, setIsExporting] = useState(false);
-            const [activeTab, setActiveTab] = useState('board'); // Domyślnie tablica w tym kontekście
+            const [activeTab, setActiveTab] = useState('board'); 
 
             useEffect(() => {
                 const timer = setInterval(() => {
@@ -890,7 +1049,7 @@
                         </div>
 
                         <div style="margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 15px; text-align: center; font-size: 11px; color: #94a3b8;">
-                            Dokument wygenerowany automatycznie przez aplikację Zarysowane. Treści zawarte w dokumencie są objęte tajemnicą zawodową.
+                            Dokument wygenerowany automatycznie. Treści zawarte w dokumencie są objęte tajemnicą zawodową.
                         </div>
                     </div>
                 `;
@@ -903,11 +1062,7 @@
                     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
                 };
 
-                html2pdf().from(element).set(opt).save().then(() => {
-                    setIsExporting(false);
-                }).catch(() => {
-                    setIsExporting(false);
-                });
+                html2pdf().from(element).set(opt).save().then(() => setIsExporting(false)).catch(() => setIsExporting(false));
             };
 
             return (
@@ -931,27 +1086,15 @@
                                 </div>
                             </div>
 
-                            <button 
-                                onClick={handleExportPDF} 
-                                disabled={isExporting}
-                                className={`p-2 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-lg transition-colors shadow-sm flex items-center justify-center ${isExporting ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                title="Pobierz Notatki (PDF)"
-                            >
+                            <button onClick={handleExportPDF} disabled={isExporting} className={`p-2 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-lg transition-colors shadow-sm flex items-center justify-center ${isExporting ? 'opacity-50 cursor-not-allowed' : ''}`} title="Pobierz Notatki (PDF)">
                                 {isExporting ? (
-                                    <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
+                                    <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                                 ) : (
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                 )}
                             </button>
 
-                            <button 
-                                onClick={() => document.getElementById('downloadJpg')?.click()} 
-                                className="p-2 bg-therapy-500 hover:bg-therapy-600 text-white rounded-lg transition-colors shadow-sm flex items-center justify-center"
-                                title="Pobierz Tablicę (JPG)"
-                            >
+                            <button onClick={() => document.getElementById('downloadJpg')?.click()} className="p-2 bg-therapy-500 hover:bg-therapy-600 text-white rounded-lg transition-colors shadow-sm flex items-center justify-center" title="Pobierz Pełną Tablicę (JPG)">
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                             </button>
 
@@ -964,18 +1107,11 @@
                     <main className="flex-1 overflow-hidden p-2 sm:p-4 md:p-6 flex flex-col items-center">
                         <div className="w-full max-w-6xl flex-1 bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col overflow-hidden">
                             
-                            {/* Zakładki mobilne/desktopowe */}
                             <div className="flex bg-slate-50 border-b border-slate-200 px-2 sm:px-4 pt-2 gap-1 sm:gap-2 shrink-0">
-                                <button 
-                                    onClick={() => setActiveTab('board')} 
-                                    className={`px-4 sm:px-6 py-3 rounded-t-xl text-xs sm:text-sm font-semibold transition-all ${activeTab === 'board' ? 'bg-white text-therapy-600 border-t border-l border-r border-slate-200 shadow-[0_2px_0_0_#fff]' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`}
-                                >
+                                <button onClick={() => setActiveTab('board')} className={`px-4 sm:px-6 py-3 rounded-t-xl text-xs sm:text-sm font-semibold transition-all ${activeTab === 'board' ? 'bg-white text-therapy-600 border-t border-l border-r border-slate-200 shadow-[0_2px_0_0_#fff]' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`}>
                                     🎨 Wirtualna Tablica
                                 </button>
-                                <button 
-                                    onClick={() => setActiveTab('text')} 
-                                    className={`px-4 sm:px-6 py-3 rounded-t-xl text-xs sm:text-sm font-semibold transition-all ${activeTab === 'text' ? 'bg-white text-therapy-600 border-t border-l border-r border-slate-200 shadow-[0_2px_0_0_#fff]' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`}
-                                >
+                                <button onClick={() => setActiveTab('text')} className={`px-4 sm:px-6 py-3 rounded-t-xl text-xs sm:text-sm font-semibold transition-all ${activeTab === 'text' ? 'bg-white text-therapy-600 border-t border-l border-r border-slate-200 shadow-[0_2px_0_0_#fff]' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`}>
                                     📝 Notatki
                                 </button>
                             </div>
@@ -986,19 +1122,15 @@
                                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                       <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                                     </span>
-                                    <span className="text-[10px] sm:text-[11px] text-slate-500 font-medium">
-                                        Sesja na żywo
-                                    </span>
+                                    <span className="text-[10px] sm:text-[11px] text-slate-500 font-medium">Nieskończona przestrzeń robocza</span>
                                 </div>
                                 <span className="text-[9px] sm:text-[10px] text-slate-400 italic hidden sm:inline-block">
-                                    Zmiany zapisują się automatycznie (lokalnie)
+                                    Zmiany zapisują się automatycznie
                                 </span>
                             </div>
 
                             <div className="flex-1 relative overflow-hidden h-full">
-                                <textarea 
-                                    value={content}
-                                    onChange={(e) => setContent(e.target.value)}
+                                <textarea value={content} onChange={(e) => setContent(e.target.value)}
                                     className={`w-full h-full p-4 sm:p-8 resize-none outline-none text-slate-700 text-base sm:text-lg leading-relaxed bg-transparent font-light absolute top-0 left-0 ${activeTab === 'text' ? 'block' : 'hidden'}`}
                                     placeholder="Dodaj tekstowe podsumowanie, własne myśli lub wnioski z tablicy..."
                                 ></textarea>
