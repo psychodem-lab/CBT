@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Zarysowane - Sesja z Tablicą</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -34,8 +34,12 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
         
-        body { font-family: 'Inter', sans-serif; }
-        ::-webkit-scrollbar { width: 6px; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            overscroll-behavior-y: none; /* Zapobiega "pull-to-refresh" na urządzeniach mobilnych */
+        }
+        
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
@@ -43,52 +47,52 @@
         #canvasWrapper {
             position: relative;
             background-color: #ffffff;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
             border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            /* Zapewnia skalowanie na małych urządzeniach */
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+        
         canvas {
             display: block;
             cursor: crosshair;
+            touch-action: none; /* KLUCZOWE NA MOBILE: blokuje scrollowanie palcem przy rysowaniu */
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
         }
+        
         .dynamic-textarea {
             position: absolute;
-            background: #ffffff;
-            border: 1px solid #0ea5e9;
-            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px dashed #0ea5e9;
+            border-radius: 6px;
             outline: none;
-            padding: 4px;
+            padding: 8px;
             box-sizing: border-box;
             resize: none; 
             overflow: hidden;
             z-index: 100;
-            font-family: Arial, sans-serif;
-            line-height: 1.3;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.4;
             white-space: pre-wrap;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
 
-
-        @media (max-width: 768px) {
-    /* Układ pionowy dla telefonów */
-    .board-container {
-        flex-direction: column !important;
-    }
-    
-    /* Panel narzędzi zajmuje całą szerokość */
-    .tools-panel {
-        width: 100% !important;
-        max-height: 200px !important;
-        order: -1; /* Narzędzia nad tablicą */
-        overflow-y: auto;
-    }
-
-    /* Canvas dopasowany do szerokości ekranu */
-    canvas {
-        width: 100% !important;
-        height: auto !important;
-    }
-}
+        /* Usprawnienie mobilnego paska narzędzi */
+        .mobile-tool-scroll {
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+        }
+        .mobile-tool-scroll::-webkit-scrollbar {
+            display: none; /* Chrome, Safari */
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen">
@@ -126,8 +130,8 @@
             };
 
             return (
-                <div className="flex items-center justify-center min-h-screen p-4">
-                    <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 w-full max-w-md">
+                <div className="flex items-center justify-center min-h-screen p-4 sm:p-6">
+                    <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 sm:p-8 w-full max-w-md">
                         <h1 className="text-2xl font-semibold text-slate-800 mb-6 text-center">Stwórz przestrzeń</h1>
                         
                         {!generatedLink ? (
@@ -135,56 +139,56 @@
                                 <div>
                                     <label className="block text-sm font-medium text-slate-500 mb-1">Nazwa pokoju</label>
                                     <input type="text" value={name} onChange={e => setName(e.target.value)} required
-                                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
+                                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
                                 </div>
-                                <div className="flex gap-4">
-                                    <div className="w-1/2">
+                                <div className="flex flex-col sm:flex-row gap-4">
+                                    <div className="w-full sm:w-1/2">
                                         <label className="block text-sm font-medium text-slate-500 mb-1">Maks. osób</label>
                                         <input type="number" value={members} onChange={e => setMembers(e.target.value)} min="2" max="10" required
-                                            className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
+                                            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
                                     </div>
-                                    <div className="w-1/2">
+                                    <div className="w-full sm:w-1/2">
                                         <label className="block text-sm font-medium text-slate-500 mb-1">Czas (min)</label>
                                         <input type="number" value={duration} onChange={e => setDuration(e.target.value)} min="15" step="15" required
-                                            className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
+                                            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
                                     </div>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-slate-500 mb-1">Hasło dostępu</label>
                                     <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Np. 1234" required
-                                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
+                                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
                                 </div>
                                 <button type="submit" 
-                                    className="w-full bg-slate-800 hover:bg-slate-700 text-white font-medium py-3 rounded-lg transition-colors mt-4">
+                                    className="w-full bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-white font-medium py-3 sm:py-4 rounded-xl transition-all mt-4">
                                     Generuj pokój
                                 </button>
                             </form>
                         ) : (
-                             <div className="text-center space-y-6">
-                                <div className="bg-therapy-50 text-therapy-900 p-4 rounded-lg border border-therapy-100 text-left">
+                            <div className="text-center space-y-6">
+                                <div className="bg-therapy-50 text-therapy-900 p-5 rounded-xl border border-therapy-100 text-left">
                                     <p className="text-sm mb-2 text-therapy-600 font-medium">Link do pokoju:</p>
                                     <button 
                                         type="button"
                                         onClick={handleCopyMessage}
-                                        className="w-full block bg-white hover:bg-slate-100 p-2 rounded border border-therapy-100 text-sm break-all font-mono mb-3 text-left transition-colors relative group focus:outline-none"
+                                        className="w-full block bg-white hover:bg-slate-100 p-3 rounded-lg border border-therapy-100 text-sm break-all font-mono mb-3 text-left transition-colors relative group focus:outline-none"
                                         title="Kliknij, aby skopiować pełną wiadomość"
                                     >
-                                        <code className="text-slate-700 pointer-events-none">{generatedLink}</code>
-                                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                                            Kopiuj
+                                        <code className="text-slate-700 pointer-events-none block overflow-hidden text-ellipsis whitespace-nowrap">{generatedLink}</code>
+                                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs bg-slate-800 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                                            Kopiuj wszystko
                                         </span>
                                     </button>
-                                    <div className="flex justify-between items-center min-h-[20px]">
-                                        <p className="text-xs text-slate-500">Hasło do pokoju: <span className="font-bold text-slate-700">{password}</span></p>
+                                    <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center min-h-[20px] gap-2">
+                                        <p className="text-sm text-slate-600">Hasło: <span className="font-bold text-slate-800">{password}</span></p>
                                         {copied && (
-                                            <span className="text-xs text-emerald-600 font-semibold animate-pulse">
-                                                Skopiowano zaproszenie!
+                                            <span className="text-xs text-emerald-600 font-semibold animate-pulse bg-emerald-50 px-2 py-1 rounded">
+                                                Skopiowano pomyślnie!
                                             </span>
                                         )}
                                     </div>
                                 </div>
                                 <button onClick={() => setStep(2)} 
-                                    className="w-full bg-therapy-500 hover:bg-therapy-600 text-white font-medium py-3 rounded-lg transition-colors shadow-sm">
+                                    className="w-full bg-therapy-500 hover:bg-therapy-600 active:scale-[0.98] text-white font-medium py-3 sm:py-4 rounded-xl transition-all shadow-sm">
                                     Przejdź do logowania →
                                 </button>
                             </div>
@@ -211,8 +215,8 @@
             };
 
             return (
-                <div className="flex items-center justify-center min-h-screen p-4">
-                    <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 w-full max-w-md">
+                <div className="flex items-center justify-center min-h-screen p-4 sm:p-6">
+                    <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 sm:p-8 w-full max-w-md">
                         <div className="text-center mb-6">
                             <h1 className="text-2xl font-semibold text-slate-800">Dołącz do sesji</h1>
                             <p className="text-slate-500 text-sm mt-2">Pokój: <span className="font-medium text-slate-700">{roomInfo?.name}</span></p>
@@ -222,16 +226,16 @@
                             <div>
                                 <label className="block text-sm font-medium text-slate-500 mb-1">Twój Nick / Imię</label>
                                 <input type="text" value={nickname} onChange={e => setNickname(e.target.value)} required placeholder="Np. Pacjent Tomek"
-                                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
+                                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-500 mb-1">Hasło</label>
                                 <input type="password" value={inputPassword} onChange={e => {setInputPassword(e.target.value); setError('');}} required placeholder="Wpisz hasło z Kroku 1"
-                                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
-                                {error && <p className="text-red-500 text-xs mt-2 font-medium">{error}</p>}
+                                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
+                                {error && <p className="text-red-500 text-sm mt-2 font-medium bg-red-50 p-2 rounded-lg">{error}</p>}
                             </div>
                             <button type="submit" 
-                                className="w-full bg-slate-800 hover:bg-slate-700 text-white font-medium py-3 rounded-lg transition-colors mt-4">
+                                className="w-full bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-white font-medium py-3 sm:py-4 rounded-xl transition-all mt-4">
                                 Wejdź do pokoju
                             </button>
                         </form>
@@ -240,7 +244,7 @@
             );
         }
 
-        // --- KOMPONENT TABLICY (ZMINIEJSZONY PANEL) ---
+        // --- KOMPONENT TABLICY (ZMINIEJSZONY PANEL + POINTER EVENTS) ---
         function Whiteboard({ userInfo }) {
             const canvasRef = useRef(null);
             const wrapperRef = useRef(null);
@@ -252,7 +256,7 @@
 
                 const canvas = canvasRef.current;
                 const canvasWrapper = wrapperRef.current;
-                const ctx = canvas.getContext('2d');
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
                 
                 const toolSelect = document.getElementById('toolSelect');
                 const colorPicker = document.getElementById('colorPicker');
@@ -262,7 +266,7 @@
                 const undoBtn = document.getElementById('undoBtn');
                 
                 const offscreenCanvas = document.createElement('canvas');
-                const oCtx = offscreenCanvas.getContext('2d');
+                const oCtx = offscreenCanvas.getContext('2d', { willReadFrequently: true });
 
                 let undoStack = [];
                 let internalClipboard = null;
@@ -278,16 +282,27 @@
                 let snapshot; 
                 
                 let currentTextarea = null;
-
                 let isEditingArrow = false;
                 let isDraggingArrowControl = false;
                 let arrowStart = {x: 0, y: 0};
                 let arrowEnd = {x: 0, y: 0};
                 let arrowControl = {x: 0, y: 0};
 
+                // Ustaw początkowy kolor tła
                 ctx.fillStyle = "white";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 saveState();
+
+                // Funkcja pomocnicza do pobierania współrzędnych z obsługą skalowania CSS (szczególnie na urządzeniach mobilnych)
+                function getCoords(e) {
+                    const rect = canvas.getBoundingClientRect();
+                    const scaleX = canvas.width / rect.width;
+                    const scaleY = canvas.height / rect.height;
+                    return {
+                        x: (e.clientX - rect.left) * scaleX,
+                        y: (e.clientY - rect.top) * scaleY
+                    };
+                }
 
                 function saveState() {
                     if (undoStack.length > 20) undoStack.shift();
@@ -306,7 +321,7 @@
                 }
 
                 undoBtn.addEventListener('click', undo);
-
+                
                 toolSelect.addEventListener('change', () => {
                     if (isTransforming) commitTransform();
                     if (currentTextarea) commitText();
@@ -332,19 +347,25 @@
                     ctx.translate(selX + selW / 2, selY + selH / 2);
                     ctx.rotate(selAngle);
                     ctx.drawImage(offscreenCanvas, -selW / 2, -selH / 2, selW, selH);
+                    
+                    // Rysowanie ramki zaznaczenia
                     ctx.setLineDash([5, 5]);
-                    ctx.strokeStyle = "#007bff";
-                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = "#0ea5e9";
+                    ctx.lineWidth = 2;
                     ctx.strokeRect(-selW / 2, -selH / 2, selW, selH);
                     ctx.setLineDash([]);
-                    ctx.fillStyle = "#007bff";
-                    ctx.fillRect(selW / 2 - 5, selH / 2 - 5, 10, 10);
+                    
+                    // Uchwyt zmiany rozmiaru
+                    ctx.fillStyle = "#0ea5e9";
+                    ctx.fillRect(selW / 2 - 6, selH / 2 - 6, 12, 12);
+                    
+                    // Uchwyt obrotu
                     ctx.beginPath();
-                    ctx.arc(0, -selH / 2 - 20, 6, 0, Math.PI * 2);
+                    ctx.arc(0, -selH / 2 - 25, 8, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.beginPath();
                     ctx.moveTo(0, -selH / 2);
-                    ctx.lineTo(0, -selH / 2 - 20);
+                    ctx.lineTo(0, -selH / 2 - 25);
                     ctx.stroke();
                     ctx.restore();
                 }
@@ -380,11 +401,11 @@
                     context.lineTo(end.x - arrowLength * Math.cos(angle + Math.PI / 6), end.y - arrowLength * Math.sin(angle + Math.PI / 6));
                     context.closePath();
                     context.fill();
-
+                    
                     if (drawControlDot) {
                         context.beginPath();
-                        context.arc(control.x, control.y, 8, 0, Math.PI * 2);
-                        context.fillStyle = "#007bff";
+                        context.arc(control.x, control.y, 10, 0, Math.PI * 2);
+                        context.fillStyle = "#0ea5e9";
                         context.fill();
                         context.strokeStyle = "#ffffff";
                         context.lineWidth = 2;
@@ -398,15 +419,21 @@
                     const text = currentTextarea.value;
                     if (text.trim() !== '') {
                         const fontSize = parseInt(currentTextarea.style.fontSize);
-                        ctx.font = `${fontSize}px Arial`;
+                        ctx.font = `${fontSize}px Inter, Arial`;
                         ctx.fillStyle = currentTextarea.style.color;
                         ctx.textBaseline = 'top';
                         
-                        const padding = 4; 
-                        const x = parseInt(currentTextarea.style.left) + padding;
-                        const y = parseInt(currentTextarea.style.top) + padding;
-                        const maxWidth = currentTextarea.clientWidth - (padding * 2);
+                        // Przeliczenie relatywnych współrzędnych pola textarea na wewnętrzne wymiary tablicy
+                        const rect = canvas.getBoundingClientRect();
+                        const scaleX = canvas.width / rect.width;
+                        const scaleY = canvas.height / rect.height;
+                        
+                        const padding = 8 * scaleX; 
+                        const x = (parseInt(currentTextarea.style.left) * scaleX) + padding;
+                        const y = (parseInt(currentTextarea.style.top) * scaleY) + padding;
+                        const maxWidth = (currentTextarea.clientWidth * scaleX) - (padding * 2);
                         const lineHeight = fontSize * 1.3;
+                        
                         drawWrappedText(ctx, text, x, y, maxWidth, lineHeight);
                         saveState();
                     }
@@ -443,12 +470,18 @@
                     }
                 }
 
-                canvas.addEventListener('mousedown', (e) => {
+                // ZASTĄPIENIE ZDARZEŃ MYSZY POINTER EVENTS API DLA WSPARCIA MOBILNEGO
+                const handlePointerDown = (e) => {
+                    e.preventDefault(); // Blokuje domyślne akcje przeglądarki na urządzeniach dotykowych
+                    canvas.setPointerCapture(e.pointerId); // Utrzymuje wskaźnik nawet gdy ucieknie z tablicy
+                    
+                    const coords = getCoords(e);
+                    
                     if (currentTextarea) commitText();
 
                     if (isEditingArrow) {
-                        const dist = Math.sqrt(Math.pow(e.offsetX - arrowControl.x, 2) + Math.pow(e.offsetY - arrowControl.y, 2));
-                        if (dist < 12) {
+                        const dist = Math.sqrt(Math.pow(coords.x - arrowControl.x, 2) + Math.pow(coords.y - arrowControl.y, 2));
+                        if (dist < 20) { // Zwiększono margines błędu kliknięcia dla palców
                             isDraggingArrowControl = true;
                             return;
                         } else {
@@ -459,25 +492,25 @@
                     if (isTransforming) {
                         let cx = selX + selW / 2;
                         let cy = selY + selH / 2;
-                        let dx = e.offsetX - cx;
-                        let dy = e.offsetY - cy;
+                        let dx = coords.x - cx;
+                        let dy = coords.y - cy;
                         
                         let rx = dx * Math.cos(-selAngle) - dy * Math.sin(-selAngle);
                         let ry = dx * Math.sin(-selAngle) + dy * Math.cos(-selAngle);
                         
-                        let distRotate = Math.sqrt(rx * rx + (ry + selH / 2 + 20) * (ry + selH / 2 + 20));
+                        let distRotate = Math.sqrt(rx * rx + (ry + selH / 2 + 25) * (ry + selH / 2 + 25));
                         let distResize = Math.sqrt((rx - selW / 2) * (rx - selW / 2) + (ry - selH / 2) * (ry - selH / 2));
                         
-                        if (distRotate < 15) {
+                        if (distRotate < 25) { // Zwiększony hitbox dla palców
                             activeTransformMode = 'rotate';
                             return;
-                        } else if (distResize < 15) {
+                        } else if (distResize < 25) { // Zwiększony hitbox dla palców
                             activeTransformMode = 'resize';
                             return;
                         } else if (rx >= -selW / 2 && rx <= selW / 2 && ry >= -selH / 2 && ry <= selH / 2) {
                             activeTransformMode = 'move';
-                            dragOffsetX = e.offsetX - selX;
-                            dragOffsetY = e.offsetY - selY;
+                            dragOffsetX = coords.x - selX;
+                            dragOffsetY = coords.y - selY;
                             return;
                         } else {
                             commitTransform();
@@ -485,8 +518,8 @@
                     }
 
                     isDrawing = true;
-                    startX = e.offsetX;
-                    startY = e.offsetY;
+                    startX = coords.x;
+                    startY = coords.y;
                     snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
                     ctx.strokeStyle = colorPicker.value;
@@ -498,13 +531,22 @@
                     
                     if (toolSelect.value !== 'select' && toolSelect.value !== 'text' && toolSelect.value !== 'arrow') {
                         ctx.beginPath();
+                        // Rysowanie kropki po samym kliknięciu
+                        if(toolSelect.value === 'pen'){
+                            ctx.moveTo(startX, startY);
+                            ctx.lineTo(startX, startY);
+                            ctx.stroke();
+                        }
                     }
-                });
+                };
 
-                canvas.addEventListener('mousemove', (e) => {
+                const handlePointerMove = (e) => {
+                    e.preventDefault();
+                    const coords = getCoords(e);
+
                     if (isEditingArrow && isDraggingArrowControl) {
-                        arrowControl.x = e.offsetX;
-                        arrowControl.y = e.offsetY;
+                        arrowControl.x = coords.x;
+                        arrowControl.y = coords.y;
                         ctx.putImageData(snapshot, 0, 0);
                         drawCurvedArrow(ctx, arrowStart, arrowControl, arrowEnd, colorPicker.value, brushSize.value, true);
                         return;
@@ -512,21 +554,23 @@
 
                     if (isTransforming && activeTransformMode) {
                         if (activeTransformMode === 'move') {
-                            selX = e.offsetX - dragOffsetX;
-                            selY = e.offsetY - dragOffsetY;
+                            selX = coords.x - dragOffsetX;
+                            selY = coords.y - dragOffsetY;
                         } else if (activeTransformMode === 'rotate') {
                             let cx = selX + selW / 2;
                             let cy = selY + selH / 2;
-                            selAngle = Math.atan2(e.offsetY - cy, e.offsetX - cx) + Math.PI / 2;
+                            selAngle = Math.atan2(coords.y - cy, coords.x - cx) + Math.PI / 2;
                         } else if (activeTransformMode === 'resize') {
                             let cx = selX + selW / 2;
                             let cy = selY + selH / 2;
-                            let dx = e.offsetX - cx;
-                            let dy = e.offsetY - cy;
+                            let dx = coords.x - cx;
+                            let dy = coords.y - cy;
+                            
                             let rx = dx * Math.cos(-selAngle) - dy * Math.sin(-selAngle);
                             let ry = dx * Math.sin(-selAngle) + dy * Math.cos(-selAngle);
-                            selW = Math.max(20, Math.abs(rx) * 2);
-                            selH = Math.max(20, Math.abs(ry) * 2);
+                            
+                            selW = Math.max(30, Math.abs(rx) * 2);
+                            selH = Math.max(30, Math.abs(ry) * 2);
                         }
                         drawTransforming();
                         return;
@@ -534,32 +578,37 @@
 
                     if (!isDrawing) return;
                     const currentTool = toolSelect.value;
+                    
                     if (currentTool !== 'pen') {
                         ctx.putImageData(snapshot, 0, 0);
                     }
 
                     if (currentTool === 'pen') {
-                        ctx.lineTo(e.offsetX, e.offsetY);
+                        ctx.lineTo(coords.x, coords.y);
                         ctx.stroke();
                     } else if (currentTool === 'rect') {
-                        ctx.strokeRect(startX, startY, e.offsetX - startX, e.offsetY - startY);
+                        ctx.strokeRect(startX, startY, coords.x - startX, coords.y - startY);
                     } else if (currentTool === 'circle') {
-                        const radius = Math.sqrt(Math.pow(e.offsetX - startX, 2) + Math.pow(e.offsetY - startY, 2));
+                        const radius = Math.sqrt(Math.pow(coords.x - startX, 2) + Math.pow(coords.y - startY, 2));
                         ctx.beginPath();
                         ctx.arc(startX, startY, radius, 0, 2 * Math.PI);
                         ctx.stroke();
                     } else if (currentTool === 'arrow') {
-                        let tempControl = { x: (startX + e.offsetX) / 2, y: (startY + e.offsetY) / 2 };
-                        drawCurvedArrow(ctx, {x: startX, y: startY}, tempControl, {x: e.offsetX, y: e.offsetY}, colorPicker.value, brushSize.value, false);
+                        let tempControl = { x: (startX + coords.x) / 2, y: (startY + coords.y) / 2 };
+                        drawCurvedArrow(ctx, {x: startX, y: startY}, tempControl, {x: coords.x, y: coords.y}, colorPicker.value, brushSize.value, false);
                     } else if (currentTool === 'select' || currentTool === 'text') {
-                        ctx.setLineDash([4, 4]);
-                        ctx.strokeStyle = currentTool === 'select' ? "#007bff" : colorPicker.value;
-                        ctx.lineWidth = 1;
-                        ctx.strokeRect(startX, startY, e.offsetX - startX, e.offsetY - startY);
+                        ctx.setLineDash([6, 6]);
+                        ctx.strokeStyle = currentTool === 'select' ? "#0ea5e9" : colorPicker.value;
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(startX, startY, coords.x - startX, coords.y - startY);
                     }
-                });
+                };
 
-                canvas.addEventListener('mouseup', (e) => {
+                const handlePointerUp = (e) => {
+                    e.preventDefault();
+                    canvas.releasePointerCapture(e.pointerId);
+                    const coords = getCoords(e);
+
                     if (isEditingArrow && isDraggingArrowControl) {
                         isDraggingArrowControl = false;
                         return;
@@ -578,20 +627,37 @@
                     if (currentTool === 'arrow') {
                         ctx.putImageData(snapshot, 0, 0);
                         arrowStart = { x: startX, y: startY };
-                        arrowEnd = { x: e.offsetX, y: e.offsetY };
-                        arrowControl = { x: (startX + e.offsetX) / 2, y: (startY + e.offsetY) / 2 };
+                        arrowEnd = { x: coords.x, y: coords.y };
+                        
+                        // Zabezpieczenie przed stworzeniem strzałki z jednego kliknięcia
+                        if(Math.abs(startX - coords.x) < 5 && Math.abs(startY - coords.y) < 5) {
+                            isEditingArrow = false;
+                            return;
+                        }
+                        
+                        arrowControl = { x: (startX + coords.x) / 2, y: (startY + coords.y) / 2 };
                         isEditingArrow = true;
                         drawCurvedArrow(ctx, arrowStart, arrowControl, arrowEnd, colorPicker.value, brushSize.value, true);
                     } else if (currentTool === 'text') {
                         ctx.putImageData(snapshot, 0, 0);
-                        let x = Math.min(startX, e.offsetX);
-                        let y = Math.min(startY, e.offsetY);
-                        let w = Math.abs(e.offsetX - startX);
-                        let h = Math.abs(e.offsetY - startY);
                         
-                        if (w < 15 || h < 15) { w = 200; h = 80; }
+                        const rect = canvas.getBoundingClientRect();
+                        const scaleX = rect.width / canvas.width;
+                        const scaleY = rect.height / canvas.height;
+                        
+                        let clientStartX = (startX * scaleX);
+                        let clientStartY = (startY * scaleY);
+                        let clientEndX = (coords.x * scaleX);
+                        let clientEndY = (coords.y * scaleY);
+                        
+                        let x = Math.min(clientStartX, clientEndX);
+                        let y = Math.min(clientStartY, clientEndY);
+                        let w = Math.abs(clientEndX - clientStartX);
+                        let h = Math.abs(clientEndY - clientStartY);
+                        
+                        if (w < 40 || h < 40) { w = 250; h = 100; }
 
-                        const fontSize = Math.max(12, brushSize.value * 3);
+                        const fontSize = Math.max(16, brushSize.value * 4); // Lepsza widoczność czcionki mobilnie
                         const textarea = document.createElement('textarea');
                         textarea.className = 'dynamic-textarea';
                         textarea.style.left = `${x}px`;
@@ -606,12 +672,12 @@
                         textarea.focus();
                         currentTextarea = textarea;
                     } else if (currentTool === 'select') {
-                        let w = Math.abs(e.offsetX - startX);
-                        let h = Math.abs(e.offsetY - startY);
+                        let w = Math.abs(coords.x - startX);
+                        let h = Math.abs(coords.y - startY);
                         
-                        if (w > 5 && h > 5) {
-                            selX = Math.min(startX, e.offsetX);
-                            selY = Math.min(startY, e.offsetY);
+                        if (w > 10 && h > 10) {
+                            selX = Math.min(startX, coords.x);
+                            selY = Math.min(startY, coords.y);
                             selW = w;
                             selH = h;
                             selAngle = 0;
@@ -632,11 +698,16 @@
                     } else {
                         saveState();
                     }
-                });
+                };
+
+                // Rejestracja zdarzeń dotykowych / rysikowych / myszy
+                canvas.addEventListener('pointerdown', handlePointerDown);
+                canvas.addEventListener('pointermove', handlePointerMove);
+                canvas.addEventListener('pointerup', handlePointerUp);
+                canvas.addEventListener('pointercancel', handlePointerUp);
 
                 const handleKeyDown = (e) => {
                     if (document.activeElement.tagName === 'TEXTAREA') return;
-
                     if (e.ctrlKey && e.key.toLowerCase() === 'z') {
                         undo();
                     }
@@ -662,21 +733,20 @@
                             if (isTransforming) commitTransform();
                             if (isEditingArrow) commitArrow();
                             
-                            selX = 50;
-                            selY = 50;
+                            selX = canvas.width / 2 - clipboardW / 2;
+                            selY = canvas.height / 2 - clipboardH / 2;
                             selW = clipboardW;
                             selH = clipboardH;
                             selAngle = 0;
                             offscreenCanvas.width = selW;
                             offscreenCanvas.height = selH;
                             oCtx.putImageData(internalClipboard, 0, 0);
-
                             snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
                             isTransforming = true;
                             drawTransforming();
                         }
                     }
-                    else if (e.key === 'Delete' || e.key === 'Del') {
+                    else if (e.key === 'Delete' || e.key === 'Del' || e.key === 'Backspace') {
                         if (isTransforming) {
                             isTransforming = false;
                             activeTransformMode = null;
@@ -685,7 +755,6 @@
                         }
                     }
                 };
-                
                 document.addEventListener('keydown', handleKeyDown);
 
                 clearBtn.addEventListener('click', () => {
@@ -712,53 +781,61 @@
 
                 return () => {
                     document.removeEventListener('keydown', handleKeyDown);
+                    canvas.removeEventListener('pointerdown', handlePointerDown);
+                    canvas.removeEventListener('pointermove', handlePointerMove);
+                    canvas.removeEventListener('pointerup', handlePointerUp);
+                    canvas.removeEventListener('pointercancel', handlePointerUp);
                 };
             }, [userInfo]);
 
             return (
-                <div className="flex gap-4 h-full w-full justify-center items-start">
-                    {/* ZMNIEJSZONY PANEL Z NARZĘDZIAMI (W-52, P-3, TEXT-XS) */}
-                    <div className="w-52 bg-slate-50 border border-slate-200 p-3 rounded-lg flex flex-col gap-2.5 shadow-sm shrink-0 overflow-y-auto text-xs max-h-[600px]">
-                        <div className="font-semibold text-slate-700 border-b border-slate-200 pb-1.5 uppercase tracking-wider text-[10px]">Narzędzia</div>
+                <div className="flex flex-col md:flex-row gap-3 md:gap-5 h-full w-full justify-center items-stretch relative">
+                    
+                    {/* RESPONSYWNY PANEL NARZĘDZI */}
+                    <div className="md:w-60 bg-white border border-slate-200 p-3 md:p-4 rounded-xl flex flex-row md:flex-col gap-3 md:gap-4 shadow-sm shrink-0 overflow-x-auto md:overflow-y-auto mobile-tool-scroll z-10 w-full md:h-full max-h-[140px] md:max-h-[800px] items-center md:items-stretch">
                         
-                        <div className="space-y-1">
-                            <label className="text-[10px] text-slate-500 font-bold uppercase">Typ:</label>
-                            <select id="toolSelect" className="w-full p-1.5 border border-slate-200 rounded bg-white outline-none cursor-pointer">
-                                <option value="pen">Pędzel</option>
-                                <option value="rect">Prostokąt</option>
-                                <option value="circle">Koło</option>
-                                <option value="arrow">Strzałka Łuk ↗</option>
-                                <option value="text">Tekst</option>
-                                <option value="select">Zaznaczenie</option>
+                        <div className="hidden md:block font-bold text-slate-800 border-b border-slate-100 pb-2 uppercase tracking-wider text-xs">
+                            Narzędzia pracy
+                        </div>
+                        
+                        <div className="flex-col md:flex-col flex gap-1 min-w-[100px]">
+                            <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider hidden md:block">Narzędzie:</label>
+                            <select id="toolSelect" className="w-full p-2 border border-slate-200 rounded-lg bg-slate-50 hover:bg-white focus:ring-2 focus:ring-therapy-100 outline-none cursor-pointer text-sm font-medium transition-colors">
+                                <option value="pen">✏️ Pędzel</option>
+                                <option value="rect">🟦 Prostokąt</option>
+                                <option value="circle">⭕ Koło</option>
+                                <option value="arrow">↗️ Strzałka</option>
+                                <option value="text">A Tekst</option>
+                                <option value="select">⬚ Zaznaczenie</option>
                             </select>
                         </div>
                         
-                        <div className="space-y-1">
-                            <label className="text-[10px] text-slate-500 font-bold uppercase">Kolor:</label>
-                            <input type="color" id="colorPicker" defaultValue="#000000" className="w-full h-7 p-0 border border-slate-200 rounded cursor-pointer" />
+                        <div className="flex-col md:flex-col flex gap-1 min-w-[60px]">
+                            <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider hidden md:block">Kolor:</label>
+                            <input type="color" id="colorPicker" defaultValue="#0f172a" className="w-12 md:w-full h-10 p-1 border border-slate-200 rounded-lg cursor-pointer bg-slate-50" />
                         </div>
 
-                        <div className="space-y-1">
-                            <label className="text-[10px] text-slate-500 font-bold uppercase">Rozmiar:</label>
-                            <input type="range" id="brushSize" min="1" max="50" defaultValue="5" className="w-full accent-therapy-500 cursor-pointer h-1" />
+                        <div className="flex-col md:flex-col flex gap-1 min-w-[100px] flex-1 md:flex-none">
+                            <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider hidden md:block">Grubość:</label>
+                            <input type="range" id="brushSize" min="2" max="40" defaultValue="4" className="w-full accent-therapy-500 cursor-pointer h-2 bg-slate-200 rounded-lg" />
                         </div>
 
-                        <button id="undoBtn" className="mt-1 w-full bg-white border border-slate-300 text-slate-700 font-medium py-1.5 rounded hover:bg-slate-50 transition active:scale-[0.98]">
-                            Cofnij (Ctrl+Z)
-                        </button>
-
-                        <div className="mt-2 pt-2.5 border-t border-slate-200">
-                            <button id="clearBtn" className="w-full bg-red-50 text-red-600 border border-red-100 font-medium py-1.5 rounded hover:bg-red-100 transition active:scale-[0.98]">
-                                Wyczyść tablicę
+                        <div className="flex flex-row md:flex-col gap-2 min-w-[160px] md:mt-auto md:pt-4 md:border-t md:border-slate-100">
+                            <button id="undoBtn" className="flex-1 md:w-full bg-slate-100 border border-slate-200 text-slate-700 font-semibold text-xs md:text-sm py-2 px-3 rounded-lg hover:bg-slate-200 transition active:scale-[0.96]">
+                                ↩ Cofnij
+                            </button>
+                            <button id="clearBtn" className="flex-1 md:w-full bg-red-50 text-red-600 border border-red-100 font-semibold text-xs md:text-sm py-2 px-3 rounded-lg hover:bg-red-100 transition active:scale-[0.96]">
+                                🗑 Wyczyść
                             </button>
                         </div>
                         
-                        {/* Ukryty przycisk wywoływany przez ikonę z głównego nagłówka aplikacji */}
+                        {/* Ukryty przycisk eksportu */}
                         <button id="downloadJpg" className="hidden" aria-hidden="true"></button>
                     </div>
 
-                    <div id="canvasWrapper" ref={wrapperRef} className="shadow-sm shrink-0">
-                        <canvas ref={canvasRef} id="board" width="800" height="600"></canvas>
+                    {/* OBSZAR PŁÓTNA */}
+                    <div id="canvasWrapper" ref={wrapperRef} className="shadow-md flex-1 relative bg-white border border-slate-200 rounded-xl overflow-hidden touch-none h-full min-h-[400px]">
+                        <canvas ref={canvasRef} id="board" width="1400" height="900" className="touch-none bg-white rounded-xl"></canvas>
                     </div>
                 </div>
             );
@@ -769,7 +846,7 @@
             const [content, setContent] = useState('');
             const [timeLeft, setTimeLeft] = useState((roomInfo?.duration || 60) * 60);
             const [isExporting, setIsExporting] = useState(false);
-            const [activeTab, setActiveTab] = useState('text'); // 'text' lub 'board'
+            const [activeTab, setActiveTab] = useState('board'); // Domyślnie tablica w tym kontekście
 
             useEffect(() => {
                 const timer = setInterval(() => {
@@ -792,14 +869,14 @@
                     <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 50px; color: #1e293b; background: #ffffff;">
                         <div style="border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px;">
                             <h1 style="font-size: 26px; font-weight: 700; color: #0c4a6e; margin: 0 0 8px 0;">${roomInfo?.name || 'Sesja Terapeutyczna'}</h1>
-                            <p style="font-size: 14px; color: #64748b; margin: 0;">Podsumowanie sesji psychoterapii </p>
+                            <p style="font-size: 14px; color: #64748b; margin: 0;">Podsumowanie sesji psychoterapii</p>
                         </div>
                         
                         <div style="margin-bottom: 30px; background: #f8fafc; padding: 15px; border-radius: 8px; font-size: 13px; color: #475569;">
                             <table style="width: 100%; border-collapse: collapse;">
                                 <tr>
                                     <td style="padding: 4px 0;"><strong>Uczestnik sesji:</strong> ${userInfo?.nickname}</td>
-                                    <td style="padding: 4px 0; text-align: right;"><strong>Data wygenerowania:</strong> ${new Date().toLocaleDateString('pl-PL')}</td>
+                                    <td style="padding: 4px 0; text-align: right;"><strong>Data:</strong> ${new Date().toLocaleDateString('pl-PL')}</td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 4px 0;"><strong>Status dokumentu:</strong> Zapisany pomyślnie</td>
@@ -834,31 +911,30 @@
             };
 
             return (
-                <div className="h-screen flex flex-col bg-slate-50">
-                    <header className="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shrink-0 shadow-sm z-10 relative">
-                        <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-therapy-100 flex items-center justify-center text-therapy-600 font-bold">
+                <div className="h-screen w-screen flex flex-col bg-slate-50 overflow-hidden">
+                    <header className="bg-white border-b border-slate-200 px-4 sm:px-6 py-3 flex justify-between items-center shrink-0 shadow-sm z-20">
+                        <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-therapy-100 flex items-center justify-center text-therapy-600 font-bold text-sm sm:text-base shrink-0">
                                 {userInfo?.nickname?.charAt(0).toUpperCase()}
                             </div>
-                            <div>
-                                <h2 className="font-semibold text-slate-800">{roomInfo?.name}</h2>
-                                <p className="text-xs text-slate-500">Uczestnik: {userInfo?.nickname}</p>
+                            <div className="hidden sm:block">
+                                <h2 className="font-semibold text-slate-800 text-sm sm:text-base leading-tight truncate max-w-[150px] md:max-w-xs">{roomInfo?.name}</h2>
+                                <p className="text-[10px] sm:text-xs text-slate-500 truncate max-w-[150px]">{userInfo?.nickname}</p>
                             </div>
                         </div>
                         
-                        <div className="flex items-center gap-3">
-                            <div className="text-right mr-3">
-                                <span className="text-[10px] text-slate-500 uppercase tracking-wider font-bold block">Czas sesji</span>
-                                <div className={`text-xl font-mono font-medium ${timeLeft < 300 ? 'text-amber-400 font-bold animate-pulse' : 'text-slate-400'}`}>
+                        <div className="flex items-center gap-2 sm:gap-4">
+                            <div className="text-right mr-1 sm:mr-3">
+                                <span className="text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-wider font-bold block">Czas</span>
+                                <div className={`text-base sm:text-xl font-mono font-medium ${timeLeft < 300 ? 'text-amber-500 font-bold animate-pulse' : 'text-slate-600'}`}>
                                     {formatTime(timeLeft)}
                                 </div>
                             </div>
 
-                            {/* Przycisk pobierania PDF (Czerwony / Rose) */}
                             <button 
                                 onClick={handleExportPDF} 
                                 disabled={isExporting}
-                                className={`p-2 bg-rose-500 hover:bg-rose-600 text-white rounded-lg transition-colors shadow-sm flex items-center justify-center ${isExporting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                className={`p-2 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-lg transition-colors shadow-sm flex items-center justify-center ${isExporting ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 title="Pobierz Notatki (PDF)"
                             >
                                 {isExporting ? (
@@ -867,77 +943,70 @@
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
                                 ) : (
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                 )}
                             </button>
 
-                            {/* Przycisk pobierania JPG (Szmaragdowy / Emerald) łączący się z ukrytym przyciskiem w tablicy */}
                             <button 
                                 onClick={() => document.getElementById('downloadJpg')?.click()} 
-                                className="p-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors shadow-sm flex items-center justify-center"
+                                className="p-2 bg-therapy-500 hover:bg-therapy-600 text-white rounded-lg transition-colors shadow-sm flex items-center justify-center"
                                 title="Pobierz Tablicę (JPG)"
                             >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                             </button>
 
-                            <button onClick={() => setStep(1)} className="text-sm px-4 py-2 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors ml-2">
-                                Wyjdź
+                            <button onClick={() => setStep(1)} className="hidden sm:block text-sm px-4 py-2 border border-slate-200 text-slate-600 hover:text-red-600 hover:bg-red-50 hover:border-red-100 rounded-lg transition-colors ml-2 font-medium">
+                                Zakończ
                             </button>
                         </div>
                     </header>
 
-                    <main className="flex-1 overflow-hidden p-4 md:p-6 flex flex-col items-center">
-                        <div className="w-full max-w-5xl flex-1 bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col overflow-hidden">
+                    <main className="flex-1 overflow-hidden p-2 sm:p-4 md:p-6 flex flex-col items-center">
+                        <div className="w-full max-w-6xl flex-1 bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col overflow-hidden">
                             
-                            {/* Zakładki */}
-                            <div className="flex bg-slate-50 border-b border-slate-200 px-4 pt-2 gap-1 shrink-0">
-                                <button 
-                                    onClick={() => setActiveTab('text')} 
-                                    className={`px-5 py-2.5 rounded-t-lg text-sm font-medium transition-colors ${activeTab === 'text' ? 'bg-white text-therapy-600 border-t border-l border-r border-slate-200' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`}
-                                >
-                                    Notatki Tekstowe
-                                </button>
+                            {/* Zakładki mobilne/desktopowe */}
+                            <div className="flex bg-slate-50 border-b border-slate-200 px-2 sm:px-4 pt-2 gap-1 sm:gap-2 shrink-0">
                                 <button 
                                     onClick={() => setActiveTab('board')} 
-                                    className={`px-5 py-2.5 rounded-t-lg text-sm font-medium transition-colors ${activeTab === 'board' ? 'bg-white text-therapy-600 border-t border-l border-r border-slate-200' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`}
+                                    className={`px-4 sm:px-6 py-3 rounded-t-xl text-xs sm:text-sm font-semibold transition-all ${activeTab === 'board' ? 'bg-white text-therapy-600 border-t border-l border-r border-slate-200 shadow-[0_2px_0_0_#fff]' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`}
                                 >
-                                    Wirtualna Tablica
+                                    🎨 Wirtualna Tablica
+                                </button>
+                                <button 
+                                    onClick={() => setActiveTab('text')} 
+                                    className={`px-4 sm:px-6 py-3 rounded-t-xl text-xs sm:text-sm font-semibold transition-all ${activeTab === 'text' ? 'bg-white text-therapy-600 border-t border-l border-r border-slate-200 shadow-[0_2px_0_0_#fff]' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`}
+                                >
+                                    📝 Notatki
                                 </button>
                             </div>
 
-                            <div className="h-8 bg-slate-50/50 border-b border-slate-100 flex items-center px-4 justify-between shrink-0">
+                            <div className="h-8 bg-slate-50/80 border-b border-slate-100 flex items-center px-4 justify-between shrink-0">
                                 <div className="flex items-center gap-2">
                                     <span className="relative flex h-2 w-2">
-                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                                     </span>
-                                    <span className="text-[11px] text-slate-400 font-medium">
-                                        Połączenie aktywne • Obie osoby w pokoju
+                                    <span className="text-[10px] sm:text-[11px] text-slate-500 font-medium">
+                                        Sesja na żywo
                                     </span>
                                 </div>
-                                <span className="text-[10px] text-slate-400 italic">
-                                    Zmiany zapisują się automatycznie (w tej sesji przeglądarki)
+                                <span className="text-[9px] sm:text-[10px] text-slate-400 italic hidden sm:inline-block">
+                                    Zmiany zapisują się automatycznie (lokalnie)
                                 </span>
                             </div>
 
-                            {/* Zmiana: Ukrywanie za pomocą Tailwind .hidden chroni stan komponentów przed usunięciem z drzewa DOM */}
                             <div className="flex-1 relative overflow-hidden h-full">
                                 <textarea 
                                     value={content}
                                     onChange={(e) => setContent(e.target.value)}
-                                    className={`w-full h-full p-8 resize-none outline-none text-slate-700 text-lg leading-relaxed bg-transparent font-light absolute top-0 left-0 ${activeTab === 'text' ? 'block' : 'hidden'}`}
-                                    placeholder="Zacznij pisać tutaj..."
+                                    className={`w-full h-full p-4 sm:p-8 resize-none outline-none text-slate-700 text-base sm:text-lg leading-relaxed bg-transparent font-light absolute top-0 left-0 ${activeTab === 'text' ? 'block' : 'hidden'}`}
+                                    placeholder="Dodaj tekstowe podsumowanie, własne myśli lub wnioski z tablicy..."
                                 ></textarea>
                                 
-                                <div className={`p-4 h-full w-full flex justify-center items-center bg-slate-100/50 absolute top-0 left-0 overflow-auto ${activeTab === 'board' ? 'flex' : 'hidden'}`}>
+                                <div className={`p-2 sm:p-4 h-full w-full flex justify-center items-center bg-slate-50 absolute top-0 left-0 overflow-hidden ${activeTab === 'board' ? 'flex' : 'hidden'}`}>
                                     <Whiteboard userInfo={userInfo} />
                                 </div>
                             </div>
-
                         </div>
                     </main>
                 </div>
