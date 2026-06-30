@@ -55,6 +55,7 @@
             const [duration, setDuration] = useState(60);
             const [password, setPassword] = useState('');
             const [generatedLink, setGeneratedLink] = useState('');
+            const [copied, setCopied] = useState(false);
 
             const handleCreate = (e) => {
                 e.preventDefault();
@@ -63,6 +64,17 @@
                 
                 setRoomInfo({ name, members, duration, password, link, roomId });
                 setGeneratedLink(link);
+            };
+
+            const handleCopyMessage = () => {
+                const message = `Oto link do wspólnej pracy psychoterapeutycznej:\n${generatedLink}\n\nWejdź w link, podaj swoje imię oraz wpisz hasło: ${password};
+                
+                navigator.clipboard.writeText(message).then(() => {
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2500);
+                }).catch((err) => {
+                    console.error('Błąd podczas kopiowania: ', err);
+                });
             };
 
             return (
@@ -102,9 +114,26 @@
                         ) : (
                             <div className="text-center space-y-6">
                                 <div className="bg-therapy-50 text-therapy-900 p-4 rounded-lg border border-therapy-100 text-left">
-                                    <p className="text-sm mb-2 text-therapy-600 font-medium">Link dla pacjenta:</p>
-                                    <code className="block bg-white p-2 rounded border border-therapy-100 text-sm break-all font-mono mb-3">{generatedLink}</code>
-                                    <p className="text-xs text-slate-500">Hasło do pokoju: <span className="font-bold text-slate-700">{password}</span></p>
+                                    <p className="text-sm mb-2 text-therapy-600 font-medium">Link dla pacjenta (kliknij, aby skopiować zaproszenie):</p>
+                                    <button 
+                                        type="button"
+                                        onClick={handleCopyMessage}
+                                        className="w-full block bg-white hover:bg-slate-100 p-2 rounded border border-therapy-100 text-sm break-all font-mono mb-3 text-left transition-colors relative group focus:outline-none"
+                                        title="Kliknij, aby skopiować pełną wiadomość"
+                                    >
+                                        <code className="text-slate-700 pointer-events-none">{generatedLink}</code>
+                                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                                            Kopiuj
+                                        </span>
+                                    </button>
+                                    <div className="flex justify-between items-center min-h-[20px]">
+                                        <p className="text-xs text-slate-500">Hasło do pokoju: <span className="font-bold text-slate-700">{password}</span></p>
+                                        {copied && (
+                                            <span className="text-xs text-emerald-600 font-semibold animate-pulse">
+                                                Skopiowano zaproszenie!
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                                 <button onClick={() => setStep(2)} 
                                     className="w-full bg-therapy-500 hover:bg-therapy-600 text-white font-medium py-3 rounded-lg transition-colors shadow-sm">
@@ -182,16 +211,10 @@
                 return `${m}:${s}`;
             };
 
-            // Funkcja generująca piękny szablon dokumentu i eksportująca do PDF
             const handleExportPDF = () => {
                 setIsExporting(true);
-                
-                // Tworzymy w pamięci tymczasowy element HTML sformatowany pod wydruk A4
                 const element = document.createElement('div');
-                
-                // Formatujemy tekst z textarea, zamieniając entery na tagi <br>
                 const formattedContent = content.replace(/\n/g, '<br>');
-
                 element.innerHTML = `
                     <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 50px; color: #1e293b; background: #ffffff;">
                         <div style="border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px;">
@@ -230,7 +253,6 @@
                     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
                 };
 
-                // Uruchomienie procesu zapisu i reset stanu przycisku
                 html2pdf().from(element).set(opt).save().then(() => {
                     setIsExporting(false);
                 }).catch(() => {
@@ -259,7 +281,6 @@
                                 </div>
                             </div>
 
-                            {/* NOWY PRZYCISK: EKSPORT DO PDF */}
                             <button 
                                 onClick={handleExportPDF} 
                                 disabled={isExporting}
