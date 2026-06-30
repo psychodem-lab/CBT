@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TherapySpace - CBT Workspace</title>
+    <title>Zarysowane</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -165,7 +165,7 @@
 
         // --- KROK 3: PANEL WSPÓŁPRACY ---
         function Workspace({ roomInfo, userInfo, setStep }) {
-            const [content, setContent] = useState('Oto Wasza wspólna przestrzeń CBT.\n\n[Sytuacja / Wyzwalacz]:\n\n[Myśli automatyczne]:\n\n[Emocje i odczucia z ciała]:\n\n[Alternatywna, racjonalna perspektywa]:');
+            const [content, setContent] = useState('Przestrzeń do współpracy');
             const [timeLeft, setTimeLeft] = useState((roomInfo?.duration || 60) * 60);
             const [isExporting, setIsExporting] = useState(false);
 
@@ -217,7 +217,7 @@
                         </div>
 
                         <div style="margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 15px; text-align: center; font-size: 11px; color: #94a3b8;">
-                            Dokument wygenerowany automatycznie przez aplikację TherapySpace. Treści zawarte w dokumencie są objęte tajemnicą lekarską/terapeutyczną.
+                            Dokument wygenerowany automatycznie przez aplikację Zarysowane. Treści zawarte w dokumencie są objęte tajemnicą zawodową.
                         </div>
                     </div>
                 `;
