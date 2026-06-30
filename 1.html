@@ -67,7 +67,7 @@
             };
 
             const handleCopyMessage = () => {
-                const message = `Oto link do wspólnej pracy psychoterapeutycznej:\n${generatedLink}\n\nWejdź w link, podaj swoje imię oraz wpisz hasło: ${password}\n\nDo dzieła! Daj z siebie wszystko!`;
+                const message = `Oto link do wspólnej pracy psychoterapeutycznej:\n${generatedLink}\n\nWejdź w link, podaj swoje imię oraz wpisz hasło: ${password}`;
                 
                 navigator.clipboard.writeText(message).then(() => {
                     setCopied(true);
