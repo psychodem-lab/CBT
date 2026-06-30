@@ -196,7 +196,7 @@
                     <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 50px; color: #1e293b; background: #ffffff;">
                         <div style="border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px;">
                             <h1 style="font-size: 26px; font-weight: 700; color: #0c4a6e; margin: 0 0 8px 0;">${roomInfo?.name || 'Sesja Terapeutyczna'}</h1>
-                            <p style="font-size: 14px; color: #64748b; margin: 0;">Podsumowanie sesji psychoterapii poznawczo-behawioralnej (CBT)</p>
+                            <p style="font-size: 14px; color: #64748b; margin: 0;">Podsumowanie sesji psychoterapii </p>
                         </div>
                         
                         <div style="margin-bottom: 30px; background: #f8fafc; padding: 15px; border-radius: 8px; font-size: 13px; color: #475569;">
@@ -224,7 +224,7 @@
 
                 const opt = {
                     margin:       10,
-                    filename:     `Sesja_CBT_${userInfo?.nickname || 'Pacjent'}_${new Date().toISOString().slice(0,10)}.pdf`,
+                    filename:     `Sesja${userInfo?.nickname || 'Pacjent'}_${new Date().toISOString().slice(0,10)}.pdf`,
                     image:        { type: 'jpeg', quality: 0.98 },
                     html2canvas:  { scale: 2, useCORS: true },
                     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
