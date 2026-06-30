@@ -67,6 +67,28 @@
             white-space: pre-wrap;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
+
+
+        @media (max-width: 768px) {
+    /* Układ pionowy dla telefonów */
+    .board-container {
+        flex-direction: column !important;
+    }
+    
+    /* Panel narzędzi zajmuje całą szerokość */
+    .tools-panel {
+        width: 100% !important;
+        max-height: 200px !important;
+        order: -1; /* Narzędzia nad tablicą */
+        overflow-y: auto;
+    }
+
+    /* Canvas dopasowany do szerokości ekranu */
+    canvas {
+        width: 100% !important;
+        height: auto !important;
+    }
+}
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen">
