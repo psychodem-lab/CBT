@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zaawansowana Tablica Terapeutyczna</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* Panel Boczny */
+        #sidebar {
+            width: 280px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            height: fit-content;
+        }
+        #sidebar h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 8px;
+            font-size: 16px;
+        }
+        #userList {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+        #userList li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #28a745;
+            border-radius: 50%;
+        }
+
+        /* Grupy kontrolek w panelu bocznym */
+        .sidebar-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+        .sidebar-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        select, input[type="color"], input[type="range"] {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Przyciski */
+        button {
+            padding: 10px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .danger-btn {
+            background-color: #dc3545;
+        }
+        .danger-btn:hover {
+            background-color: #c82333;
+        }
+        .action-btn {
+            background-color: #6c757d;
+        }
+        .action-btn:hover {
+            background-color: #5a6268;
+        }
+        
+        /* Przycisk ustawień */
+        .settings-toggle-btn {
+            background-color: #495057;
+            margin-top: 10px;
+        }
+        .settings-toggle-btn:hover {
+            background-color: #343a40;
+        }
+
+        /* Ukryty domyślnie panel ustawień */
+        #settingsPanel {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 15px;
+            border-top: 1px dashed #ddd;
+            padding-top: 15px;
+        }
+
+        /* Główny obszar roboczy */
+        #workspace {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h2 {
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        /* Kontener dla Canvasu */
+        #canvasWrapper {
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            background-color: #ffffff;
+        }
+        canvas {
+            display: block;
+            border-radius: 8px;
+            cursor: crosshair;
+        }
+
+        /* Pole tekstowe HTML */
+        .dynamic-textarea {
+            position: absolute;
+            background: #ffffff;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            outline: none;
+            padding: 6px;
+            box-sizing: border-box;
+            resize: none; 
+            overflow: hidden;
+            z-index: 100;
+            font-family: Arial, sans-serif;
+            line-height: 1.3;
+            white-space: pre-wrap;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <h3>Obecni w sesji</h3>
+        <ul id="userList">
+            <li><div class="status-dot"></div> Terapeuta (Ty)</li>
+            <li><div class="status-dot"></div> Pacjent - Token #A1B2</li> 
+        </ul>
+
+        <h3>Rysowanie</h3>
+        <div class="sidebar-group">
+            <label for="toolSelect">Narzędzie:</label>
+            <select id="toolSelect">
+                <option value="pen">Pędzel</option>
+                <option value="rect">Prostokąt</option>
+                <option value="circle">Koło</option>
+                <option value="arrow">Strzałka (Łuk) ↗</option>
+                <option value="text">Pole tekstowe (Wpisz tekst)</option>
+                <option value="select">Zaznacz obszar</option>
+            </select>
+        </div>
+        
+        <button id="undoBtn" class="action-btn" title="Skrót: Ctrl+Z">Cofnij</button>
+
+        <button id="settingsToggle" class="settings-toggle-btn">USTAWIENIA ▼</button>
+        
+        <div id="settingsPanel">
+            <div class="sidebar-group">
+                <label for="colorPicker">Kolor:</label>
+                <input type="color" id="colorPicker" value="#000000">
+            </div>
+            <div class="sidebar-group">
+                <label for="brushSize">Grubość linii / Wielkość czcionki:</label>
+                <input type="range" id="brushSize" min="1" max="50" value="5">
+            </div>
+            <button id="clearBtn" class="danger-btn">Wyczyść tablicę</button>
+            <button id="downloadJpg" style="background-color: #28a745;">Pobierz jako JPG</button>
+        </div>
+    </div>
+
+    <div id="workspace">
+        <h2>Wirtualna Tablica</h2>
+        <div id="canvasWrapper">
+            <canvas id="board" width="800" height="600"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('board');
+        const canvasWrapper = document.getElementById('canvasWrapper');
+        const ctx = canvas.getContext('2d');
+        const toolSelect = document.getElementById('toolSelect');
+        const colorPicker = document.getElementById('colorPicker');
+        const brushSize = document.getElementById('brushSize');
+        const clearBtn = document.getElementById('clearBtn');
+        const downloadJpg = document.getElementById('downloadJpg');
+        const undoBtn = document.getElementById('undoBtn');
+        const settingsToggle = document.getElementById('settingsToggle');
+        const settingsPanel = document.getElementById('settingsPanel');
+
+        const offscreenCanvas = document.createElement('canvas');
+        const oCtx = offscreenCanvas.getContext('2d');
+
+        let undoStack = [];
+        let internalClipboard = null;
+        let clipboardW = 0, clipboardH = 0;
+
+        let isTransforming = false;
+        let activeTransformMode = null; 
+        let selX = 0, selY = 0, selW = 0, selH = 0, selAngle = 0;
+        let dragOffsetX = 0, dragOffsetY = 0;
+
+        let isDrawing = false;
+        let startX, startY;
+        let snapshot; 
+        
+        let currentTextarea = null;
+
+        // --- NOWE ZMIENNE DLA STRZAŁKI (ŁUKU) ---
+        let isEditingArrow = false;
+        let isDraggingArrowControl = false;
+        let arrowStart = {x: 0, y: 0};
+        let arrowEnd = {x: 0, y: 0};
+        let arrowControl = {x: 0, y: 0};
+
+        // Inicjalizacja tła
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        saveState();
+
+        // Obsługa rozwijania panelu ustawień
+        settingsToggle.addEventListener('click', () => {
+            if (settingsPanel.style.display === 'none' || settingsPanel.style.display === '') {
+                settingsPanel.style.display = 'flex';
+                settingsToggle.textContent = 'USTAWIENIA ▲';
+            } else {
+                settingsPanel.style.display = 'none';
+                settingsToggle.textContent = 'USTAWIENIA ▼';
+            }
+        });
+
+        function saveState() {
+            if (undoStack.length > 20) undoStack.shift(); 
+            undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+        }
+
+        function undo() {
+            if (isTransforming) commitTransform();
+            if (currentTextarea) commitText(); 
+            if (isEditingArrow) isEditingArrow = false; // Resetuj bez zapisu jeśli niedokończona
+            if (undoStack.length > 1) {
+                undoStack.pop(); 
+                ctx.putImageData(undoStack[undoStack.length - 1], 0, 0); 
+                isTransforming = false;
+            }
+        }
+        undoBtn.addEventListener('click', undo);
+
+        toolSelect.addEventListener('change', () => {
+            if (isTransforming) commitTransform();
+            if (currentTextarea) commitText();
+            if (isEditingArrow) commitArrow();
+        });
+
+        function commitTransform() {
+            if (!isTransforming) return;
+            ctx.putImageData(snapshot, 0, 0);
+            ctx.save();
+            ctx.translate(selX + selW / 2, selY + selH / 2);
+            ctx.rotate(selAngle);
+            ctx.drawImage(offscreenCanvas, -selW / 2, -selH / 2, selW, selH);
+            ctx.restore();
+            saveState();
+            isTransforming = false;
+            activeTransformMode = null;
+        }
+
+        function drawTransforming() {
+            ctx.putImageData(snapshot, 0, 0);
+            ctx.save();
+            ctx.translate(selX + selW / 2, selY + selH / 2);
+            ctx.rotate(selAngle);
+            ctx.drawImage(offscreenCanvas, -selW / 2, -selH / 2, selW, selH);
+            ctx.setLineDash([5, 5]);
+            ctx.strokeStyle = "#007bff";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(-selW / 2, -selH / 2, selW, selH);
+            ctx.setLineDash([]);
+            ctx.fillStyle = "#007bff";
+            ctx.fillRect(selW / 2 - 5, selH / 2 - 5, 10, 10);
+            ctx.beginPath();
+            ctx.arc(0, -selH / 2 - 20, 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(0, -selH / 2);
+            ctx.lineTo(0, -selH / 2 - 20);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // --- FUNKCJE DLA STRZAŁKI ---
+        function commitArrow() {
+            if (!isEditingArrow) return;
+            ctx.putImageData(snapshot, 0, 0);
+            // Rysuj wersję ostateczną BEZ niebieskiej kropki kontrolnej
+            drawCurvedArrow(ctx, arrowStart, arrowControl, arrowEnd, colorPicker.value, brushSize.value, false);
+            saveState();
+            isEditingArrow = false;
+        }
+
+        function drawCurvedArrow(context, start, control, end, color, width, drawControlDot) {
+            context.save();
+            context.strokeStyle = color;
+            context.fillStyle = color;
+            context.lineWidth = width;
+            context.lineCap = 'round';
+            context.lineJoin = 'round';
+            context.setLineDash([]);
+
+            // Rysowanie łuku (Krzywa Beziera drugiego stopnia)
+            context.beginPath();
+            context.moveTo(start.x, start.y);
+            context.quadraticCurveTo(control.x, control.y, end.x, end.y);
+            context.stroke();
+
+            // Obliczanie kąta nachylenia grotu strzałki na końcu łuku
+            // Pochodna wektora w punkcie końcowym zależy od pozycji punktu kontrolnego
+            const angle = Math.atan2(end.y - control.y, end.x - control.x);
+            const arrowLength = Math.max(15, width * 3); // Skalowanie wielkości strzałki
+
+            // Rysowanie główki strzałki
+            context.beginPath();
+            context.moveTo(end.x, end.y);
+            context.lineTo(end.x - arrowLength * Math.cos(angle - Math.PI / 6), end.y - arrowLength * Math.sin(angle - Math.PI / 6));
+            context.lineTo(end.x - arrowLength * Math.cos(angle + Math.PI / 6), end.y - arrowLength * Math.sin(angle + Math.PI / 6));
+            context.closePath();
+            context.fill();
+
+            // Rysowanie kropki modyfikacji łuku na środku
+            if (drawControlDot) {
+                context.beginPath();
+                context.arc(control.x, control.y, 8, 0, Math.PI * 2);
+                context.fillStyle = "#007bff";
+                context.fill();
+                context.strokeStyle = "#ffffff";
+                context.lineWidth = 2;
+                context.stroke();
+            }
+            context.restore();
+        }
+
+        // --- ZAPISYWANIE I WRAPOWANIE TEKSTU ---
+        function commitText() {
+            if (!currentTextarea) return;
+            
+            const text = currentTextarea.value;
+            if (text.trim() !== '') {
+                const fontSize = parseInt(currentTextarea.style.fontSize);
+                ctx.font = `${fontSize}px Arial`;
+                ctx.fillStyle = currentTextarea.style.color;
+                ctx.textBaseline = 'top';
+                
+                const padding = 6; 
+                const x = parseInt(currentTextarea.style.left) + padding;
+                const y = parseInt(currentTextarea.style.top) + padding;
+                const maxWidth = currentTextarea.clientWidth - (padding * 2);
+                const lineHeight = fontSize * 1.3;
+                
+                drawWrappedText(ctx, text, x, y, maxWidth, lineHeight);
+                saveState();
+            }
+            
+            if (currentTextarea.parentNode === canvasWrapper) {
+                canvasWrapper.removeChild(currentTextarea);
+            }
+            currentTextarea = null;
+        }
+
+        function drawWrappedText(context, text, x, y, maxWidth, lineHeight) {
+            const paragraphs = text.split('\n'); 
+            let currentY = y;
+            
+            for (let p = 0; p < paragraphs.length; p++) {
+                const words = paragraphs[p].split(' ');
+                let line = '';
+
+                for (let n = 0; n < words.length; n++) {
+                    const testLine = line + words[n] + ' ';
+                    const metrics = context.measureText(testLine);
+                    const testWidth = metrics.width;
+                    
+                    if (testWidth > maxWidth && n > 0) {
+                        context.fillText(line, x, currentY);
+                        line = words[n] + ' ';
+                        currentY += lineHeight;
+                    } else {
+                        line = testLine;
+                    }
+                }
+                context.fillText(line, x, currentY);
+                currentY += lineHeight;
+            }
+        }
+
+        // Mousedown
+        canvas.addEventListener('mousedown', (e) => {
+            if (currentTextarea) commitText();
+
+            // Jeśli edytujemy strzałkę i klikniemy w kropkę kontrolną
+            if (isEditingArrow) {
+                const dist = Math.sqrt(Math.pow(e.offsetX - arrowControl.x, 2) + Math.pow(e.offsetY - arrowControl.y, 2));
+                if (dist < 12) { // tolerancja kliknięcia w kropkę (12px)
+                    isDraggingArrowControl = true;
+                    return;
+                } else {
+                    commitArrow(); // kliknięcie obok zapisuje strzałkę
+                }
+            }
+
+            if (isTransforming) {
+                let cx = selX + selW / 2;
+                let cy = selY + selH / 2;
+                let dx = e.offsetX - cx;
+                let dy = e.offsetY - cy;
+                
+                let rx = dx * Math.cos(-selAngle) - dy * Math.sin(-selAngle);
+                let ry = dx * Math.sin(-selAngle) + dy * Math.cos(-selAngle);
+
+                let distRotate = Math.sqrt(rx * rx + (ry + selH / 2 + 20) * (ry + selH / 2 + 20));
+                let distResize = Math.sqrt((rx - selW / 2) * (rx - selW / 2) + (ry - selH / 2) * (ry - selH / 2));
+
+                if (distRotate < 15) {
+                    activeTransformMode = 'rotate';
+                    return;
+                } else if (distResize < 15) {
+                    activeTransformMode = 'resize';
+                    return;
+                } else if (rx >= -selW / 2 && rx <= selW / 2 && ry >= -selH / 2 && ry <= selH / 2) {
+                    activeTransformMode = 'move';
+                    dragOffsetX = e.offsetX - selX;
+                    dragOffsetY = e.offsetY - selY;
+                    return;
+                } else {
+                    commitTransform();
+                }
+            }
+
+            isDrawing = true;
+            startX = e.offsetX;
+            startY = e.offsetY;
+            snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = colorPicker.value;
+            ctx.fillStyle = colorPicker.value;
+            ctx.lineWidth = brushSize.value;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.setLineDash([]);
+
+            if (toolSelect.value !== 'select' && toolSelect.value !== 'text' && toolSelect.value !== 'arrow') {
+                ctx.beginPath();
+            }
+        });
+
+        // Mousemove
+        canvas.addEventListener('mousemove', (e) => {
+            // Przeciąganie kropki kontrolnej strzałki
+            if (isEditingArrow && isDraggingArrowControl) {
+                arrowControl.x = e.offsetX;
+                arrowControl.y = e.offsetY;
+                ctx.putImageData(snapshot, 0, 0);
+                drawCurvedArrow(ctx, arrowStart, arrowControl, arrowEnd, colorPicker.value, brushSize.value, true);
+                return;
+            }
+
+            if (isTransforming && activeTransformMode) {
+                if (activeTransformMode === 'move') {
+                    selX = e.offsetX - dragOffsetX;
+                    selY = e.offsetY - dragOffsetY;
+                } else if (activeTransformMode === 'rotate') {
+                    let cx = selX + selW / 2;
+                    let cy = selY + selH / 2;
+                    selAngle = Math.atan2(e.offsetY - cy, e.offsetX - cx) + Math.PI / 2;
+                } else if (activeTransformMode === 'resize') {
+                    let cx = selX + selW / 2;
+                    let cy = selY + selH / 2;
+                    let dx = e.offsetX - cx;
+                    let dy = e.offsetY - cy;
+                    let rx = dx * Math.cos(-selAngle) - dy * Math.sin(-selAngle);
+                    let ry = dx * Math.sin(-selAngle) + dy * Math.cos(-selAngle);
+                    
+                    selW = Math.max(20, Math.abs(rx) * 2);
+                    selH = Math.max(20, Math.abs(ry) * 2);
+                }
+                drawTransforming();
+                return;
+            }
+
+            if (!isDrawing) return;
+            const currentTool = toolSelect.value;
+
+            if (currentTool !== 'pen') {
+                ctx.putImageData(snapshot, 0, 0); 
+            }
+
+            if (currentTool === 'pen') {
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+            } else if (currentTool === 'rect') {
+                ctx.strokeRect(startX, startY, e.offsetX - startX, e.offsetY - startY);
+            } else if (currentTool === 'circle') {
+                const radius = Math.sqrt(Math.pow(e.offsetX - startX, 2) + Math.pow(e.offsetY - startY, 2));
+                ctx.beginPath();
+                ctx.arc(startX, startY, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+            } else if (currentTool === 'arrow') {
+                // Wstępny podgląd prostej strzałki podczas rysowania
+                let tempControl = { x: (startX + e.offsetX) / 2, y: (startY + e.offsetY) / 2 };
+                drawCurvedArrow(ctx, {x: startX, y: startY}, tempControl, {x: e.offsetX, y: e.offsetY}, colorPicker.value, brushSize.value, false);
+            } else if (currentTool === 'select' || currentTool === 'text') {
+                ctx.setLineDash([4, 4]);
+                ctx.strokeStyle = currentTool === 'select' ? "#007bff" : colorPicker.value;
+                ctx.lineWidth = 1;
+                ctx.strokeRect(startX, startY, e.offsetX - startX, e.offsetY - startY);
+            }
+        });
+
+        // Mouseup
+        canvas.addEventListener('mouseup', (e) => {
+            if (isEditingArrow && isDraggingArrowControl) {
+                isDraggingArrowControl = false;
+                return;
+            }
+
+            if (isTransforming) {
+                activeTransformMode = null;
+                return;
+            }
+
+            if (!isDrawing) return;
+            isDrawing = false;
+
+            const currentTool = toolSelect.value;
+
+            if (currentTool === 'arrow') {
+                ctx.putImageData(snapshot, 0, 0);
+                
+                // Zapisujemy punkty graniczne strzałki
+                arrowStart = { x: startX, y: startY };
+                arrowEnd = { x: e.offsetX, y: e.offsetY };
+                // Domyślny punkt kontrolny na samym środku prostej linii
+                arrowControl = { x: (startX + e.offsetX) / 2, y: (startY + e.offsetY) / 2 };
+                
+                isEditingArrow = true;
+                // Wyświetlamy strzałkę wraz z aktywną niebieską kropką
+                drawCurvedArrow(ctx, arrowStart, arrowControl, arrowEnd, colorPicker.value, brushSize.value, true);
+
+            } else if (currentTool === 'text') {
+                ctx.putImageData(snapshot, 0, 0); 
+                let x = Math.min(startX, e.offsetX);
+                let y = Math.min(startY, e.offsetY);
+                let w = Math.abs(e.offsetX - startX);
+                let h = Math.abs(e.offsetY - startY);
+                
+                if (w < 15 || h < 15) { w = 200; h = 80; }
+
+                const fontSize = Math.max(12, brushSize.value * 3); 
+                const textarea = document.createElement('textarea');
+                textarea.className = 'dynamic-textarea';
+                textarea.style.left = `${x}px`;
+                textarea.style.top = `${y}px`;
+                textarea.style.width = `${w}px`;
+                textarea.style.height = `${h}px`;
+                textarea.style.color = colorPicker.value;
+                textarea.style.fontSize = `${fontSize}px`;
+                textarea.placeholder = "Zacznij pisać tutaj...";
+
+                canvasWrapper.appendChild(textarea);
+                textarea.focus();
+                currentTextarea = textarea;
+
+            } else if (currentTool === 'select') {
+                let w = Math.abs(e.offsetX - startX);
+                let h = Math.abs(e.offsetY - startY);
+                
+                if (w > 5 && h > 5) {
+                    selX = Math.min(startX, e.offsetX);
+                    selY = Math.min(startY, e.offsetY);
+                    selW = w;
+                    selH = h;
+                    selAngle = 0;
+
+                    ctx.putImageData(snapshot, 0, 0);
+
+                    offscreenCanvas.width = selW;
+                    offscreenCanvas.height = selH;
+                    oCtx.drawImage(canvas, selX, selY, selW, selH, 0, 0, selW, selH);
+
+                    ctx.fillStyle = "white";
+                    ctx.fillRect(selX, selY, selW, selH);
+
+                    snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    
+                    isTransforming = true;
+                    drawTransforming(); 
+                }
+            } else {
+                saveState(); 
+            }
+        });
+
+        // Skróty Klawiszowe
+        document.addEventListener('keydown', (e) => {
+            if (document.activeElement.tagName === 'TEXTAREA') return;
+
+            if (e.ctrlKey && e.key.toLowerCase() === 'z') {
+                undo();
+            }
+            else if (e.ctrlKey && e.key.toLowerCase() === 'c') {
+                if (isTransforming) {
+                    internalClipboard = oCtx.getImageData(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+                    clipboardW = offscreenCanvas.width;
+                    clipboardH = offscreenCanvas.height;
+                }
+            }
+            else if (e.ctrlKey && e.key.toLowerCase() === 'x') {
+                if (isTransforming) {
+                    internalClipboard = oCtx.getImageData(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+                    clipboardW = offscreenCanvas.width;
+                    clipboardH = offscreenCanvas.height;
+                    isTransforming = false;
+                    ctx.putImageData(snapshot, 0, 0);
+                    saveState();
+                }
+            }
+            else if (e.ctrlKey && e.key.toLowerCase() === 'v') {
+                if (internalClipboard) {
+                    if (isTransforming) commitTransform(); 
+                    if (isEditingArrow) commitArrow();
+                    
+                    selX = 50;
+                    selY = 50;
+                    selW = clipboardW;
+                    selH = clipboardH;
+                    selAngle = 0;
+
+                    offscreenCanvas.width = selW;
+                    offscreenCanvas.height = selH;
+                    oCtx.putImageData(internalClipboard, 0, 0);
+
+                    snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    isTransforming = true;
+                    drawTransforming();
+                }
+            }
+            else if (e.key === 'Delete' || e.key === 'Del') {
+                if (isTransforming) {
+                    isTransforming = false;
+                    activeTransformMode = null;
+                    ctx.putImageData(snapshot, 0, 0); 
+                    saveState();
+                }
+            }
+        });
+
+        clearBtn.addEventListener('click', () => {
+            if (isTransforming) isTransforming = false;
+            if (isEditingArrow) isEditingArrow = false;
+            if (currentTextarea) {
+                if (currentTextarea.parentNode === canvasWrapper) canvasWrapper.removeChild(currentTextarea);
+                currentTextarea = null;
+            }
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            saveState();
+        });
+
+        downloadJpg.addEventListener('click', () => {
+            if (isTransforming) commitTransform();
+            if (currentTextarea) commitText();
+            if (isEditingArrow) commitArrow();
+            const link = document.createElement('a');
+            link.download = 'tablica-terapeutyczna.jpg';
+            link.href = canvas.toDataURL('image/jpeg', 1.0);
+            link.click();
+        });
+    </script>
+</body>
+</html>
