@@ -57,7 +57,7 @@
             border: 1px solid #0ea5e9;
             border-radius: 4px;
             outline: none;
-            padding: 6px;
+            padding: 4px;
             box-sizing: border-box;
             resize: none; 
             overflow: hidden;
@@ -218,7 +218,7 @@
             );
         }
 
-        // --- KOMPONENT TABLICY (ZINTEGROWANY Z tablica.txt) ---
+        // --- KOMPONENT TABLICY (ZMINIEJSZONY PANEL) ---
         function Whiteboard({ userInfo }) {
             const canvasRef = useRef(null);
             const wrapperRef = useRef(null);
@@ -380,7 +380,7 @@
                         ctx.fillStyle = currentTextarea.style.color;
                         ctx.textBaseline = 'top';
                         
-                        const padding = 6; 
+                        const padding = 4; 
                         const x = parseInt(currentTextarea.style.left) + padding;
                         const y = parseInt(currentTextarea.style.top) + padding;
                         const maxWidth = currentTextarea.clientWidth - (padding * 2);
@@ -578,7 +578,7 @@
                         textarea.style.height = `${h}px`;
                         textarea.style.color = colorPicker.value;
                         textarea.style.fontSize = `${fontSize}px`;
-                        textarea.placeholder = "Zacznij pisać tutaj...";
+                        textarea.placeholder = "Zacznij pisać...";
 
                         canvasWrapper.appendChild(textarea);
                         textarea.focus();
@@ -694,42 +694,43 @@
             }, [userInfo]);
 
             return (
-                <div className="flex gap-4 h-full w-full justify-center">
-                    <div className="w-64 bg-slate-50 border border-slate-200 p-4 rounded-lg flex flex-col gap-4 shadow-sm shrink-0 overflow-y-auto">
-                        <div className="text-sm font-medium text-slate-700 border-b border-slate-200 pb-2">Opcje rysowania</div>
+                <div className="flex gap-4 h-full w-full justify-center items-start">
+                    {/* ZMNIEJSZONY PANEL Z NARZĘDZIAMI (W-52, P-3, TEXT-XS) */}
+                    <div className="w-52 bg-slate-50 border border-slate-200 p-3 rounded-lg flex flex-col gap-2.5 shadow-sm shrink-0 overflow-y-auto text-xs max-h-[600px]">
+                        <div className="font-semibold text-slate-700 border-b border-slate-200 pb-1.5 uppercase tracking-wider text-[10px]">Narzędzia</div>
                         
                         <div className="space-y-1">
-                            <label className="text-xs text-slate-500 font-semibold">Narzędzie:</label>
-                            <select id="toolSelect" className="w-full p-2 border border-slate-200 rounded text-sm bg-white outline-none">
+                            <label className="text-[10px] text-slate-500 font-bold uppercase">Typ:</label>
+                            <select id="toolSelect" className="w-full p-1.5 border border-slate-200 rounded bg-white outline-none cursor-pointer">
                                 <option value="pen">Pędzel</option>
                                 <option value="rect">Prostokąt</option>
                                 <option value="circle">Koło</option>
-                                <option value="arrow">Strzałka (Łuk) ↗</option>
-                                <option value="text">Pole tekstowe</option>
-                                <option value="select">Zaznacz obszar</option>
+                                <option value="arrow">Strzałka Łuk ↗</option>
+                                <option value="text">Tekst</option>
+                                <option value="select">Zaznaczenie</option>
                             </select>
                         </div>
                         
                         <div className="space-y-1">
-                            <label className="text-xs text-slate-500 font-semibold">Kolor:</label>
-                            <input type="color" id="colorPicker" defaultValue="#000000" className="w-full h-8 p-0 border border-slate-200 rounded cursor-pointer" />
+                            <label className="text-[10px] text-slate-500 font-bold uppercase">Kolor:</label>
+                            <input type="color" id="colorPicker" defaultValue="#000000" className="w-full h-7 p-0 border border-slate-200 rounded cursor-pointer" />
                         </div>
 
                         <div className="space-y-1">
-                            <label className="text-xs text-slate-500 font-semibold">Grubość / Rozmiar:</label>
-                            <input type="range" id="brushSize" min="1" max="50" defaultValue="5" className="w-full accent-therapy-500 cursor-pointer" />
+                            <label className="text-[10px] text-slate-500 font-bold uppercase">Rozmiar:</label>
+                            <input type="range" id="brushSize" min="1" max="50" defaultValue="5" className="w-full accent-therapy-500 cursor-pointer h-1" />
                         </div>
 
-                        <button id="undoBtn" className="mt-2 w-full bg-white border border-slate-300 text-slate-700 text-sm font-medium py-2 rounded hover:bg-slate-50 transition">
+                        <button id="undoBtn" className="mt-1 w-full bg-white border border-slate-300 text-slate-700 font-medium py-1.5 rounded hover:bg-slate-50 transition active:scale-[0.98]">
                             Cofnij (Ctrl+Z)
                         </button>
 
-                        <div className="mt-auto pt-4 space-y-2 border-t border-slate-200">
-                            <button id="clearBtn" className="w-full bg-red-50 text-red-600 border border-red-200 text-sm font-medium py-2 rounded hover:bg-red-100 transition">
+                        <div className="mt-2 pt-2.5 space-y-1.5 border-t border-slate-200">
+                            <button id="clearBtn" className="w-full bg-red-50 text-red-600 border border-red-100 font-medium py-1.5 rounded hover:bg-red-100 transition active:scale-[0.98]">
                                 Wyczyść tablicę
                             </button>
-                            <button id="downloadJpg" className="w-full bg-emerald-500 text-white text-sm font-medium py-2 rounded hover:bg-emerald-600 transition">
-                                Pobierz Tablicę JPG
+                            <button id="downloadJpg" className="w-full bg-emerald-500 text-white font-medium py-1.5 rounded hover:bg-emerald-600 transition shadow-sm active:scale-[0.98]">
+                                Pobierz JPG
                             </button>
                         </div>
                     </div>
@@ -741,7 +742,7 @@
             );
         }
 
-        // --- KROK 3: PANEL WSPÓŁPRACY ---
+        // --- KROK 3: PANEL WSPÓŁPRACY (ZACHOWANIE STANU ZAKŁADEK) ---
         function Workspace({ roomInfo, userInfo, setStep }) {
             const [content, setContent] = useState('');
             const [timeLeft, setTimeLeft] = useState((roomInfo?.duration || 60) * 60);
@@ -879,25 +880,24 @@
                                     </span>
                                 </div>
                                 <span className="text-[10px] text-slate-400 italic">
-                                    Zmiany zapisują się automatycznie (tylko w Twojej przeglądarce)
+                                    Zmiany zapisują się automatycznie (w tej sesji przeglądarki)
                                 </span>
                             </div>
 
-                            {/* Obszar roboczy */}
-                            <div className="flex-1 overflow-auto relative">
-                                {activeTab === 'text' ? (
-                                    <textarea 
-                                        value={content}
-                                        onChange={(e) => setContent(e.target.value)}
-                                        className="w-full h-full p-8 resize-none outline-none text-slate-700 text-lg leading-relaxed bg-transparent font-light"
-                                        placeholder="Zacznij pisać tutaj..."
-                                    ></textarea>
-                                ) : (
-                                    <div className="p-6 h-full flex justify-center items-center bg-slate-100/50">
-                                        <Whiteboard userInfo={userInfo} />
-                                    </div>
-                                )}
+                            {/* Zmiana: Ukrywanie za pomocą Tailwind .hidden chroni stan komponentów przed usunięciem z drzewa DOM */}
+                            <div className="flex-1 relative overflow-hidden h-full">
+                                <textarea 
+                                    value={content}
+                                    onChange={(e) => setContent(e.target.value)}
+                                    className={`w-full h-full p-8 resize-none outline-none text-slate-700 text-lg leading-relaxed bg-transparent font-light absolute top-0 left-0 ${activeTab === 'text' ? 'block' : 'hidden'}`}
+                                    placeholder="Zacznij pisać tutaj..."
+                                ></textarea>
+                                
+                                <div className={`p-4 h-full w-full flex justify-center items-center bg-slate-100/50 absolute top-0 left-0 overflow-auto ${activeTab === 'board' ? 'flex' : 'hidden'}`}>
+                                    <Whiteboard userInfo={userInfo} />
+                                </div>
                             </div>
+
                         </div>
                     </main>
                 </div>
@@ -920,7 +920,7 @@
         }
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+	root.render(<App />);
     </script>
 </body>
 </html>
