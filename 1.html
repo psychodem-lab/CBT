@@ -3,343 +3,529 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zarysowane</title>
+    <title>Psychodem | Psychoterapia Poznawczo-Behawioralna CBT</title>
+    <link rel="shortcut icon" type="image/png" href="cbt.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        /* --- Nowoczesne Zmienne CSS --- */
+        :root {
+            --color-bg: #F8FAF8;
+            --color-surface: #FFFFFF;
+            --color-primary: #2E5A44; /* Głęboka, profesjonalna zieleń szałwiowa */
+            --color-primary-dark: #1A382B;
+            --color-primary-light: #EBF1ED;
+            --color-primary-hover: #224332;
+            --color-text: #2D312E;
+            --color-text-light: #626864;
+            --color-border: #E1E8E4;
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --shadow-soft: 0 4px 20px rgba(46, 90, 68, 0.04);
+            --shadow-hover: 0 10px 30px rgba(46, 90, 68, 0.08);
+            --transition: cubic-bezier(0.25, 1, 0.5, 1) 0.4s;
+        }
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-bg); 
+            color: var(--color-text);
+            line-height: 1.75;
+            -webkit-font-smoothing: antialiased;
+        }
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        therapy: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            900: '#0c4a6e',
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                    }
-                }
+        /* --- Nagłówek --- */
+        header {
+            background-color: var(--color-surface); 
+            padding: 40px 20px 30px;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .logo-wrapper img {
+            max-height: 90px;
+            transition: transform var(--transition);
+        }
+        .logo-wrapper a:hover img {
+            transform: scale(1.02); 
+        }
+        .site-title {
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-size: 2.2em;
+            font-weight: 700;
+            color: var(--color-primary-dark);
+            letter-spacing: -0.03em;
+        }
+        .site-subtitle {
+            margin: 0;
+            font-size: 1.1em;
+            color: var(--color-text-light);
+            font-weight: 400;
+        }
+
+        /* --- Kontener Główny --- */
+        .container {
+            width: 90%; 
+            max-width: 950px;
+            margin: 40px auto 80px;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        
+        /* --- Sekcje i Nagłówki --- */
+        h2 {
+            color: var(--color-primary-dark); 
+            font-size: 1.8em;
+            margin-top: 50px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-desc {
+            color: var(--color-text-light);
+            font-size: 1.05em;
+            margin-bottom: 35px;
+        }
+
+        /* --- Harmonijka (Accordion) z płynną animacją Grid --- */
+        .accordion-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .accordion-item {
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            overflow: hidden; 
+            background: var(--color-surface);
+            box-shadow: var(--shadow-soft); 
+            transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+        }
+        .accordion-item:hover {
+            box-shadow: var(--shadow-hover);
+            border-color: var(--color-primary-light);
+            transform: translateY(-2px);
+        }
+
+        .accordion-header {
+            background-color: var(--color-surface);
+            color: var(--color-primary-dark);
+            padding: 22px 30px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 1.2em;
+            border-left: 5px solid transparent;
+            user-select: none;
+        }
+        .accordion-header:hover {
+            background-color: var(--color-primary-light);
+        }
+        .accordion-header.active {
+            background-color: var(--color-primary-light); 
+            border-left-color: var(--color-primary);
+        }
+        .accordion-header span {
+            font-size: 1.6em;
+            font-weight: 300;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--color-primary); 
+            line-height: 1;
+        }
+        .accordion-header.active span {
+            transform: rotate(45deg); 
+            color: var(--color-primary-dark); 
+        }
+
+        /* Nowoczesny CSS Grid Trick dla płynnego animowania auto-height */
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows var(--transition);
+            background-color: var(--color-surface);
+        }
+        .accordion-content.show {
+            grid-template-rows: 1fr;
+        }
+        .accordion-inner {
+            overflow: hidden;
+        }
+        .psychologist-card {
+            padding: 10px 30px 30px 30px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .psychologist-details {
+            display: flex;
+            align-items: flex-start; 
+            text-align: left;
+            padding-top: 25px;
+        }
+        .psychologist-details img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 30px;
+            border: 4px solid var(--color-primary-light); 
+            flex-shrink: 0;
+            box-shadow: var(--shadow-soft);
+        }
+        .psychologist-text {
+            flex: 1;
+        }
+        .psychologist-text p {
+            margin: 10px 0;
+        }
+        .psychologist-text strong {
+            color: var(--color-primary-dark);
+            font-weight: 600;
+        }
+        
+        /* --- Rozwijanie Pełnego Opisu (Read More) --- */ 
+        .read-more-content {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--color-border);
+            display: none; 
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .read-more-content.expanded {
+            display: block;
+            opacity: 1;
+        }
+        .read-more-content p {
+            font-size: 0.98em;
+            color: var(--color-text-light);
+            margin-bottom: 15px;
+        }
+
+        .read-more-button {
+            display: inline-flex;
+            align-items: center;
+            color: var(--color-primary);
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            margin-top: 15px;
+            border: 1px solid var(--color-primary);
+            background: transparent;
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            font-size: 0.9em;
+        }
+        .read-more-button:hover {
+            background-color: var(--color-primary);
+            color: var(--color-surface);
+        }
+
+        /* --- Sekcja Biblioteka (CTA) --- */
+        hr {
+            border: 0; 
+            border-top: 1px solid var(--color-border); 
+            margin: 60px 0;
+        }
+
+        .cta-section {
+            padding: 45px 35px; 
+            background: linear-gradient(135deg, #EBF1ED 0%, #DCE7E1 100%); 
+            border-radius: var(--radius-lg); 
+            box-shadow: var(--shadow-soft);
+            text-align: center;
+            margin-bottom: 60px;
+            border: 1px solid rgba(46, 90, 68, 0.05);
+        }
+        .cta-section p {
+            font-size: 1.2em;
+            margin-top: 0;
+            margin-bottom: 25px;
+            color: var(--color-primary-dark);
+            font-weight: 500;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: var(--color-primary);
+            color: var(--color-surface);
+            padding: 16px 45px;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            font-size: 1.05em;
+            box-shadow: 0 4px 15px rgba(46, 90, 68, 0.2);
+        }
+        .cta-button:hover {
+            background-color: var(--color-primary-hover); 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 90, 68, 0.3);
+        }
+
+        /* --- Sekcja Kontakt --- */
+        .contact-desc {
+            text-align: center; 
+            margin-bottom: 40px;
+            font-size: 1.05em;
+        }
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        .contact-item {
+            background-color: var(--color-surface);
+            padding: 30px 25px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md); 
+            transition: var(--transition);
+            box-shadow: var(--shadow-soft);
+            text-align: center;
+        }
+        .contact-item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--color-primary);
+        }
+        .contact-item strong {
+            display: block;
+            color: var(--color-primary-dark);
+            font-size: 1.15em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+        .contact-item a, .contact-item p {
+            color: var(--color-text-light);
+            text-decoration: none;
+            font-size: 1em;
+            transition: color 0.2s ease;
+            margin: 0;
+        }
+        .contact-item a:hover {
+            color: var(--color-primary);
+        }
+
+        /* --- Stopka --- */
+        footer {
+            background-color: var(--color-primary-dark); 
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 80px; 
+            font-size: 0.9em;
+            letter-spacing: 0.02em;
+        }
+
+        /* --- Responsywność --- */
+        @media (max-width: 768px) {
+            header {
+                padding: 30px 15px 20px;
+            }
+            .site-title {
+                font-size: 1.8em;
+            }
+            .site-subtitle {
+                font-size: 1em;
+            }
+            .container {
+                width: 100%;
+                margin: 20px auto 40px;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            .accordion-header {
+                font-size: 1.1em;
+                padding: 18px 20px;
+            }
+            .psychologist-card {
+                padding: 10px 20px 25px 20px;
+            }
+            .psychologist-details {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .psychologist-details img {
+                margin-right: 0;
+                margin-bottom: 20px;
+                width: 120px;
+                height: 120px;
+            }
+            .cta-section {
+                padding: 35px 20px;
+            }
+            .contact-info {
+                grid-template-columns: 1fr;
+                gap: 15px;
             }
         }
-    </script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen">
-    <div id="root"></div>
+<body>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
+    <header>
+        <div class="logo-wrapper">
+            <a href="index.html" title="Strona Główna">
+                <img src="logo.png" alt="Logo Psychodem">
+            </a>
+        </div>
+        <h1 class="site-title">Psychodem</h1>
+        <p class="site-subtitle">Psychoterapia Poznawczo-Behawioralna CBT</p>
+    </header>
 
-        // --- KROK 1: TWORZENIE POKOJU ---
-        function CreateRoom({ setStep, setRoomInfo }) {
-            const [name, setName] = useState('Sesja - (ID, numer)');
-            const [members, setMembers] = useState(2);
-            const [duration, setDuration] = useState(60);
-            const [password, setPassword] = useState('');
-            const [generatedLink, setGeneratedLink] = useState('');
-            const [copied, setCopied] = useState(false);
+    <div class="container">
 
-            const handleCreate = (e) => {
-                e.preventDefault();
-                const roomId = Math.random().toString(36).substring(2, 9);
-                const link = `https://therapyspace.app/room/${roomId}`;
-                
-                setRoomInfo({ name, members, duration, password, link, roomId });
-                setGeneratedLink(link);
-            };
+        <h2>🌿 Pomoc psychologiczna i psychoterapia</h2>
+        <p class="section-desc">Zachęcamy do zapoznania się z informacjami o nas. Kliknij w wybraną osobę, aby poznać szczegóły:</p>
 
-            const handleCopyMessage = () => {
-                const message = `Oto link do wspólnej pracy psychoterapeutycznej:\n${generatedLink}\n\nWejdź w link, podaj swoje imię oraz wpisz hasło: ${password}`;
-                
-                navigator.clipboard.writeText(message).then(() => {
-                    setCopied(true);
-                    setTimeout(() => setCopied(false), 2500);
-                }).catch((err) => {
-                    console.error('Błąd podczas kopiowania: ', err);
-                });
-            };
+        <div class="accordion-list">
+            
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    Natalia Demeńczuk - Psycholog, Psychoterapeuta CBT
+                    <span>+</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-inner">
+                        <div class="psychologist-card">
+                            <div class="psychologist-details">
+                                <img src="Natalia.jpg" alt="Natalia Demeńczuk">
+                                <div class="psychologist-text">
+                                    <p><strong>Specjalizacja:</strong> Terapia lęku, depresji, osoby dorosłe, młodzież</p>
+                                    <p><strong>O mnie:</strong> W swojej praktyce koncentruję się na skutecznym stosowaniu technik poznawczo-behawioralnych, pomagając dorosłym i młodzieży.</p>
+                                    
+                                    <button class="read-more-button" onclick="toggleReadMore(this)">Pokaż Pełny Opis</button>
 
-            return (
-                <div className="flex items-center justify-center min-h-screen p-4">
-                    <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 w-full max-w-md">
-                        <h1 className="text-2xl font-semibold text-slate-800 mb-6 text-center">Stwórz przestrzeń</h1>
-                        
-                        {!generatedLink ? (
-                            <form onSubmit={handleCreate} className="space-y-5">
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-500 mb-1">Nazwa pokoju</label>
-                                    <input type="text" value={name} onChange={e => setName(e.target.value)} required
-                                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
-                                </div>
-                                <div className="flex gap-4">
-                                    <div className="w-1/2">
-                                        <label className="block text-sm font-medium text-slate-500 mb-1">Maks. osób</label>
-                                        <input type="number" value={members} onChange={e => setMembers(e.target.value)} min="2" max="10" required
-                                            className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
-                                    </div>
-                                    <div className="w-1/2">
-                                        <label className="block text-sm font-medium text-slate-500 mb-1">Czas (min)</label>
-                                        <input type="number" value={duration} onChange={e => setDuration(e.target.value)} min="15" step="15" required
-                                            className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
+                                    <div class="read-more-content">
+                                        <p><strong>Dłuższy opis/Edukacja:</strong> Ukończyłam jednolite studia magisterskie w 2015 r. na specjalności kliniczno-sądowej. Dodatkowo kontynuowałam kształcenie na studiach podyplomowych w zakresie „Psychogeriatrii z elementami neuropsychologii” w Medycznym Centrum Kształcenia Podyplomowego Uniwersytetu Jagiellońskiego. Jestem członkinią Polskiego Towarzystwa Terapii Poznawczej i Behawioralnej. Obecnie doskonalę swoje kompetencje w trakcie uczęszczania do szkoły psychoterapii poznawczo-behawioralnej SP USWPS. Posiadam wieloletnie doświadczenie w pracy z różnymi grupami wiekowymi zarówno w terapii grupowej, jak i indywidualnej. Moje podejście opiera się na empiryzmie i empatycznej profesjonalnej współpracy, tworząc bezpieczną przestrzeń dla rozwiązywania trudności związanych m.in. z lękiem, depresją, zaburzeniami adaptacyjnymi, radzeniem sobie ze stresem i innymi trudnościami natury psychologicznej. W roli psychologa skupiam się na pomocy w odkrywaniu nowych sposobów myślenia i adaptacyjnych strategii radzenia sobie z problemami. Współpracuję z otwartością, kładąc nacisk na psychoedukację i korzystając z empirycznie potwierdzonych metod. Przez ostatnie lata zdobywałam doświadczenie w różnych placówkach pomocy psychologicznej, świadcząc wsparcie indywidualne, pracując w środowisku, angażując się w prace z rodzinami pacjentów oraz prowadząc zajęcia grupowe. Moje holistyczne podejście i zaangażowanie pozwalają dostosować terapię do indywidualnych potrzeb każdego klienta. W wolnym czasie rozwijam zainteresowania kinem, fantastyką naukową, malarstwem i ogrodnictwem.</p>
+                                        <p><strong>Dodatkowe informacje:</strong> Pracuję pod stałą superwizją.</p>
                                     </div>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-500 mb-1">Hasło dostępu</label>
-                                    <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Np. 1234" required
-                                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
-                                </div>
-                                <button type="submit" 
-                                    className="w-full bg-slate-800 hover:bg-slate-700 text-white font-medium py-3 rounded-lg transition-colors mt-4">
-                                    Generuj pokój
-                                </button>
-                            </form>
-                        ) : (
-                            <div className="text-center space-y-6">
-                                <div className="bg-therapy-50 text-therapy-900 p-4 rounded-lg border border-therapy-100 text-left">
-                                    <p className="text-sm mb-2 text-therapy-600 font-medium">Link do pokoju:</p>
-                                    <button 
-                                        type="button"
-                                        onClick={handleCopyMessage}
-                                        className="w-full block bg-white hover:bg-slate-100 p-2 rounded border border-therapy-100 text-sm break-all font-mono mb-3 text-left transition-colors relative group focus:outline-none"
-                                        title="Kliknij, aby skopiować pełną wiadomość"
-                                    >
-                                        <code className="text-slate-700 pointer-events-none">{generatedLink}</code>
-                                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                                            Kopiuj
-                                        </span>
-                                    </button>
-                                    <div className="flex justify-between items-center min-h-[20px]">
-                                        <p className="text-xs text-slate-500">Hasło do pokoju: <span className="font-bold text-slate-700">{password}</span></p>
-                                        {copied && (
-                                            <span className="text-xs text-emerald-600 font-semibold animate-pulse">
-                                                Skopiowano zaproszenie!
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-                                <button onClick={() => setStep(2)} 
-                                    className="w-full bg-therapy-500 hover:bg-therapy-600 text-white font-medium py-3 rounded-lg transition-colors shadow-sm">
-                                    Przejdź do logowania →
-                                </button>
                             </div>
-                        )}
+                        </div>
                     </div>
                 </div>
-            );
-        }
+            </div>
 
-        // --- KROK 2: LOGOWANIE Z LINKU ---
-        function JoinRoom({ roomInfo, setStep, setUserInfo }) {
-            const [nickname, setNickname] = useState('');
-            const [inputPassword, setInputPassword] = useState('');
-            const [error, setError] = useState('');
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    Łukasz Demeńczuk - Psycholog, Psychoterapeuta CBT
+                    <span>+</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-inner">
+                        <div class="psychologist-card">
+                            <div class="psychologist-details">
+                                <img src="lukasz.jpg" alt="Łukasz Demeńczuk">
+                                <div class="psychologist-text">
+                                    <p><strong>Specjalizacja:</strong> Osoby do wczesnej dorosłości, zaburzenia lękowe, OCD</p>
+                                    <p><strong>O mnie:</strong> Prowadzę terapię indywidualną, wykorzystując metody CBT. Moim głównym celem jest poprawa jakości życia klienta.</p>
 
-            const handleJoin = (e) => {
-                e.preventDefault();
-                if (inputPassword !== roomInfo.password) {
-                    setError('Nieprawidłowe hasło. Wpisz hasło ustawione w Kroku 1.');
-                    return;
+                                    <button class="read-more-button" onclick="toggleReadMore(this)">Pokaż Pełny Opis</button>
+
+                                    <div class="read-more-content">
+                                        <p><strong>Dłuższy opis/Edukacja:</strong> Ukończyłem jednolite studia magisterskie na kierunku Psychologia o specjalności kliniczno sądowej oraz szkołę psychoterapii poznawczej i behawioralnej ukończonej certyfikatem PTTPB nr 1044. W trakcie swojej pracy koncentruje się na dobrym zrozumieniu drugiej osoby i trudności, z którymi się zmaga. Przywiązuje szczególną wagę na czynniki, które podtrzymują problem. Dzięki temu mogę precyzyjnie dopasować strategię pomocy. Moim głównym celem jest zwiększenie jakości życia osoby, która korzysta z moich usług. Ważne jest dla mnie aby czas terapii był jak najlepiej wykorzystany, w oparciu o wartości szacunku oraz szczerości. W trakcie trwania ścieżki zawodowej miałem doświadczenia z osobami z każdego przedziału wiekowego, dlatego w trakcie udzielania nawet indywidualnej pomocy angażuje pozostałych członków systemu rodzinnego. Stąd głównie pracuje z dziećmi, młodzieżą oraz młodymi dorosłymi. Moja praca jest poddawana superwizji a swoją wiedzę i umiejętności nieustannie rozwijam, co wpływa pozytywnie na jakość mojej pracy. Osobiście jestem miłośnikiem przyrody oraz muzyki. Uważam kontakt z naturą za najlepszy relaks a grę na instrumencie jako świetny trening umysłu oraz przyjemną rozrywkę.</p>
+                                        <p><strong>Dodatkowe informacje:</strong> Pracuję pod stałą superwizją.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <hr>
+
+        <div class="cta-section">
+            <p>Skorzystaj z darmowych materiałów, ćwiczeń i narzędzi, które pomogą Ci w pracy nad sobą.</p> 
+            <a href="Biblioteka.html" class="cta-button">Narzędziownik</a> 
+        </div>
+
+        <h2>📞 Skontaktuj się z Nami</h2>
+        <p class="contact-desc">Napisz SMS lub email, aby umówić pierwszą wizytę. Pracujemy online oraz stacjonarnie.</p> 
+
+        <div class="contact-info">
+            <div class="contact-item">
+                <strong>E-mail</strong>
+                <p><a href="mailto:psychologdemenczuk@gmail.com">psychologdemenczuk@gmail.com</a></p>
+            </div>
+            <div class="contact-item">
+                <strong>Kontakt SMS / Telefon</strong>
+                <p><a href="tel:+48791788947">+48 791 788 947</a></p>
+            </div>
+            <div class="contact-item">
+                <strong>Lokalizacja</strong>
+                <p>Online / Gabinet: Przemyśl, ul. Moniuszki 3/3</p>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Psychodem. Wszelkie prawa zastrzeżone. Gabinet Psychoterapii CBT.</p>
+    </footer>
+
+    <script>
+        /**
+         * Płynne przełączanie głównej harmonijki (Accordion)
+         */
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            const isActive = header.classList.contains('active');
+
+            // Zamykanie innych otwartych sekcji
+            document.querySelectorAll('.accordion-header').forEach(h => {
+                h.classList.remove('active');
+                h.nextElementSibling.classList.remove('show');
+                
+                // Reset przycisków "Pokaż więcej" wewnątrz zamykanych sekcji
+                const readMoreButton = h.nextElementSibling.querySelector('.read-more-button');
+                const readMoreContent = h.nextElementSibling.querySelector('.read-more-content');
+                if (readMoreButton && readMoreContent) {
+                     readMoreContent.classList.remove('expanded');
+                     readMoreButton.textContent = 'Pokaż Pełny Opis';
                 }
-                setUserInfo({ nickname });
-                setStep(3);
-            };
+            });
 
-            return (
-                <div className="flex items-center justify-center min-h-screen p-4">
-                    <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 w-full max-w-md">
-                        <div className="text-center mb-6">
-                            <h1 className="text-2xl font-semibold text-slate-800">Dołącz do sesji</h1>
-                            <p className="text-slate-500 text-sm mt-2">Pokój: <span className="font-medium text-slate-700">{roomInfo?.name}</span></p>
-                        </div>
-                        
-                        <form onSubmit={handleJoin} className="space-y-5">
-                            <div>
-                                <label className="block text-sm font-medium text-slate-500 mb-1">Twój Nick / Imię</label>
-                                <input type="text" value={nickname} onChange={e => setNickname(e.target.value)} required placeholder="Np. Pacjent Tomek"
-                                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-500 mb-1">Hasło</label>
-                                <input type="password" value={inputPassword} onChange={e => {setInputPassword(e.target.value); setError('');}} required placeholder="Wpisz hasło z Kroku 1"
-                                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-therapy-100 focus:border-therapy-500 outline-none transition-all" />
-                                {error && <p className="text-red-500 text-xs mt-2 font-medium">{error}</p>}
-                            </div>
-                            <button type="submit" 
-                                className="w-full bg-slate-800 hover:bg-slate-700 text-white font-medium py-3 rounded-lg transition-colors mt-4">
-                                Wejdź do pokoju
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            );
+            // Otwieranie aktualnie klikniętej sekcji
+            if (!isActive) {
+                header.classList.add('active');
+                content.classList.add('show');
+            }
         }
 
-        // --- KROK 3: PANEL WSPÓŁPRACY ---
-        function Workspace({ roomInfo, userInfo, setStep }) {
-            const [content, setContent] = useState('Przestrzeń do współpracy');
-            const [timeLeft, setTimeLeft] = useState((roomInfo?.duration || 60) * 60);
-            const [isExporting, setIsExporting] = useState(false);
-
-            useEffect(() => {
-                const timer = setInterval(() => {
-                    setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-                }, 1000);
-                return () => clearInterval(timer);
-            }, []);
-
-            const formatTime = (seconds) => {
-                const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-                const s = (seconds % 60).toString().padStart(2, '0');
-                return `${m}:${s}`;
-            };
-
-            const handleExportPDF = () => {
-                setIsExporting(true);
-                const element = document.createElement('div');
-                const formattedContent = content.replace(/\n/g, '<br>');
-                element.innerHTML = `
-                    <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 50px; color: #1e293b; background: #ffffff;">
-                        <div style="border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px;">
-                            <h1 style="font-size: 26px; font-weight: 700; color: #0c4a6e; margin: 0 0 8px 0;">${roomInfo?.name || 'Sesja Terapeutyczna'}</h1>
-                            <p style="font-size: 14px; color: #64748b; margin: 0;">Podsumowanie sesji psychoterapii </p>
-                        </div>
-                        
-                        <div style="margin-bottom: 30px; background: #f8fafc; padding: 15px; border-radius: 8px; font-size: 13px; color: #475569;">
-                            <table style="width: 100%; border-collapse: collapse;">
-                                <tr>
-                                    <td style="padding: 4px 0;"><strong>Uczestnik sesji:</strong> ${userInfo?.nickname}</td>
-                                    <td style="padding: 4px 0; text-align: right;"><strong>Data wygenerowania:</strong> ${new Date().toLocaleDateString('pl-PL')}</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 4px 0;"><strong>Status dokumentu:</strong> Zapisany pomyślnie</td>
-                                    <td style="padding: 4px 0; text-align: right;"><strong>Platforma:</strong> Zarysowane</td>
-                                </tr>
-                            </table>
-                        </div>
-
-                        <div style="font-size: 15px; line-height: 1.8; color: #334155; min-height: 400px;">
-                            ${formattedContent}
-                        </div>
-
-                        <div style="margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 15px; text-align: center; font-size: 11px; color: #94a3b8;">
-                            Dokument wygenerowany automatycznie przez aplikację Zarysowane. Treści zawarte w dokumencie są objęte tajemnicą zawodową.
-                        </div>
-                    </div>
-                `;
-
-                const opt = {
-                    margin:       10,
-                    filename:     `Sesja${userInfo?.nickname || 'Pacjent'}_${new Date().toISOString().slice(0,10)}.pdf`,
-                    image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  { scale: 2, useCORS: true },
-                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                };
-
-                html2pdf().from(element).set(opt).save().then(() => {
-                    setIsExporting(false);
-                }).catch(() => {
-                    setIsExporting(false);
-                });
-            };
-
-            return (
-                <div className="h-screen flex flex-col bg-slate-50">
-                    <header className="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shrink-0 shadow-sm">
-                        <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-therapy-100 flex items-center justify-center text-therapy-600 font-bold">
-                                {userInfo?.nickname?.charAt(0).toUpperCase()}
-                            </div>
-                            <div>
-                                <h2 className="font-semibold text-slate-800">{roomInfo?.name}</h2>
-                                <p className="text-xs text-slate-500">Uczestnik: {userInfo?.nickname}</p>
-                            </div>
-                        </div>
-                        
-                        <div className="flex items-center gap-4">
-                            <div className="text-right mr-2">
-                                <span className="text-[10px] text-slate-500 uppercase tracking-wider font-bold block">Czas sesji</span>
-                                <div className={`text-xl font-mono font-medium ${timeLeft < 300 ? 'text-amber-400 font-bold animate-pulse' : 'text-slate-400'}`}>
-                                    {formatTime(timeLeft)}
-                                </div>
-                            </div>
-
-                            <button 
-                                onClick={handleExportPDF} 
-                                disabled={isExporting}
-                                className="text-sm px-4 py-2 bg-therapy-500 hover:bg-therapy-600 text-white font-medium rounded-lg transition-colors flex items-center gap-2 shadow-sm disabled:opacity-50"
-                            >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                                {isExporting ? 'Generowanie...' : 'PDF'}
-                            </button>
-
-                            <button onClick={() => setStep(1)} className="text-sm px-4 py-2 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors">
-                                Wyjdź
-                            </button>
-                        </div>
-                    </header>
-
-                    <main className="flex-1 overflow-hidden p-4 md:p-8 flex justify-center">
-                        <div className="w-full max-w-4xl bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col overflow-hidden">
-                            <div className="h-10 bg-slate-50 border-b border-slate-100 flex items-center px-4 justify-between shrink-0">
-                                <div className="flex items-center gap-2">
-                                    <span className="relative flex h-2 w-2">
-                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                                    </span>
-                                    <span className="text-xs text-slate-400 font-medium">Połączenie aktywne • Obie osoby w pokoju</span>
-                                </div>
-                                <span className="text-[11px] text-slate-400 italic">Wpisane zmiany zapisują się automatycznie</span>
-                            </div>
-
-                            <textarea 
-                                value={content}
-                                onChange={(e) => setContent(e.target.value)}
-                                className="flex-1 w-full p-8 resize-none outline-none text-slate-700 text-lg leading-relaxed bg-transparent font-light"
-                                placeholder="Zacznij pisać tutaj..."
-                            ></textarea>
-                        </div>
-                    </main>
-                </div>
-            );
+        /**
+         * Przełączanie widoczności sekcji 'O mnie' wewnątrz otwartej harmonijki
+         */
+        function toggleReadMore(button) {
+            const content = button.nextElementSibling;
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                button.textContent = 'Pokaż Pełny Opis';
+            } else {
+                content.classList.add('expanded');
+                button.textContent = 'Ukryj Opis';
+            }
         }
-
-        // --- GŁÓWNY ZARZĄDCA STANU APLIKACJI ---
-        function App() {
-            const [step, setStep] = useState(1);
-            const [roomInfo, setRoomInfo] = useState(null);
-            const [userInfo, setUserInfo] = useState(null);
-
-            return (
-                <div className="font-sans antialiased bg-slate-50 text-slate-800">
-                    {step === 1 && <CreateRoom setStep={setStep} setRoomInfo={setRoomInfo} />}
-                    {step === 2 && <JoinRoom roomInfo={roomInfo} setStep={setStep} setUserInfo={setUserInfo} />}
-                    {step === 3 && <Workspace roomInfo={roomInfo} userInfo={userInfo} setStep={setStep} />}
-                </div>
-            );
-        }
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
     </script>
 </body>
 </html>
