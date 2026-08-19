@@ -7,284 +7,517 @@
     <style>
         :root {
             --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-main: #f8fafc;
             --surface: #ffffff;
-            --background: #f1f5f9;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
             --border: #e2e8f0;
-            --success: #10b981;
-            --danger: #ef4444;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --success-bg: #ecfdf5;
+            --success-text: #065f46;
+            --danger-bg: #fef2f2;
+            --danger-text: #991b1b;
         }
+
+        * { box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--background);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-main);
             color: var(--text-main);
-            line-height: 1.5;
             margin: 0;
-            padding: 20px;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-        .card {
+
+        /* Panela boczna (Lista i Wyszukiwarka) */
+        .sidebar {
+            width: 340px;
             background: var(--surface);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
         }
-        .disorder-title {
-            margin: 0 0 5px 0;
-            font-size: 1.5rem;
-            color: var(--primary);
-        }
-        .disorder-meta {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
+        .search-box {
+            padding: 16px;
             border-bottom: 1px solid var(--border);
         }
-        .section-title {
-            font-size: 1.1rem;
-            margin: 20px 0 10px 0;
-            color: var(--text-main);
-        }
-        .section-desc {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-        }
-        .checkbox-item {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 12px;
-            padding: 8px;
-            border-radius: 6px;
-            transition: background 0.2s;
-        }
-        .checkbox-item:hover {
-            background: var(--background);
-        }
-        .checkbox-item input {
-            margin-top: 4px;
-            margin-right: 12px;
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-        .checkbox-item label {
-            cursor: pointer;
-            flex: 1;
-        }
-        .result-panel {
-            position: sticky;
-            bottom: 20px;
-            padding: 20px;
+        .search-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
             border-radius: 8px;
-            font-weight: bold;
-            text-align: center;
-            transition: all 0.3s;
+            font-size: 0.9rem;
+            outline: none;
         }
-        .status-incomplete {
-            background: #fef2f2;
-            color: var(--danger);
-            border: 1px solid #fca5a5;
-        }
-        .status-complete {
-            background: #ecfdf5;
-            color: var(--success);
-            border: 1px solid #6ee7b7;
-        }
-        .req-list {
+        .search-input:focus { border-color: var(--primary); }
+        .disorder-list {
+            flex: 1;
+            overflow-y: auto;
             list-style: none;
             padding: 0;
-            margin: 10px 0 0 0;
-            font-size: 0.9rem;
-            font-weight: normal;
+            margin: 0;
         }
-        .req-list li { margin-bottom: 4px; }
+        .disorder-item {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .disorder-item:hover { background: #f1f5f9; }
+        .disorder-item.active {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary);
+        }
+        .item-code {
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: var(--primary);
+        }
+        .item-title {
+            font-size: 0.95rem;
+            margin-top: 2px;
+            font-weight: 500;
+        }
+        .item-cat {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Obszar główny */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 24px;
+        }
+        .header-card {
+            background: var(--surface);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+        .disorder-header-title {
+            margin: 0 0 8px 0;
+            font-size: 1.6rem;
+            color: var(--text-main);
+        }
+        .disorder-header-meta {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Sekcje kryteriów */
+        .section-card {
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+        .section-title {
+            margin: 0 0 6px 0;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+        .section-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .checkbox-label:hover { background: var(--bg-main); }
+        .checkbox-label input {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            cursor: pointer;
+        }
+
+        /* Panel dolny podsumowania */
+        .footer-panel {
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .status-badge.complete {
+            background: var(--success-bg);
+            color: var(--success-text);
+        }
+        .status-badge.incomplete {
+            background: var(--danger-bg);
+            color: var(--danger-text);
+        }
+        .btn-export {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-export:hover { background: var(--primary-hover); }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h1>Asystent Diagnostyczny ICD-11</h1>
-        <p>Wsparcie decyzji klinicznej (Decision Support Tool)</p>
+    <!-- Panel boczny z wyszukiwarką -->
+    <div class="sidebar">
+        <div class="search-box">
+            <input type="text" id="searchInput" class="search-input" placeholder="Szukaj po kodzie lub nazwie...">
+        </div>
+        <ul id="disorderList" class="disorder-list"></ul>
     </div>
 
-    <div class="card">
-        <h2 class="disorder-title" id="d-title">Ładowanie...</h2>
-        <div class="disorder-meta" id="d-meta"></div>
+    <!-- Obszar główny z formularzem kryteriów -->
+    <div class="main-content">
+        <div class="header-card">
+            <h1 id="disorderTitle" class="disorder-header-title">Wybierz zaburzenie z listy</h1>
+            <div id="disorderMeta" class="disorder-header-meta">Wybierz jednostkę diagnostyczną po lewej stronie, aby przejść do weryfikacji kryteriów ICD-11.</div>
+        </div>
 
-        <div id="criteria-container">
-            <!-- Tutaj JS wygeneruje formularz -->
+        <div id="criteriaContainer"></div>
+
+        <div class="footer-panel" id="footerPanel" style="display: none;">
+            <div>
+                <span id="statusBadge" class="status-badge incomplete">Kryteria niespełnione</span>
+            </div>
+            <button class="btn-export" onclick="exportSummary()">Skopiuj podsumowanie do notatki</button>
         </div>
     </div>
 
-    <div id="result-panel" class="card result-panel status-incomplete">
-        <div id="status-text">Analiza kryteriów...</div>
-        <ul id="req-details" class="req-list"></ul>
-    </div>
-</div>
-
 <script>
-    // 1. Przykładowy obiekt JSON pobierany przez aplikację
-    const disorderData = {
-        "code": "6A20",
-        "title": "Depresja jednorazowa (Single Episode Depressive Disorder)",
-        "category": "Zaburzenia nastroju",
-        "version": "ICD-11",
-        "diagnosticRequirements": {
-            "duration": {
-                "minDays": 14,
-                "description": "Objawy muszą utrzymywać się przez większość dnia, niemal codziennie, przez co najmniej 2 tygodnie."
-            },
-            "coreSymptoms": {
-                "minRequired": 1,
-                "description": "Musi wystąpić co najmniej jeden z głównych objawów:",
-                "items": [
-                    { "id": "core_1", "text": "Obniżony nastrój niemal codziennie przez większość dnia" },
-                    { "id": "core_2", "text": "Znaczny spadek zainteresowań lub odczuwania przyjemności (anhedonia)" }
-                ]
-            },
-            "additionalSymptoms": {
-                "minRequired": 3,
-                "description": "Musi wystąpić co najmniej 3 dodatkowe objawy:",
-                "items": [
-                    { "id": "add_1", "text": "Trudności z koncentracją i podejmowaniem decyzji" },
-                    { "id": "add_2", "text": "Poczucie nadmiernej lub nieuzasadnionej winy / niskiej samooceny" },
-                    { "id": "add_3", "text": "Nawracające myśli o śmierci lub samobójstwie" },
-                    { "id": "add_4", "text": "Zaburzenia snu (bezsenność lub nadmierna senność)" },
-                    { "id": "add_5", "text": "Znaczne zmiany apetytu lub masy ciała" },
-                    { "id": "add_6", "text": "Pobudzenie lub spowolnienie psychoruchowe" },
-                    { "id": "add_7", "text": "Zmęczenie lub znaczny spadek energii" }
-                ]
-            },
-            "functionalImpairment": {
-                "required": true,
-                "description": "Objawy powodują istotne cierpienie lub upośledzenie w funkcjonowaniu osobistym, rodzinnym, społecznym lub zawodowym."
+    // Baza danych kluczowych jednostek ICD-11 z podziałem na kategorie
+    const icd11Database = [
+        {
+            code: "6A20",
+            title: "Depresja jednorazowa (Single Episode Depressive Disorder)",
+            category: "Zaburzenia nastroju",
+            diagnosticRequirements: {
+                duration: { minDays: 14, description: "Objawy trwają przez większość dnia, niemal codziennie, przez min. 2 tygodnie." },
+                coreSymptoms: {
+                    minRequired: 1,
+                    description: "Musi wystąpić co najmniej 1 objaw osiowy:",
+                    items: [
+                        { id: "dep_c1", text: "Obniżony nastrój niemal codziennie przez większość dnia" },
+                        { id: "dep_c2", text: "Znaczny spadek zainteresowań lub odczuwania przyjemności (anhedonia)" }
+                    ]
+                },
+                additionalSymptoms: {
+                    minRequired: 3,
+                    description: "Musi wystąpić co najmniej 3 dodatkowe objawy:",
+                    items: [
+                        { id: "dep_a1", text: "Trudności z koncentracją i podejmowaniem decyzji" },
+                        { id: "dep_a2", text: "Poczucie nadmiernej winy / niskiej samooceny" },
+                        { id: "dep_a3", text: "Nawracające myśli o śmierci lub samobójstwie" },
+                        { id: "dep_a4", text: "Zaburzenia snu (bezsenność lub nadmierna senność)" },
+                        { id: "dep_a5", text: "Znaczne zmiany apetytu lub masy ciała" },
+                        { id: "dep_a6", text: "Zmęczenie lub spadek energii" }
+                    ]
+                },
+                impairment: "Objawy powodują istotne cierpienie lub upośledzenie funkcjonowania osobistego, społecznego lub zawodowego."
+            }
+        },
+        {
+            code: "6A05",
+            title: "Zespół nadpobudliwości psychoruchowej (ADHD)",
+            category: "Zaburzenia neurorozwojowe",
+            diagnosticRequirements: {
+                duration: { minDays: 180, description: "Wzorce zachowań utrzymują się przez co najmniej 6 miesięcy." },
+                coreSymptoms: {
+                    minRequired: 1,
+                    description: "Występowanie utrwalonego wzorca braku uwagi i/lub nadpobudliwości:",
+                    items: [
+                        { id: "adhd_c1", text: "Istotny wzorzec deficytu uwagi (trudności ze skupieniem, organizacją, kończeniem zadań)" },
+                        { id: "adhd_c2", text: "Istotny wzorzec nadpobudliwości i impulsywności (wiercenie się, trudność w pozostawaniu w spoczynku)" }
+                    ]
+                },
+                additionalSymptoms: {
+                    minRequired: 2,
+                    description: "Weryfikacja kontekstowa i rozwojowa:",
+                    items: [
+                        { id: "adhd_a1", text: "Objawy występują w więcej niż jednym środowisku (np. praca, dom, relacje)" },
+                        { id: "adhd_a2", text: "Nasilenie objawów wykracza poza zakres oczekiwany dla poziomu rozwoju" },
+                        { id: "adhd_a3", text: "Początek objawów miał miejsce w okresie rozwojowym (często przed 12 r.ż.)" }
+                    ]
+                },
+                impairment: "Objawy bezpośrednio wpływają na funkcjonowanie społeczne, akademickie lub zawodowe."
+            }
+        },
+        {
+            code: "6B41",
+            title: "Złożony zespół stresu pourazowego (Complex PTSD)",
+            category: "Zaburzenia związane ze stresem",
+            diagnosticRequirements: {
+                duration: { minDays: 30, description: "Objawy utrzymują się przez co najmniej miesiąc po wydarzeniu traumatycznym." },
+                coreSymptoms: {
+                    minRequired: 3,
+                    description: "Musi spełniać wszystkie 3 kryteria klasycznego PTSD:",
+                    items: [
+                        { id: "cptsd_c1", text: "Ponowne doświadczanie traumy (fleshbacki, koszmary senne)" },
+                        { id: "cptsd_c2", text: "Unikanie bodźców przypominających o traumie" },
+                        { id: "cptsd_c3", text: "Poczucie bieżącego zagrożenia (hiperczujność, wzmożona reakcja lękowa)" }
+                    ]
+                },
+                additionalSymptoms: {
+                    minRequired: 3,
+                    description: "Musi spełniać wszystkie 3 obszary Zaburzeń Organizacji Samooceny (DSO):",
+                    items: [
+                        { id: "cptsd_a1", text: "Trudności w regulacji afektu (wybuchy gniewu, tłumienie emocji)" },
+                        { id: "cptsd_a2", text: "Trwałe przekonanie o własnej bezwartościowości lub wstydzie" },
+                        { id: "cptsd_a3", text: "Trwałe trudności w utrzymywaniu relacji i poczucie bliskości" }
+                    ]
+                },
+                impairment: "Powoduje poważne zakłócenia we wszystkich kluczowych sferach życia."
+            }
+        },
+        {
+            code: "6B00",
+            title: "Zespół lęku uogólnionego (GAD)",
+            category: "Zaburzenia lękowe",
+            diagnosticRequirements: {
+                duration: { minDays: 180, description: "Uogólniony lęk i niepokój utrzymuje się przez co najmniej 6 miesięcy." },
+                coreSymptoms: {
+                    minRequired: 1,
+                    description: "Główny objaw osiowy:",
+                    items: [
+                        { id: "gad_c1", text: "Nadmierny, wolnopłynący lęk dotyczący codziennych wydarzeń (trudny do kontrolowania)" }
+                    ]
+                },
+                additionalSymptoms: {
+                    minRequired: 3,
+                    description: "Co najmniej 3 z poniższych objawów somatycznych/poznawczych:",
+                    items: [
+                        { id: "gad_a1", text: "Napięcie mięśniowe lub bóle" },
+                        { id: "gad_a2", text: "Wzmożone pobudzenie autonomiczne (kołatanie serca, pocenie)" },
+                        { id: "gad_a3", text: "Uczucie rozdrażnienia lub 'na krawędzi'" },
+                        { id: "gad_a4", text: "Trudności z koncentracją / 'pustka w głowie'" },
+                        { id: "gad_a5", text: "Zaburzenia snu spowodowane zamartwianiem się" }
+                    ]
+                },
+                impairment: "Lęk powoduje znaczne cierpienie psychiczne lub utrudnia codzienne funkcjonowanie."
+            }
+        },
+        {
+            code: "6D10",
+            title: "Zaburzenie osobowości (Personality Disorder)",
+            category: "Zaburzenia osobowości",
+            diagnosticRequirements: {
+                duration: { minDays: 730, description: "Trwałe wzorce funkcjonowania utrzymujące się przez co najmniej 2 lata." },
+                coreSymptoms: {
+                    minRequired: 2,
+                    description: "Główne obszary zaburzeń funkcjonowania osobowości:",
+                    items: [
+                        { id: "pd_c1", text: "Zaburzenia funkcjonowania 'JA' (tożsamość, samoocena, samokierowanie)" },
+                        { id: "pd_c2", text: "Zaburzenia funkcjonowania interpersonalnego (rozumienie perspektywy innych, bliskość, konflikt)" }
+                    ]
+                },
+                additionalSymptoms: {
+                    minRequired: 1,
+                    description: "Weryfikacja cech charakterologicznych:",
+                    items: [
+                        { id: "pd_a1", text: "Wzorzec zachowań jest nieadaptacyjny i widoczny w wielu sytuacjach osobistych i społecznych" },
+                        { id: "pd_a2", text: "Wzorzec nie wynika bezpośrednio z zażywania substancji ani stanu somatycznego" }
+                    ]
+                },
+                impairment: "Spowodowanie istotnego cierpienia lub znacznego upośledzenia w relacjach, pracy i rolach społecznych."
             }
         }
-    };
+    ];
 
-    // 2. Funkcja budująca interfejs na podstawie JSON
-    function renderChecklist() {
-        document.getElementById('d-title').innerText = `[${disorderData.code}] ${disorderData.title}`;
-        document.getElementById('d-meta').innerText = `Kategoria: ${disorderData.category} | Wersja: ${disorderData.version}`;
+    let selectedDisorder = null;
 
-        const container = document.getElementById('criteria-container');
+    // Inicjalizacja listy
+    function init() {
+        renderDisorderList(icd11Database);
+        
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = icd11Database.filter(item => 
+                item.code.toLowerCase().includes(query) || 
+                item.title.toLowerCase().includes(query) ||
+                item.category.toLowerCase().includes(query)
+            );
+            renderDisorderList(filtered);
+        });
+    }
+
+    function renderDisorderList(items) {
+        const listEl = document.getElementById('disorderList');
+        listEl.innerHTML = '';
+        
+        items.forEach(item => {
+            const li = document.createElement('li');
+            li.className = `disorder-item ${selectedDisorder && selectedDisorder.code === item.code ? 'active' : ''}`;
+            li.onclick = () => selectDisorder(item);
+            li.innerHTML = `
+                <div class="item-code">${item.code}</div>
+                <div class="item-title">${item.title}</div>
+                <div class="item-cat">${item.category}</div>
+            `;
+            listEl.appendChild(li);
+        });
+    }
+
+    function selectDisorder(item) {
+        selectedDisorder = item;
+        renderDisorderList(icd11Database); // odśwież aktywne podświetlenie
+        
+        document.getElementById('disorderTitle').innerText = `[${item.code}] ${item.title}`;
+        document.getElementById('disorderMeta').innerText = `Kategoria: ${item.category} | Wersja: ICD-11 WHO`;
+        document.getElementById('footerPanel').style.display = 'flex';
+
+        const container = document.getElementById('criteriaContainer');
+        const reqs = item.diagnosticRequirements;
+
         let html = '';
 
-        const reqs = disorderData.diagnosticRequirements;
-
-        // Sekcja: Ramy czasowe
+        // Czas trwania
         html += `
-            <h3 class="section-title">Ramy czasowe</h3>
-            <div class="checkbox-item">
-                <input type="checkbox" id="chk_duration" class="criteria-checkbox">
-                <label for="chk_duration">${reqs.duration.description}</label>
+            <div class="section-card">
+                <h3 class="section-title">1. Wymagany czas trwania</h3>
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="chk_duration" onchange="validate()">
+                        <span>${reqs.duration.description}</span>
+                    </label>
+                </div>
             </div>
         `;
 
-        // Sekcja: Objawy osiowe
+        // Objawy Osiowe
         html += `
-            <h3 class="section-title">Objawy osiowe (min. ${reqs.coreSymptoms.minRequired})</h3>
-            <div class="section-desc">${reqs.coreSymptoms.description}</div>
+            <div class="section-card">
+                <h3 class="section-title">2. Objawy osiowe (Wymagane min. ${reqs.coreSymptoms.minRequired})</h3>
+                <div class="section-desc">${reqs.coreSymptoms.description}</div>
+                <div class="checkbox-group">
         `;
-        reqs.coreSymptoms.items.forEach(item => {
+        reqs.coreSymptoms.items.forEach(c => {
             html += `
-                <div class="checkbox-item">
-                    <input type="checkbox" id="${item.id}" data-type="core" class="criteria-checkbox">
-                    <label for="${item.id}">${item.text}</label>
-                </div>
+                <label class="checkbox-label">
+                    <input type="checkbox" data-type="core" id="${c.id}" onchange="validate()">
+                    <span>${c.text}</span>
+                </label>
             `;
         });
+        html += `</div></div>`;
 
-        // Sekcja: Objawy dodatkowe
+        // Objawy Dodatkowe
         html += `
-            <h3 class="section-title">Objawy dodatkowe (min. ${reqs.additionalSymptoms.minRequired})</h3>
-            <div class="section-desc">${reqs.additionalSymptoms.description}</div>
+            <div class="section-card">
+                <h3 class="section-title">3. Objawy dodatkowe (Wymagane min. ${reqs.additionalSymptoms.minRequired})</h3>
+                <div class="section-desc">${reqs.additionalSymptoms.description}</div>
+                <div class="checkbox-group">
         `;
-        reqs.additionalSymptoms.items.forEach(item => {
+        reqs.additionalSymptoms.items.forEach(a => {
             html += `
-                <div class="checkbox-item">
-                    <input type="checkbox" id="${item.id}" data-type="add" class="criteria-checkbox">
-                    <label for="${item.id}">${item.text}</label>
-                </div>
+                <label class="checkbox-label">
+                    <input type="checkbox" data-type="add" id="${a.id}" onchange="validate()">
+                    <span>${a.text}</span>
+                </label>
             `;
         });
+        html += `</div></div>`;
 
-        // Sekcja: Funkcjonowanie
-        if(reqs.functionalImpairment.required) {
-            html += `
-                <h3 class="section-title">Wpływ na funkcjonowanie</h3>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="chk_impairment" class="criteria-checkbox">
-                    <label for="chk_impairment">${reqs.functionalImpairment.description}</label>
+        // Wpływ na funkcjonowanie
+        html += `
+            <div class="section-card">
+                <h3 class="section-title">4. Wpływ na funkcjonowanie</h3>
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="chk_impairment" onchange="validate()">
+                        <span>${reqs.impairment}</span>
+                    </label>
                 </div>
-            `;
-        }
+            </div>
+        `;
 
         container.innerHTML = html;
-
-        // Podepnij nasłuchiwanie zdarzeń
-        document.querySelectorAll('.criteria-checkbox').forEach(chk => {
-            chk.addEventListener('change', validateCriteria);
-        });
-
-        // Wstępna walidacja (wszystko puste na start)
-        validateCriteria();
+        validate();
     }
 
-    // 3. Funkcja walidująca w czasie rzeczywistym
-    function validateCriteria() {
-        const reqs = disorderData.diagnosticRequirements;
+    function validate() {
+        if (!selectedDisorder) return;
+
+        const reqs = selectedDisorder.diagnosticRequirements;
+        const durationChecked = document.getElementById('chk_duration')?.checked || false;
+        const impairmentChecked = document.getElementById('chk_impairment')?.checked || false;
         
-        // Zliczanie zaznaczonych elementów
-        const coreChecked = document.querySelectorAll('input[data-type="core"]:checked').length;
-        const addChecked = document.querySelectorAll('input[data-type="add"]:checked').length;
-        const durationChecked = document.getElementById('chk_duration').checked;
-        const impairmentChecked = document.getElementById('chk_impairment') ? document.getElementById('chk_impairment').checked : true;
+        const coreCount = document.querySelectorAll('input[data-type="core"]:checked').length;
+        const addCount = document.querySelectorAll('input[data-type="add"]:checked').length;
 
-        // Sprawdzanie warunków
-        const coreMet = coreChecked >= reqs.coreSymptoms.minRequired;
-        const addMet = addChecked >= reqs.additionalSymptoms.minRequired;
-        
-        const isComplete = coreMet && addMet && durationChecked && impairmentChecked;
+        const isMet = durationChecked && impairmentChecked && 
+                      (coreCount >= reqs.coreSymptoms.minRequired) && 
+                      (addCount >= reqs.additionalSymptoms.minRequired);
 
-        // Aktualizacja UI (Panel wyników)
-        const panel = document.getElementById('result-panel');
-        const statusText = document.getElementById('status-text');
-        const reqDetails = document.getElementById('req-details');
-
-        if (isComplete) {
-            panel.className = 'card result-panel status-complete';
-            statusText.innerText = 'Kryteria diagnostyczne zostały wstępnie spełnione';
-            reqDetails.innerHTML = '<li>Pamiętaj o weryfikacji wykluczeń i diagnozy różnicowej przed podjęciem ostatecznej decyzji.</li>';
+        const badge = document.getElementById('statusBadge');
+        if (isMet) {
+            badge.className = 'status-badge complete';
+            badge.innerText = '✓ Kryteria diagnostyczne spełnione';
         } else {
-            panel.className = 'card result-panel status-incomplete';
-            statusText.innerText = 'Kryteria diagnostyczne NIE są w pełni spełnione';
-            
-            let detailsHtml = '';
-            if (!durationChecked) detailsHtml += '<li>❌ Brak potwierdzenia minimalnego czasu trwania objawów.</li>';
-            if (!coreMet) detailsHtml += `<li>❌ Zaznaczono ${coreChecked}/${reqs.coreSymptoms.minRequired} wymaganych objawów osiowych.</li>`;
-            if (!addMet) detailsHtml += `<li>❌ Zaznaczono ${addChecked}/${reqs.additionalSymptoms.minRequired} wymaganych objawów dodatkowych.</li>`;
-            if (!impairmentChecked) detailsHtml += '<li>❌ Brak potwierdzenia wpływu na funkcjonowanie pacjenta.</li>';
-            
-            reqDetails.innerHTML = detailsHtml;
+            badge.className = 'status-badge incomplete';
+            badge.innerText = '❌ Kryteria niespełnione (Sprawdź zaznaczenia)';
         }
     }
 
-    // Start aplikacji
-    window.onload = renderChecklist;
-</script>
+    function exportSummary() {
+        if (!selectedDisorder) return;
 
+        const coreChecked = Array.from(document.querySelectorAll('input[data-type="core"]:checked'))
+            .map(cb => "- " + cb.nextElementSibling.innerText).join('\n');
+        
+        const addChecked = Array.from(document.querySelectorAll('input[data-type="add"]:checked'))
+            .map(cb => "- " + cb.nextElementSibling.innerText).join('\n');
+
+        const badgeText = document.getElementById('statusBadge').innerText;
+
+        const textToCopy = `PODSUMOWANIE DIAGNOSTYCZNE ICD-11
+Jednostka: [${selectedDisorder.code}] ${selectedDisorder.title}
+Status: ${badgeText}
+
+ZAZNACZONE OBJAWY OSIOWE:
+${coreChecked || '- Brak'}
+
+ZAZNACZONE OBJAWY DODATKOWE:
+${addChecked || '- Brak'}
+
+Data weryfikacji: ${new Date().toLocaleDateString('pl-PL')}`;
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            alert('Podsumowanie zostało skopiowane do schowka! Możesz je wkleić do notatek pacjenta.');
+        });
+    }
+
+    window.onload = init;
+</script>
 </body>
 </html>
