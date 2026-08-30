@@ -80,6 +80,16 @@
         canvas {
             background: white; border: 1px solid #e2e8f0; border-radius: 8px;
             box-shadow: var(--shadow-md); cursor: crosshair; touch-action: none;
+            width: 100%; max-width: 600px; height: auto; aspect-ratio: 3 / 2;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 8px; }
+            .game-container { padding: 15px 10px; }
+            header h1 { font-size: 1.4rem; }
+            #controls { gap: 6px; }
+            select, button { padding: 8px 10px; font-size: 0.85rem; }
+            #stats { max-width: 100%; font-size: 0.9rem; padding: 8px; }
         }
 
         #info { margin-top: 15px; font-weight: 500; min-height: 40px; text-align: center; }
@@ -179,7 +189,8 @@
             });
         }
 
-        canvas.addEventListener('mousedown', e => {
+        canvas.addEventListener('pointerdown', e => {
+            e.preventDefault();
             const rect = canvas.getBoundingClientRect();
             const x = (e.clientX - rect.left) * (600 / rect.width);
             const y = (e.clientY - rect.top) * (400 / rect.height);
