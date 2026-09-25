@@ -216,143 +216,627 @@
     </div>
 
 <script>
-    // Baza danych kluczowych jednostek ICD-11 z podziałem na kategorie
-    const icd11Database = [
-        {
-            code: "6A20",
-            title: "Depresja jednorazowa (Single Episode Depressive Disorder)",
-            category: "Zaburzenia nastroju",
-            diagnosticRequirements: {
-                duration: { minDays: 14, description: "Objawy trwają przez większość dnia, niemal codziennie, przez min. 2 tygodnie." },
-                coreSymptoms: {
-                    minRequired: 1,
-                    description: "Musi wystąpić co najmniej 1 objaw osiowy:",
-                    items: [
-                        { id: "dep_c1", text: "Obniżony nastrój niemal codziennie przez większość dnia" },
-                        { id: "dep_c2", text: "Znaczny spadek zainteresowań lub odczuwania przyjemności (anhedonia)" }
-                    ]
-                },
-                additionalSymptoms: {
-                    minRequired: 3,
-                    description: "Musi wystąpić co najmniej 3 dodatkowe objawy:",
-                    items: [
-                        { id: "dep_a1", text: "Trudności z koncentracją i podejmowaniem decyzji" },
-                        { id: "dep_a2", text: "Poczucie nadmiernej winy / niskiej samooceny" },
-                        { id: "dep_a3", text: "Nawracające myśli o śmierci lub samobójstwie" },
-                        { id: "dep_a4", text: "Zaburzenia snu (bezsenność lub nadmierna senność)" },
-                        { id: "dep_a5", text: "Znaczne zmiany apetytu lub masy ciała" },
-                        { id: "dep_a6", text: "Zmęczenie lub spadek energii" }
-                    ]
-                },
-                impairment: "Objawy powodują istotne cierpienie lub upośledzenie funkcjonowania osobistego, społecznego lub zawodowego."
+        // Baza danych kluczowych jednostek ICD-11 z podziałem na kategorie
+        const icd11Database = [
+            {
+                code: "6A00-6A0Z",
+                title: "Neurodevelopmental disorders (Zaburzenia neurorozwojowe)",
+                category: "06 Mental, behavioural or neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 180, description: "Objawy ujawniają się w okresie rozwojowym i utrzymują się długotrwale." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Występują deficyty w zakresie rozwoju ośrodkowego układu nerwowego:",
+                        items: [
+                            { id: "nd_c1", text: "Zaburzenia funkcji poznawczych, komunikacji lub zachowań społecznych" },
+                            { id: "nd_c2", text: "Trudności w funkcjonowaniu szkolnym, zawodowym lub społecznym" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Kryteria specyficzne:",
+                        items: [
+                            { id: "nd_a1", text: "Wzorzec objawów jest charakterystyczny dla zaburzeń neurorozwojowych (np. spektrum autyzmu, ADHD, niepełnosprawność intelektualna)" }
+                        ]
+                    },
+                    impairment: "Powoduje istotne ograniczenia w codziennym funkcjonowaniu."
+                }
+            },
+            {
+                code: "6A20",
+                title: "Depresja jednorazowa (Single Episode Depressive Disorder)",
+                category: "Mood disorders (Zaburzenia nastroju)",
+                diagnosticRequirements: {
+                    duration: { minDays: 14, description: "Objawy trwają przez większość dnia, niemal codziennie, przez min. 2 tygodnie." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Musi wystąpić co najmniej 1 objaw osiowy:",
+                        items: [
+                            { id: "dep_c1", text: "Obniżony nastrój niemal codziennie przez większość dnia" },
+                            { id: "dep_c2", text: "Znaczny spadek zainteresowań lub odczuwania przyjemności (anhedonia)" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 3,
+                        description: "Musi wystąpić co najmniej 3 dodatkowe objawy:",
+                        items: [
+                            { id: "dep_a1", text: "Trudności z koncentracją i podejmowaniem decyzji" },
+                            { id: "dep_a2", text: "Poczucie nadmiernej winy / niskiej samooceny" },
+                            { id: "dep_a3", text: "Nawracające myśli o śmierci lub samobójstwie" },
+                            { id: "dep_a4", text: "Zaburzenia snu (bezsenność lub nadmierna senność)" },
+                            { id: "dep_a5", text: "Znaczne zmiany apetytu lub masy ciała" },
+                            { id: "dep_a6", text: "Zmęczenie lub spadek energii" }
+                        ]
+                    },
+                    impairment: "Objawy powodują istotne cierpienie lub upośledzenie funkcjonowania osobistego, społecznego lub zawodowego."
+                }
+            },
+            {
+                code: "6A05",
+                title: "Zespół nadpobudliwości psychoruchowej (ADHD)",
+                category: "Neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 180, description: "Wzorce zachowań utrzymują się przez co najmniej 6 miesięcy." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Występowanie utrwalonego wzorca braku uwagi i/lub nadpobudliwości:",
+                        items: [
+                            { id: "adhd_c1", text: "Istotny wzorzec deficytu uwagi (trudności ze skupieniem, organizacją, kończeniem zadań)" },
+                            { id: "adhd_c2", text: "Istotny wzorzec nadpobudliwości i impulsywności (wiercenie się, trudność w pozostawaniu w spoczynku)" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 2,
+                        description: "Weryfikacja kontekstowa i rozwojowa:",
+                        items: [
+                            { id: "adhd_a1", text: "Objawy występują w więcej niż jednym środowisku (np. praca, dom, relacje)" },
+                            { id: "adhd_a2", text: "Nasilenie objawów wykracza poza zakres oczekiwany dla poziomu rozwoju" },
+                            { id: "adhd_a3", text: "Początek objawów miał miejsce w okresie rozwojowym (często przed 12 r.ż.)" }
+                        ]
+                    },
+                    impairment: "Objawy bezpośrednio wpływają na funkcjonowanie społeczne, akademickie lub zawodowe."
+                }
+            },
+            {
+                code: "6A20-6A6Z",
+                title: "Schizophrenia or other primary psychotic disorders",
+                category: "06 Mental, behavioural or neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 30, description: "Uporczywa obecność objawów psychotycznych przez co najmniej miesiąc." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Główne objawy psychotyczne:",
+                        items: [
+                            { id: "sz_c1", text: "Urojenia (np. prześladowcze, ksobne, wielkościowe)" },
+                            { id: "sz_c2", text: "Omamy (najczęściej słuchowe)" },
+                            { id: "sz_c3", text: "Zdezorganizowane myślenie lub mowa" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy negatywne lub katatoniczne:",
+                        items: [
+                            { id: "sz_a1", text: "Spłaszczenie afektu lub alogia" },
+                            { id: "sz_a2", text: "Znaczny spadek napędu i wycofanie społeczne" }
+                        ]
+                    },
+                    impairment: "Znaczne upośledzenie codziennego funkcjonowania i kontaktu z rzeczywistością."
+                }
+            },
+            {
+                code: "6B41",
+                title: "Złożony zespół stresu pourazowego (Complex PTSD)",
+                category: "Disorders specifically associated with stress",
+                diagnosticRequirements: {
+                    duration: { minDays: 30, description: "Objawy utrzymują się przez co najmniej miesiąc po wydarzeniu traumatycznym." },
+                    coreSymptoms: {
+                        minRequired: 3,
+                        description: "Musi spełniać wszystkie 3 kryteria klasycznego PTSD:",
+                        items: [
+                            { id: "cptsd_c1", text: "Ponowne doświadczanie traumy (fleshbacki, koszmarne sny)" },
+                            { id: "cptsd_c2", text: "Unikanie bodźców przypominających o traumie" },
+                            { id: "cptsd_c3", text: "Poczucie bieżącego zagrożenia (hiperczujność, wzmożona reakcja lękowa)" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 3,
+                        description: "Musi spełniać wszystkie 3 obszary Zaburzeń Organizacji Samooceny (DSO):",
+                        items: [
+                            { id: "cptsd_a1", text: "Trudności w regulacji afektu (wybuchy gniewu, tłumienie emocji)" },
+                            { id: "cptsd_a2", text: "Trwałe przekonanie o własnej bezwartościowości lub wstydzie" },
+                            { id: "cptsd_a3", text: "Trwałe trudności w utrzymywaniu relacji i poczucie bliskości" }
+                        ]
+                    },
+                    impairment: "Powoduje poważne zakłócenia we wszystkich kluczowych sferach życia."
+                }
+            },
+            {
+                code: "6B00",
+                title: "Zespół lęku uogólnionego (GAD)",
+                category: "Anxiety or fear-related disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 180, description: "Uogólniony lęk i niepokój utrzymuje się przez co najmniej 6 miesięcy." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Główny objaw osiowy:",
+                        items: [
+                            { id: "gad_c1", text: "Nadmierny, wolnopłynący lęk dotyczący codziennych wydarzeń (trudny do kontrolowania)" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 3,
+                        description: "Co najmniej 3 z poniższych objawów somatycznych/poznawczych:",
+                        items: [
+                            { id: "gad_a1", text: "Napięcie mięśniowe lub bóle" },
+                            { id: "gad_a2", text: "Wzmożone pobudzenie autonomiczne (kołatanie serca, pocenie)" },
+                            { id: "gad_a3", text: "Uczucie rozdrażnienia lub 'na krawędzi'" },
+                            { id: "gad_a4", text: "Trudności z koncentracją / 'pustka w głowie'" },
+                            { id: "gad_a5", text: "Zaburzenia snu spowodowane zamartwianiem się" }
+                        ]
+                    },
+                    impairment: "Lęk powoduje znaczne cierpienie psychiczne lub utrudnia codzienne funkcjonowanie."
+                }
+            },
+            {
+                code: "6B20",
+                title: "Obsessive-compulsive or related disorders (Zaburzenia obsesyjno-kompulsyjne)",
+                category: "06 Mental, behavioural or neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 14, description: "Objawy występują przez większość dni przez co najmniej 2 tygodnie." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Występowanie obsesji i/lub kompulsji:",
+                        items: [
+                            { id: "ocd_c1", text: "Obsesje: nawracające, uporczywe myśli, impulsy lub wyobrażenia odczuwane jako intruzywne" },
+                            { id: "ocd_c2", text: "Kompulsje: powtarzalne zachowania lub czynności myślowe wykonywane w odpowiedzi na obsesje" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Charakterystyka zaburzenia:",
+                        items: [
+                            { id: "ocd_a1", text: "Czynności te zajmują dużo czasu (np. ponad godzinę dziennie) lub powodują znaczne cierpienie" }
+                        ]
+                    },
+                    impairment: "Znaczne upośledzenie funkcjonowania społecznego lub zawodowego."
+                }
+            },
+            {
+                code: "6B60",
+                title: "Dissociative disorders (Zaburzenia dysocjacyjne)",
+                category: "06 Mental, behavioural or neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 1, description: "Epizodyczne lub przewlekłe występowanie objawów." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy osiowe:",
+                        items: [
+                            { id: "diss_c1", text: "Nieintegrowane lub przerwane poczucie ciągłości świadomości, pamięci, tożsamości lub percepcji" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Dodatkowa weryfikacja:",
+                        items: [
+                            { id: "diss_a1", text: "Objawy nie są wynikiem bezpośredniego działania substancji ani stanu chorobowego somatycznego" }
+                        ]
+                    },
+                    impairment: "Znaczne upośledzenie funkcjonowania."
+                }
+            },
+            {
+                code: "6B80",
+                title: "Feeding or eating disorders (Zaburzenia odżywiania)",
+                category: "06 Mental, behavioural or neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 30, description: "Utrzymywanie się wzorca zachowań przez co najmniej miesiąc." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Główne zaburzenia zachowań żywieniowych:",
+                        items: [
+                            { id: "eat_c1", text: "Zaburzone zachowania związane z jedzeniem lub kontrolą masy ciała (np. restrykcje, napady obżarstwa, przeczyszczanie się)" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Kryteria poznawcze:",
+                        items: [
+                            { id: "eat_a1", text: "Nadmierna koncentracja na masie ciała, kształcie sylwetki i jej kontroli" }
+                        ]
+                    },
+                    impairment: "Zagrożenie zdrowia fizycznego lub znaczne pogorszenie funkcjonowania społecznego."
+                }
+            },
+            {
+                code: "6C00",
+                title: "Elimination disorders (Zaburzenia wydalania)",
+                category: "06 Mental, behavioural or neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 90, description: "Nawracające epizody nietrzymania moczu lub stolca." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy osiowe:",
+                        items: [
+                            { id: "elim_c1", text: "Wydalanie moczu lub każu w miejscach niewłaściwych (np. enureza, enkopreza) po osiągnięciu wieku kontroli zwieraczy" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Kontekst rozwojowy:",
+                        items: [
+                            { id: "elim_a1", text: "Występuje z określoną częstotliwością przez minimum 3 miesiące" }
+                        ]
+                    },
+                    impairment: "Znaczny stres emocjonalny lub trudności społeczne."
+                }
+            },
+            {
+                code: "6C20",
+                title: "Disorders of bodily distress or bodily experience (Zaburzenia cierpienia somatycznego)",
+                category: "06 Mental, behavioural or neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 90, description: "Uporczywe utrzymywanie się objawów przez min. kilka miesięcy." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy somatyczne:",
+                        items: [
+                            { id: "bod_c1", text: "Występowanie licznych, uciążliwych objawów somatycznych, które powodują cierpienie" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Skupienie poznawcze:",
+                        items: [
+                            { id: "bod_a1", text: "Nadmierne zaabsorbowanie tymi objawami i nieproporcjonalny lęk o zdrowie" }
+                        ]
+                    },
+                    impairment: "Utrudnienie codziennego funkcjonowania."
+                }
+            },
+            {
+                code: "6C40",
+                title: "Disorders due to substance use or addictive behaviours (Zaburzenia związane z używaniem substancji lub uzależnieniami behawioralnymi)",
+                category: "06 Mental, behavioural or neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 30, description: "Utrata kontroli nad przyjmowaniem substancji lub zachowaniem przez min. miesiąc." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Utrata kontroli:",
+                        items: [
+                            { id: "sub_c1", text: "Upośledzona kontrola nad substancją lub zachowaniem (częstotliwość, dawka, czas trwania)" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Konsekwencje:",
+                        items: [
+                            { id: "sub_a1", text: "Priorytetowe traktowanie uzależnienia kosztem innych obowiązków i relacji mimo szkód" }
+                        ]
+                    },
+                    impairment: "Poważne negatywne konsekwencje zdrowotne i społeczne."
+                }
+            },
+            {
+                code: "6C70",
+                title: "Impulse control disorders (Zaburzenia kontroli impulsów)",
+                category: "06 Mental, behavioural or neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 90, description: "Powtarzające się epizody braku kontroli." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [
+                            { id: "imp_c1", text: "Niemożność powstrzymania się przed impulsem do podjęcia działania szkodliwego dla siebie lub innych (np. piromania, kleptomania, wybuchy gniewu)" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Cyklus impulsu:",
+                        items: [
+                            { id: "imp_a1", text: "Rosnące napięcie przed akcją i ulga/satysfakcja po jej wykonaniu" }
+                        ]
+                    },
+                    impairment: "Znaczne szkody społeczne i prawne."
+                }
+            },
+            {
+                code: "6C90",
+                title: "Disruptive behaviour or dissocial disorders (Zaburzenia zachowania opozycyjno-buntowniczego lub dissocialne)",
+                category: "06 Mental, behavioural or neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 180, description: "Trwały wzorzec zachowań." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Wzorzec zachowań:",
+                        items: [
+                            { id: "dis_c1", text: "Powtarzające się naruszanie praw innych ludzi oraz podstawowych norm społecznych" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Agresja:",
+                        items: [
+                            { id: "dis_a1", text: "Zachowania agresywne, niszczycielskie lub jawnie buntownicze" }
+                        ]
+                    },
+                    impairment: "Upośledzenie funkcjonowania w szkole, rodzinie lub grupie rówieśniczej."
+                }
+            },
+            {
+                code: "6D10",
+                title: "Zaburzenie osobowości (Personality disorder)",
+                category: "Personality disorders and related traits",
+                diagnosticRequirements: {
+                    duration: { minDays: 730, description: "Trwałe wzorce funkcjonowania utrzymujące się przez co najmniej 2 lata." },
+                    coreSymptoms: {
+                        minRequired: 2,
+                        description: "Główne obszary zaburzeń funkcjonowania osobowości:",
+                        items: [
+                            { id: "pd_c1", text: "Zaburzenia funkcjonowania 'JA' (tożsamość, samoocena, samokierowanie)" },
+                            { id: "pd_c2", text: "Zaburzenia funkcjonowania interpersonalnego (rozumienie perspektywy innych, bliskość, konflikt)" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Weryfikacja cech charakterologicznych:",
+                        items: [
+                            { id: "pd_a1", text: "Wzorzec zachowań jest nieadaptacyjny i widoczny w wielu sytuacjach osobistych i społecznych" },
+                            { id: "pd_a2", text: "Wzorzec nie wynika bezpośrednio z zażywania substancji ani stanu somatycznego" }
+                        ]
+                    },
+                    impairment: "Spowodowanie istotnego cierpienia lub znacznego upośledzenia w relacjach, pracy i rolach społecznych."
+                }
+            },
+            {
+                code: "6D30",
+                title: "Paraphilic disorders (Zaburzenia parafili)",
+                category: "06 Mental, behavioural or neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 180, description: "Uporczywe wzorce przez min. 6 miesięcy." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Preferencje:",
+                        items: [
+                            { id: "par_c1", text: "Intensywne i powtarzające się pobudzenie seksualne związane z nietypowymi bodźcami (np. osoby niezgadzające się, dzieci)" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Kryterium szkody:",
+                        items: [
+                            { id: "par_a1", text: "Działania powodują krzywdę innych lub osobiste cierpienie i distress" }
+                        ]
+                    },
+                    impairment: "Cierpienie psychiczne lub ryzyko skrzywdzenia osób trzecich."
+                }
+            },
+            {
+                code: "6D50",
+                title: "Factitious disorders (Zaburzenia sztuczne / Symulowanie objawów)",
+                category: "06 Mental, behavioural or neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 30, description: "Powtarzające się wzorce zachowań." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [
+                            { id: "fac_c1", text: "Celowe fałszowanie lub wywoływanie objawów fizycznych lub psychicznych u siebie lub innej osoby w celu przyjmowania roli chorego" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Brak zysku zewnętrznego:",
+                        items: [
+                            { id: "fac_a1", text: "Brak wyraźnej zewnętrznej korzyści materialnej czy prawnej (w przeciwieństwie do symulowania)" }
+                        ]
+                    },
+                    impairment: "Ryzyko medyczne i upośledzenie ról społecznych."
+                }
+            },
+            {
+                code: "6D70",
+                title: "Neurocognitive disorders (Zaburzenia neuroogniskowe / Otępienia)",
+                category: "06 Mental, behavioural or neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 90, description: "Nabyty, postępujący spadek funkcji poznawczych." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Deficyt poznawczy:",
+                        items: [
+                            { id: "nc_c1", text: "Znaczny spadek w jednym lub wielu domenach poznawczych (pamięć, uwaga, funkcja wykonawcza) w stosunku do wcześniejszego poziomu" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Weryfikacja:",
+                        items: [
+                            { id: "nc_a1", text: "Objawy nie wynikają wyłącznie z ostrego delirium" }
+                        ]
+                    },
+                    impairment: "Utrata samodzielności w codziennym życiu."
+                }
+            },
+            {
+                code: "6E20",
+                title: "Mental or behavioural disorders associated with pregnancy, childbirth or the puerperium (Zaburzenia psychiczne w okresie okołoporodowym)",
+                category: "06 Mental, behavioural or neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 7, description: "Pojawienie się objawów w ciąży lub do 6 tygodni po porodzie." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [
+                            { id: "per_c1", text: "Wystąpienie epizodu depresyjnego, lękowego lub psychotycznego ściśle powiązanego z okresem okołoporodowym" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Wpływ:",
+                        items: [
+                            { id: "per_a1", text: "Istotny wpływ na więź z dzieckiem i opiekę nad nim" }
+                        ]
+                    },
+                    impairment: "Zakłócenie funkcjonowania matki i opieki nad noworodkiem."
+                }
+            },
+            {
+                code: "6E40",
+                title: "Psychological or behavioural factors affecting disorders or diseases classified elsewhere",
+                category: "06 Mental, behavioural or neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 30, description: "Utrzymywanie się czynnika behawioralnego." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Wpływ psychiczny na stan somatyczny:",
+                        items: [
+                            { id: "pf_c1", text: "Czynniki psychologiczne lub behawioralne istotnie wpływają na przebieg lub nasilenie schorzenia medycznego innej kategorii" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Weryfikacja:",
+                        items: [
+                            { id: "pf_a1", text: "Czynniki te zwiększają ryzyko cierpienia, uszczerbku na zdrowiu lub śmierci" }
+                        ]
+                    },
+                    impairment: "Pogorszenie rokowania medycznego."
+                }
+            },
+            {
+                code: "6E60",
+                title: "Secondary mental or behavioural syndromes associated with disorders or diseases classified elsewhere",
+                category: "06 Mental, behavioural or neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 1, description: "Wystąpienie wtórnego zespołu." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy wtórne:",
+                        items: [
+                            { id: "sec_c1", text: "Zaburzenia psychiczne będące bezpośrednią konsekwencją fizjologiczną innej choroby somatycznej lub neurologicznej" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Powiązanie:",
+                        items: [
+                            { id: "sec_a1", text: "Bezpośredni związek czasowy z chorobą podstawową" }
+                        ]
+                    },
+                    impairment: "Istotne pogorszenie stanu psychicznego pacjenta."
+                }
+            },
+            {
+                code: "7A00-7B2Z",
+                title: "Sleep-wake disorders (Zaburzenia snu i czuwania)",
+                category: "07 Sleep-wake disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 30, description: "Problemy ze snem występujące regularnie przez min. miesiąc." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy osiowe:",
+                        items: [
+                            { id: "slp_c1", text: "Niezadowalająca jakość, timing lub czas trwania snu (np. bezsenność, hipersomnia, parasomnie)" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Wpływ za dnia:",
+                        items: [
+                            { id: "slp_a1", text: "Zmęczenie w ciągu dnia, drażliwość lub spadek koncentracji" }
+                        ]
+                    },
+                    impairment: "Utrudnienie codziennego funkcjonowania."
+                }
+            },
+            {
+                code: "HA20",
+                title: "Sexual dysfunctions (Dysfunkcje seksualne)",
+                category: "Sexual dysfunctions",
+                diagnosticRequirements: {
+                    duration: { minDays: 90, description: "Utrzymywanie się problemu przez min. 3 miesiące." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [
+                            { id: "sex_c1", text: "Powtarzające się trudności w odczuwaniu satysfakcji, pożądania, podniecenia lub osiąganiu orgazmu" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Dyskomfort:",
+                        items: [
+                            { id: "sex_a1", text: "Powoduje osobisty distress lub konflikt w relacji partnerskiej" }
+                        ]
+                    },
+                    impairment: "Cierpienie psychiczne i problemy w relacjach."
+                }
+            },
+            {
+                code: "HA60",
+                title: "Gender incongruence (Niezgodność płciowa)",
+                category: "Gender incongruence",
+                diagnosticRequirements: {
+                    duration: { minDays: 180, description: "Wyraźna i trwała niezgodność przez min. 6 miesięcy." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [
+                            { id: "gen_c1", text: "Wyraźna i trwała niezgodność między odczuwaną płcią a przypisaną przy urodzeniu" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Ekspresja:",
+                        items: [
+                            { id: "gen_a1", text: "Silne pragnienie zmiany lub usunięcia cech płciowych w celu dostosowania do odczuwanej tożsamości" }
+                        ]
+                    },
+                    impairment: "Potrzeba wsparcia psychologicznego i medycznego w procesie korekty płci."
+                }
+            },
+            {
+                code: "6E8Y",
+                title: "Other specified mental, behavioural or neurodevelopmental disorders",
+                category: "Inne określone zaburzenia",
+                diagnosticRequirements: {
+                    duration: { minDays: 1, description: "Spełnia kryteria nietypowe." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Opis:",
+                        items: [
+                            { id: "oth_c1", text: "Zaburzenie psychiczne lub behawioralne spełniające kryteria ogólne, ale nie pasujące ściśle do żadnej konkretnej podkategorii" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 0,
+                        description: "Brak dodatkowych restrykcji",
+                        items: []
+                    },
+                    impairment: "Powoduje istotny distress."
+                }
+            },
+            {
+                code: "6E8Z",
+                title: "Mental, behavioural or neurodevelopmental disorders, unspecified",
+                category: "Nieokreślone zaburzenia",
+                diagnosticRequirements: {
+                    duration: { minDays: 1, description: "Brak pełnych danych." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Opis:",
+                        items: [
+                            { id: "uns_c1", text: "Zaburzenia psychiczne lub behawioralne, w przypadku których brak wystarczających informacji do postawienia konkretnej diagnozy" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 0,
+                        description: "Brak dodatkowych restrykcji",
+                        items: []
+                    },
+                    impairment: "Wymaga dalszej diagnozy klinicznej."
+                }
             }
-        },
-        {
-            code: "6A05",
-            title: "Zespół nadpobudliwości psychoruchowej (ADHD)",
-            category: "Zaburzenia neurorozwojowe",
-            diagnosticRequirements: {
-                duration: { minDays: 180, description: "Wzorce zachowań utrzymują się przez co najmniej 6 miesięcy." },
-                coreSymptoms: {
-                    minRequired: 1,
-                    description: "Występowanie utrwalonego wzorca braku uwagi i/lub nadpobudliwości:",
-                    items: [
-                        { id: "adhd_c1", text: "Istotny wzorzec deficytu uwagi (trudności ze skupieniem, organizacją, kończeniem zadań)" },
-                        { id: "adhd_c2", text: "Istotny wzorzec nadpobudliwości i impulsywności (wiercenie się, trudność w pozostawaniu w spoczynku)" }
-                    ]
-                },
-                additionalSymptoms: {
-                    minRequired: 2,
-                    description: "Weryfikacja kontekstowa i rozwojowa:",
-                    items: [
-                        { id: "adhd_a1", text: "Objawy występują w więcej niż jednym środowisku (np. praca, dom, relacje)" },
-                        { id: "adhd_a2", text: "Nasilenie objawów wykracza poza zakres oczekiwany dla poziomu rozwoju" },
-                        { id: "adhd_a3", text: "Początek objawów miał miejsce w okresie rozwojowym (często przed 12 r.ż.)" }
-                    ]
-                },
-                impairment: "Objawy bezpośrednio wpływają na funkcjonowanie społeczne, akademickie lub zawodowe."
-            }
-        },
-        {
-            code: "6B41",
-            title: "Złożony zespół stresu pourazowego (Complex PTSD)",
-            category: "Zaburzenia związane ze stresem",
-            diagnosticRequirements: {
-                duration: { minDays: 30, description: "Objawy utrzymują się przez co najmniej miesiąc po wydarzeniu traumatycznym." },
-                coreSymptoms: {
-                    minRequired: 3,
-                    description: "Musi spełniać wszystkie 3 kryteria klasycznego PTSD:",
-                    items: [
-                        { id: "cptsd_c1", text: "Ponowne doświadczanie traumy (fleshbacki, koszmary senne)" },
-                        { id: "cptsd_c2", text: "Unikanie bodźców przypominających o traumie" },
-                        { id: "cptsd_c3", text: "Poczucie bieżącego zagrożenia (hiperczujność, wzmożona reakcja lękowa)" }
-                    ]
-                },
-                additionalSymptoms: {
-                    minRequired: 3,
-                    description: "Musi spełniać wszystkie 3 obszary Zaburzeń Organizacji Samooceny (DSO):",
-                    items: [
-                        { id: "cptsd_a1", text: "Trudności w regulacji afektu (wybuchy gniewu, tłumienie emocji)" },
-                        { id: "cptsd_a2", text: "Trwałe przekonanie o własnej bezwartościowości lub wstydzie" },
-                        { id: "cptsd_a3", text: "Trwałe trudności w utrzymywaniu relacji i poczucie bliskości" }
-                    ]
-                },
-                impairment: "Powoduje poważne zakłócenia we wszystkich kluczowych sferach życia."
-            }
-        },
-        {
-            code: "6B00",
-            title: "Zespół lęku uogólnionego (GAD)",
-            category: "Zaburzenia lękowe",
-            diagnosticRequirements: {
-                duration: { minDays: 180, description: "Uogólniony lęk i niepokój utrzymuje się przez co najmniej 6 miesięcy." },
-                coreSymptoms: {
-                    minRequired: 1,
-                    description: "Główny objaw osiowy:",
-                    items: [
-                        { id: "gad_c1", text: "Nadmierny, wolnopłynący lęk dotyczący codziennych wydarzeń (trudny do kontrolowania)" }
-                    ]
-                },
-                additionalSymptoms: {
-                    minRequired: 3,
-                    description: "Co najmniej 3 z poniższych objawów somatycznych/poznawczych:",
-                    items: [
-                        { id: "gad_a1", text: "Napięcie mięśniowe lub bóle" },
-                        { id: "gad_a2", text: "Wzmożone pobudzenie autonomiczne (kołatanie serca, pocenie)" },
-                        { id: "gad_a3", text: "Uczucie rozdrażnienia lub 'na krawędzi'" },
-                        { id: "gad_a4", text: "Trudności z koncentracją / 'pustka w głowie'" },
-                        { id: "gad_a5", text: "Zaburzenia snu spowodowane zamartwianiem się" }
-                    ]
-                },
-                impairment: "Lęk powoduje znaczne cierpienie psychiczne lub utrudnia codzienne funkcjonowanie."
-            }
-        },
-        {
-            code: "6D10",
-            title: "Zaburzenie osobowości (Personality Disorder)",
-            category: "Zaburzenia osobowości",
-            diagnosticRequirements: {
-                duration: { minDays: 730, description: "Trwałe wzorce funkcjonowania utrzymujące się przez co najmniej 2 lata." },
-                coreSymptoms: {
-                    minRequired: 2,
-                    description: "Główne obszary zaburzeń funkcjonowania osobowości:",
-                    items: [
-                        { id: "pd_c1", text: "Zaburzenia funkcjonowania 'JA' (tożsamość, samoocena, samokierowanie)" },
-                        { id: "pd_c2", text: "Zaburzenia funkcjonowania interpersonalnego (rozumienie perspektywy innych, bliskość, konflikt)" }
-                    ]
-                },
-                additionalSymptoms: {
-                    minRequired: 1,
-                    description: "Weryfikacja cech charakterologicznych:",
-                    items: [
-                        { id: "pd_a1", text: "Wzorzec zachowań jest nieadaptacyjny i widoczny w wielu sytuacjach osobistych i społecznych" },
-                        { id: "pd_a2", text: "Wzorzec nie wynika bezpośrednio z zażywania substancji ani stanu somatycznego" }
-                    ]
-                },
-                impairment: "Spowodowanie istotnego cierpienia lub znacznego upośledzenia w relacjach, pracy i rolach społecznych."
-            }
-        }
-    ];
+        ];
 
     let selectedDisorder = null;
 
