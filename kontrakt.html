@@ -10,16 +10,16 @@
 
     <style>
         :root {
-            --primary: #2c3e50;
-            --secondary: #34495e;
-            --accent: #3498db;
-            --bg-color: #f4f7f6;
-            --card-bg: #ffffff;
-            --border: #e0e6ed;
-            --text-main: #333333;
-            --danger: #e74c3c;
-            --success: #2ecc71;
-            --input-bg: #f8fafc;
+            --primary: #1b4332;
+            --secondary: #2d6a4f;
+            --accent: #52b788;
+            --bg-color: #f7f3ec;
+            --card-bg: #fffdf9;
+            --border: #d8c3a5;
+            --text-main: #1b4332;
+            --danger: #6c757d;
+            --success: #40916c;
+            --input-bg: #ffffff;
         }
 
         * {
@@ -29,12 +29,31 @@
 
         body {
             background-color: var(--bg-color);
+            background-image: radial-gradient(#e9e1d4 0.75px, transparent 0.75px), radial-gradient(#e9e1d4 0.75px, var(--bg-color) 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
             color: var(--text-main);
             line-height: 1.6;
             margin: 0;
             padding: 20px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo-wrapper {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo-wrapper a {
+            text-decoration: none;
+            border: none;
+        }
+        .logo-wrapper img {
+            max-height: 80px;
+            width: auto;
+            display: inline-block;
+            border: 0;
         }
 
         /* Główny kontener strony */
@@ -43,8 +62,9 @@
             max-width: 800px;
             width: 100%;
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(27, 67, 50, 0.08);
+            border: 1px solid var(--border);
         }
 
         /* Nagłówki */
@@ -52,17 +72,19 @@
             text-align: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 2px solid var(--accent);
+            border-bottom: 2px solid var(--border);
         }
 
         .test-header h2 {
             color: var(--primary);
             margin: 0 0 10px 0;
             font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .test-header p {
-            color: #7f8c8d;
+            color: var(--secondary);
             margin: 0;
             font-size: 1.1rem;
         }
@@ -94,6 +116,7 @@
             border-radius: 6px;
             background-color: var(--input-bg);
             font-size: 1rem;
+            color: var(--text-main);
             transition: border-color 0.3s, box-shadow 0.3s;
             resize: vertical;
         }
@@ -102,27 +125,28 @@
         textarea:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.2);
         }
 
         .clinician-notes-area {
             margin-top: 30px;
             padding: 20px;
-            background-color: #fff9c4; /* Delikatny żółty jak karteczka */
+            background-color: #f4eee3;
             border-radius: 6px;
-            border-left: 4px solid #fbc02d;
+            border-left: 4px solid var(--secondary);
         }
 
         .clinician-notes-area label {
             font-weight: bold;
             display: block;
             margin-bottom: 10px;
+            color: var(--primary);
         }
 
         /* Sekcja umowy i podpisów */
         .contract-agreement {
-            background-color: #f8f9fa;
-            border-left: 4px solid var(--accent);
+            background-color: #e5ede6;
+            border-left: 4px solid var(--secondary);
             padding: 15px 20px;
             margin-bottom: 25px;
             border-radius: 0 6px 6px 0;
@@ -132,6 +156,7 @@
             margin-top: 0;
             font-weight: 500;
             font-size: 1.05rem;
+            color: var(--primary);
         }
 
         .sig-container {
@@ -143,7 +168,7 @@
 
         /* Zapewnienie responsywności canvasu bez psucia jego wewnętrznych wymiarów */
         .sig-canvas {
-            border: 2px dashed #bdc3c7;
+            border: 2px dashed var(--border);
             border-radius: 6px;
             background-color: #fff;
             cursor: crosshair;
@@ -170,7 +195,7 @@
         .btn {
             padding: 10px 18px;
             border: none;
-            border-radius: 6px;
+            border-radius: 25px;
             font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
@@ -186,15 +211,15 @@
             opacity: 0.9;
         }
 
-        .btn-calc { background-color: #95a5a6; display: none; /* W tym formularzu obliczanie nie ma sensu, można go ukryć lub zmienić kolor */ }
-        .btn-print { background-color: var(--primary); }
-        .btn-pdf { background-color: var(--accent); }
-        .btn-csv { background-color: var(--success); }
-        .btn-clear { background-color: var(--danger); }
+        .btn-calc { background-color: #95a5a6; display: none; }
+        .btn-print { background-color: var(--accent); }
+        .btn-pdf { background-color: var(--secondary); }
+        .btn-csv { background-color: var(--secondary); }
+        .btn-clear { background-color: #6c757d; }
         
         .btn-clear-sig {
             padding: 6px 12px;
-            background-color: #e74c3c;
+            background-color: #6c757d;
             color: white;
             border: none;
             border-radius: 4px;
@@ -202,7 +227,7 @@
             font-size: 0.85rem;
         }
         .btn-clear-sig:hover {
-            background-color: #c0392b;
+            background-color: #5a6268;
         }
 
         /* Ukrywanie przycisków podczas drukowania + FIX DLA APPLE WEBKIT */
@@ -217,12 +242,13 @@
                 box-shadow: none; 
                 padding: 0; 
                 max-width: 100%; 
+                border: none;
             }
-            .actions, .sig-actions { 
+            .actions, .sig-actions, .logo-wrapper { 
                 display: none !important; 
             }
             textarea { 
-                border: 1px solid #000; 
+                border: 1px solid #aaa; 
                 overflow: visible !important; /* Wymuszenie widoczności tekstu */
                 height: auto; 
                 resize: none;
@@ -242,6 +268,10 @@
     </style>
 </head>
 <body>
+
+    <div class="logo-wrapper">
+        <a href="index.html" title="Powrót do strony głównej"><img src="logo.png" alt="Logo"></a>
+    </div>
 
 <div class="page-wrapper" id="content-to-export">
     
