@@ -520,83 +520,385 @@
                 }
             },
             {
-                code: "6A20-6A6Z",
-                title: "Schizophrenia or other primary psychotic disorders",
-                category: "06 Mental, behavioural or neurodevelopmental disorders",
+                code: "6A20",
+                title: "Schizophrenia (Schizofrenia)",
+                category: "Schizophrenia or other primary psychotic disorders",
                 diagnosticRequirements: {
-                    duration: { minDays: 30, description: "Uporczywa obecność objawów psychotycznych przez co najmniej miesiąc." },
+                    duration: { minDays: 30, description: "Uporczywa obecność objawów przez co najmniej miesiąc." },
                     coreSymptoms: {
                         minRequired: 1,
                         description: "Główne objawy psychotyczne:",
                         items: [
-                            { id: "sz_c1", text: "Urojenia (np. prześladowcze, ksobne, wielkościowe)" },
-                            { id: "sz_c2", text: "Omamy (najczęściej słuchowe)" },
-                            { id: "sz_c3", text: "Zdezorganizowane myślenie lub mowa" }
+                            { id: "sz_c1", text: "Urojenia (np. oddziaływania, odsłonięcia myśli, prześladowcze)" },
+                            { id: "sz_c2", text: "Omamy (np. omamy słuchowe komentujące lub prowadzące dialog)" },
+                            { id: "sz_c3", text: "Zdezorganizowane myślenie (np. rozluźnienie skojarzeń)" }
                         ]
                     },
                     additionalSymptoms: {
                         minRequired: 1,
-                        description: "Objawy negatywne lub katatoniczne:",
+                        description: "Objawy negatywne lub motoryczne:",
                         items: [
-                            { id: "sz_a1", text: "Spłaszczenie afektu lub alogia" },
-                            { id: "sz_a2", text: "Znaczny spadek napędu i wycofanie społeczne" }
+                            { id: "sz_a1", text: "Spłaszczenie afektu, alogia lub abulia" },
+                            { id: "sz_a2", text: "Objawy katatoniczne" }
                         ]
                     },
-                    impairment: "Znaczne upośledzenie codziennego funkcjonowania i kontaktu z rzeczywistością."
+                    impairment: "Znaczne upośledzenie funkcjonowania społecznego lub zawodowego."
                 }
             },
             {
-                code: "6B41",
-                title: "Złożony zespół stresu pourazowego (Complex PTSD)",
-                category: "Disorders specifically associated with stress",
+                code: "6A21",
+                title: "Schizoaffective disorder (Zaburzenie schizoafektywne)",
+                category: "Schizophrenia or other primary psychotic disorders",
                 diagnosticRequirements: {
-                    duration: { minDays: 30, description: "Objawy utrzymują się przez co najmniej miesiąc po wydarzeniu traumatycznym." },
+                    duration: { minDays: 30, description: "Epizod zaburzeń nastroju i objawów psychotycznych." },
                     coreSymptoms: {
-                        minRequired: 3,
-                        description: "Musi spełniać wszystkie 3 kryteria klasycznego PTSD:",
+                        minRequired: 2,
+                        description: "Kryteria mieszane:",
                         items: [
-                            { id: "cptsd_c1", text: "Ponowne doświadczanie traumy (fleshbacki, koszmarne sny)" },
-                            { id: "cptsd_c2", text: "Unikanie bodźców przypominających o traumie" },
-                            { id: "cptsd_c3", text: "Poczucie bieżącego zagrożenia (hiperczujność, wzmożona reakcja lękowa)" }
+                            { id: "saff_c1", text: "Jednoczesne spełnienie kryteriów schizofrenii oraz epizodu afektywnego (depresyjnego lub manii)" },
+                            { id: "saff_c2", text: "Obecność urojeń lub omamów przez co najmniej 2 tygodnie przy braku wyraźnych objawów nastroju" }
                         ]
                     },
                     additionalSymptoms: {
-                        minRequired: 3,
-                        description: "Musi spełniać wszystkie 3 obszary Zaburzeń Organizacji Samooceny (DSO):",
+                        minRequired: 1,
+                        description: "Weryfikacja:",
                         items: [
-                            { id: "cptsd_a1", text: "Trudności w regulacji afektu (wybuchy gniewu, tłumienie emocji)" },
-                            { id: "cptsd_a2", text: "Trwałe przekonanie o własnej bezwartościowości lub wstydzie" },
-                            { id: "cptsd_a3", text: "Trwałe trudności w utrzymywaniu relacji i poczucie bliskości" }
+                            { id: "saff_a1", text: "Objawy nastroju występują przez istotną część trwania zaburzenia" }
                         ]
                     },
-                    impairment: "Powoduje poważne zakłócenia we wszystkich kluczowych sferach życia."
+                    impairment: "Znaczne upośledzenie funkcjonowania."
                 }
             },
             {
-                code: "6B00",
-                title: "Zespół lęku uogólnionego (GAD)",
+                code: "6A22",
+                title: "Schizotypal disorder (Zaburzenie schizotypowe)",
+                category: "Schizophrenia or other primary psychotic disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 730, description: "Trwały wzorzec zachowań przez min. 2 lata." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Wzorzec osiowy:",
+                        items: [
+                            { id: "szt_c1", text: "Ekscentryczność zachowania oraz dziwaczne przekonania, myślenie magiczne lub doświadczenia perceptualne" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Relacje:",
+                        items: [
+                            { id: "szt_a1", text: "Wycofanie społeczne i niedopasowany afekt" }
+                        ]
+                    },
+                    impairment: "Utrudnienie funkcjonowania społecznego."
+                }
+            },
+            {
+                code: "6A23",
+                title: "Acute and transient psychotic disorder (Ostre i przemijające zaburzenia psychotyczne)",
+                category: "Schizophrenia or other primary psychotic disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 1, description: "Nagły początek (zazwyczaj do 2 tygodni), czas trwania poniżej 3 miesięcy." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [
+                            { id: "atp_c1", text: "Polimorficzne objawy psychotyczne (zmienne urojenia, omamy, zaburzenia emocji)" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Stres ostry:",
+                        items: [
+                            { id: "atp_a1", text: "Często powiązane z ostrą sytuacją stresową" }
+                        ]
+                    },
+                    impairment: "Ostre upośledzenie funkcjonowania z powrotem do zdrowia."
+                }
+            },
+            {
+                code: "6A24",
+                title: "Delusional disorder (Zaburzenie urojeniowe)",
+                category: "Schizophrenia or other primary psychotic disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 90, description: "Urojenia trwające przez co najmniej 3 miesiące." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [
+                            { id: "del_c1", text: "Występowanie jednego lub wielu usystematyzowanych urojeń (np. prześladowcze, zazdrości, somatyczne) przy braku innych objawów schizofrenii" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Funkcjonowanie:",
+                        items: [
+                            { id: "del_a1", text: "Zachowanie poza tematem urojeń jest zazwyczaj niezmienione i nieuruchamiające dezorganizacji" }
+                        ]
+                    },
+                    impairment: "Utrudnienie w sferach powiązanych z treścią urojeń."
+                }
+            },
+            {
+                code: "6A25",
+                title: "Symptomatic manifestations of primary psychotic disorders",
+                category: "Schizophrenia or other primary psychotic disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 1, description: "Symptomatyka epizodyczna." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [
+                            { id: "sym_c1", text: "Określone manifestacje objawowe w ramach zaburzeń psychotycznych" }
+                        ]
+                    },
+                    additionalSymptoms: { minRequired: 0, description: "Brak", items: [] },
+                    impairment: "Distress psychiczny."
+                }
+            },
+            {
+                code: "6A2Y",
+                title: "Other specified primary psychotic disorder",
+                category: "Schizophrenia or other primary psychotic disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 1, description: "Nietypowe." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Kryteria:",
+                        items: [ { id: "osp_c1", text: "Inne określone pierwotne zaburzenie psychotyczne" } ]
+                    },
+                    additionalSymptoms: { minRequired: 0, description: "Brak", items: [] },
+                    impairment: "Upośledzenie funkcjonowania."
+                }
+            },
+            {
+                code: "6A2Z",
+                title: "Schizophrenia or other primary psychotic disorders, unspecified",
+                category: "Schizophrenia or other primary psychotic disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 1, description: "Brak danych." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Kryteria:",
+                        items: [ { id: "ospz_c1", text: "Zaburzenia psychotyczne bez sprecyzowanych danych" } ]
+                    },
+                    additionalSymptoms: { minRequired: 0, description: "Brak", items: [] },
+                    impairment: "Wymaga diagnozy."
+                }
+            },
+            {
+                code: "6A40",
+                title: "Catatonia associated with another mental disorder (Katatonia powiązana z innym zaburzeniem)",
+                category: "Catatonia",
+                diagnosticRequirements: {
+                    duration: { minDays: 1, description: "Obecność objawów katatonicznych." },
+                    coreSymptoms: {
+                        minRequired: 3,
+                        description: "Wymagane co najmniej 3 z poniższych objawów:",
+                        items: [
+                            { id: "cat_c1", text: "Osłupienie (stupor) lub katalepsja" },
+                            { id: "cat_c2", text: "Giętkość woskowa lub negatywizm" },
+                            { id: "cat_c3", text: "Mutyzm, sztywność lub echolalia" }
+                        ]
+                    },
+                    additionalSymptoms: { minRequired: 0, description: "Powiązanie", items: [] },
+                    impairment: "Zagrożenie bezpieczeństwa i funkcjonowania."
+                }
+            },
+            {
+                code: "6A41",
+                title: "Catatonia induced by substances or medications",
+                category: "Catatonia",
+                diagnosticRequirements: {
+                    duration: { minDays: 1, description: "Poekspozycyjnie." },
+                    coreSymptoms: {
+                        minRequired: 3,
+                        description: "Objawy katatoniczne powiązane z działaniem substancji:",
+                        items: [ { id: "cats_c1", text: "Wystąpienie objawów katatonicznych w trakcie lub po zażyciu substancji" } ]
+                    },
+                    additionalSymptoms: { minRequired: 0, description: "Brak", items: [] },
+                    impairment: "Stan nagły."
+                }
+            },
+            {
+                code: "6E69",
+                title: "Secondary catatonia syndrome",
+                category: "Catatonia",
+                diagnosticRequirements: {
+                    duration: { minDays: 1, description: "Wtórne do choroby somatycznej." },
+                    coreSymptoms: {
+                        minRequired: 3,
+                        description: "Objawy katatoniczne:",
+                        items: [ { id: "catsec_c1", text: "Katatonia będąca skutkiem schorzenia medycznego" } ]
+                    },
+                    additionalSymptoms: { minRequired: 0, description: "Brak", items: [] },
+                    impairment: "Stan somatyczny krytyczny."
+                }
+            },
+            {
+                code: "6A4Z",
+                title: "Catatonia, unspecified",
+                category: "Catatonia",
+                diagnosticRequirements: {
+                    duration: { minDays: 1, description: "Brak danych." },
+                    coreSymptoms: { minRequired: 1, description: "Katatonia nieokreślona", items: [ { id: "catu_c1", text: "Objawy katatoniczne bez pełnych danych" } ] },
+                    additionalSymptoms: { minRequired: 0, description: "Brak", items: [] },
+                    impairment: "Wymaga diagnozy."
+                }
+            },
+            {
+                code: "6A60-6A8Z",
+                title: "Bipolar or related disorders (Zaburzenia afektywne dwubiegunowe)",
+                category: "Mood disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 7, description: "Epizod manii trwa min. 7 dni (lub krócej jeśli wymagana hospitalizacja)." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy osiowe:",
+                        items: [
+                            { id: "bip_c1", text: "Epizody manii lub hipomanii charakteryzujące się podwyższonym nastrojem, energią i napędem" },
+                            { id: "bip_c2", text: "Naprzemienne występowanie epizodów depresyjnych" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Cechy dodatkowe:",
+                        items: [ { id: "bip_a1", text: "Zmniejszona potrzeba snu, gonitwa myśli, wielkościowość" } ]
+                    },
+                    impairment: "Istotne zakłócenie funkcjonowania."
+                }
+            },
+            {
+                code: "6A70",
+                title: "Depressive disorders (Zaburzenia depresyjne)",
+                category: "Mood disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 14, description: "Przewlekłe lub nawracające obniżenie nastroju." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Kryteria:",
+                        items: [ { id: "depr_c1", text: "Obniżony nastrój i anhedonia przez większość czasu" } ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 3,
+                        description: "Objawy depresyjne:",
+                        items: [
+                            { id: "depr_a1", text: "Zmęczenie, zaburzenia snu, myśli rezygnacyjne" }
+                        ]
+                    },
+                    impairment: "Upośledzenie ról życiowych."
+                }
+            },
+            {
+                code: "6B01",
+                title: "Panic disorder (Zaburzenie paniczne)",
                 category: "Anxiety or fear-related disorders",
                 diagnosticRequirements: {
-                    duration: { minDays: 180, description: "Uogólniony lęk i niepokój utrzymuje się przez co najmniej 6 miesięcy." },
+                    duration: { minDays: 30, description: "Nawracające nieoczekiwane napady paniki." },
                     coreSymptoms: {
                         minRequired: 1,
-                        description: "Główny objaw osiowy:",
+                        description: "Objawy osiowe:",
                         items: [
-                            { id: "gad_c1", text: "Nadmierny, wolnopłynący lęk dotyczący codziennych wydarzeń (trudny do kontrolowania)" }
+                            { id: "pan_c1", text: "Nawracające, niespodziewane napady paniki (nagle narastający intensywny lęk lub dyskomfort)" }
                         ]
                     },
                     additionalSymptoms: {
-                        minRequired: 3,
-                        description: "Co najmniej 3 z poniższych objawów somatycznych/poznawczych:",
+                        minRequired: 1,
+                        description: "Obawy:",
+                        items: [ { id: "pan_a1", text: "Trwały lęk przed kolejnymi atakami lub ich konsekwencjami przez min. miesiąc" } ]
+                    },
+                    impairment: "Znaczny distress."
+                }
+            },
+            {
+                code: "6B02",
+                title: "Agoraphobia (Agorafobia)",
+                category: "Anxiety or fear-related disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 180, description: "Utrzymywanie się lęku przez min. 6 miesięcy." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
                         items: [
-                            { id: "gad_a1", text: "Napięcie mięśniowe lub bóle" },
-                            { id: "gad_a2", text: "Wzmożone pobudzenie autonomiczne (kołatanie serca, pocenie)" },
-                            { id: "gad_a3", text: "Uczucie rozdrażnienia lub 'na krawędzi'" },
-                            { id: "gad_a4", text: "Trudności z koncentracją / 'pustka w głowie'" },
-                            { id: "gad_a5", text: "Zaburzenia snu spowodowane zamartwianiem się" }
+                            { id: "ago_c1", text: "Lęk przed co najmniej dwiema sytuacjami (np. tłum, otwarta przestrzeń, podróżowanie samemu)" }
                         ]
                     },
-                    impairment: "Lęk powoduje znaczne cierpienie psychiczne lub utrudnia codzienne funkcjonowanie."
+                    additionalSymptoms: { minRequired: 1, description: "Unikanie:", items: [ { id: "ago_a1", text: "Aktywne unikanie tych sytuacji z obawy przed trudnością w ucieczce" } ] },
+                    impairment: "Ograniczenie mobilności i funkcjonowania."
+                }
+            },
+            {
+                code: "6B03",
+                title: "Specific phobia (Fobia swoista)",
+                category: "Anxiety or fear-related disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 180, description: "Trwały lęk przez min. 6 miesięcy." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [ { id: "sph_c1", text: "Nadmierny, nieracjonalny lęk wywołany obecnością określonego obiektu lub sytuacji (np. zwierzęta, wysokości)" } ]
+                    },
+                    additionalSymptoms: { minRequired: 1, description: "Reakcja:", items: [ { id: "sph_a1", text: "Natychmiastowa reakcja lękowa i unikanie" } ] },
+                    impairment: "Utrudnienie codziennego życia."
+                }
+            },
+            {
+                code: "6B04",
+                title: "Social anxiety disorder (Fobia społeczna)",
+                category: "Anxiety or fear-related disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 180, description: "Utrzymywanie się lęku przez min. 6 miesięcy." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [ { id: "soc_c1", text: "Znaczny lęk w sytuacjach społecznych, w których osoba jest wystawiona na ocenę innych" } ]
+                    },
+                    additionalSymptoms: { minRequired: 1, description: "Obawy:", items: [ { id: "soc_a1", text: "Obawa przed upokorzeniem lub negatywną oceną" } ] },
+                    impairment: "Upośledzenie relacji społecznych i zawodowych."
+                }
+            },
+            {
+                code: "6B05",
+                title: "Separation anxiety disorder (Lęk separacyjny)",
+                category: "Anxiety or fear-related disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 30, description: "Utrzymywanie się objawów przez min. 4 tygodnie u dzieci / dłużej u dorosłych." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [ { id: "sep_c1", text: "Nadmierny lęk związany z separacją od osób, z którymi pacjent jest związany" } ]
+                    },
+                    additionalSymptoms: { minRequired: 1, description: "Reakcje:", items: [ { id: "sep_a1", text: "Koszmary senne o separacji, somatyzacje przy rozstaniu" } ] },
+                    impairment: "Utrudnienie funkcjonowania."
+                }
+            },
+            {
+                code: "6B06",
+                title: "Selective mutism (Mutyzm wybiórczy)",
+                category: "Anxiety or fear-related disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 30, description: "Utrzymywanie się przez min. miesiąc." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [ { id: "sm_c1", text: "Wytrwała niezdolność do mówienia w konkretnych sytuacjach społecznych (np. w szkole) mimo mówienia w innych" } ]
+                    },
+                    additionalSymptoms: { minRequired: 1, description: "Wpływ:", items: [ { id: "sm_a1", text: "Zaburzenie wpływa na wyniki w szkole lub komunikację" } ] },
+                    impairment: "Upośledzenie sfery edukacyjnej i społecznej."
+                }
+            },
+            {
+                code: "6B23",
+                title: "Hypochondriasis (Hipochondria / Lęk o zdrowie)",
+                category: "Anxiety or fear-related disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 180, description: "Trwałe zaabsorbowanie przez min. 6 miesięcy." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [ { id: "hyp_c1", text: "Preokupacja posiadaniem poważnej choroby na podstawie interpretacji normalnych doznań ciała" } ]
+                    },
+                    additionalSymptoms: { minRequired: 1, description: "Reakcje:", items: [ { id: "hyp_a1", text: "Nadmierne sprawdzanie stanu zdrowia lub unikanie lekarzy" } ] },
+                    impairment: "Znaczny distress."
                 }
             },
             {
