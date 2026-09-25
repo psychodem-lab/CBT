@@ -23,19 +23,22 @@
             border: 0;
         }
         :root {
-            --primary-color: #2563eb;
-            --secondary-color: #1e40af;
-            --bg-color: #f3f4f6;
-            --card-bg: #ffffff;
-            --text-main: #1f2937;
-            --text-light: #4b5563;
-            --border-color: #d1d5db;
-            --success-color: #059669;
+            --primary-color: #1b4332;
+            --secondary-color: #2d6a4f;
+            --bg-color: #f7f3ec;
+            --card-bg: #fffdf9;
+            --text-main: #1b4332;
+            --text-light: #40916c;
+            --border-color: #d8c3a5;
+            --success-color: #52b788;
         }
 
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
+            background-image: radial-gradient(#e9e1d4 0.75px, transparent 0.75px), radial-gradient(#e9e1d4 0.75px, var(--bg-color) 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
             color: var(--text-main);
             line-height: 1.6;
             margin: 0;
@@ -48,7 +51,8 @@
             background: var(--card-bg);
             padding: 40px;
             border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px -5px rgba(27, 67, 50, 0.08);
+            border: 1px solid var(--border-color);
         }
 
         h1, h2, h3, h4 {
@@ -111,7 +115,7 @@
         }
 
         .btn-secondary {
-            background-color: #9ca3af;
+            background-color: #6c757d;
         }
 
         /* Sekcja wyboru */
@@ -120,11 +124,12 @@
             padding: 18px;
             margin-bottom: 12px;
             border-radius: 10px;
+            background: #ffffff;
             transition: background 0.2s;
         }
 
         .distortion-item:hover {
-            background-color: #f9fafb;
+            background-color: #fcfbf9;
         }
 
         .distortion-label {
@@ -153,19 +158,19 @@
             font-size: 0.9rem;
             color: var(--text-light);
             font-style: italic;
-            background: #f3f4f6;
+            background: #f4eee3;
             padding: 10px;
             border-radius: 6px;
-            border-left: 3px solid #cbd5e1;
+            border-left: 3px solid var(--secondary-color);
         }
 
         /* Suwaki */
         .rating-item {
             margin-bottom: 20px;
             padding: 20px;
-            background: #f8fafc;
+            background: #fffdf9;
             border-radius: 10px;
-            border: 1px solid #e5e7eb;
+            border: 1px solid var(--border-color);
         }
 
         .slider-container {
@@ -179,7 +184,7 @@
             flex-grow: 1;
             height: 8px;
             border-radius: 5px;
-            background: #d1d5db;
+            background: #e2d9cd;
             accent-color: var(--primary-color);
         }
 
@@ -203,7 +208,7 @@
             display: block;
             font-weight: bold;
             margin-bottom: 8px;
-            color: #1e3a8a;
+            color: var(--primary-color);
         }
 
         textarea {
@@ -244,8 +249,9 @@
         }
 
         .summary-card {
-            background: #fff;
-            border: 1px solid #000;
+            background: #fffdf9;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             padding: 20px;
             margin-bottom: 20px;
         }
@@ -259,7 +265,7 @@
         .all-distortions-table th, .all-distortions-table td {
             text-align: left;
             padding: 10px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .hidden { display: none; }
@@ -286,7 +292,7 @@
     <h1 class="no-print">Praca ze Zniekształceniami Poznawczymi</h1>
     
     <div class="step-indicator no-print">
-        <span id="ind-1" class="step active">1. Identifikacja</span>
+        <span id="ind-1" class="step active">1. Identyfikacja</span>
         <span id="ind-2" class="step">2. Skala</span>
         <span id="ind-3" class="step">3. Priorytet</span>
         <span id="ind-4" class="step">4. Analiza</span>
