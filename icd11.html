@@ -903,8 +903,8 @@
             },
             {
                 code: "6B20",
-                title: "Obsessive-compulsive or related disorders (Zaburzenia obsesyjno-kompulsyjne)",
-                category: "06 Mental, behavioural or neurodevelopmental disorders",
+                title: "Obsessive-compulsive disorder (Zaburzenie obsesyjno-kompulsyjne)",
+                category: "Obsessive-compulsive or related disorders",
                 diagnosticRequirements: {
                     duration: { minDays: 14, description: "Objawy występują przez większość dni przez co najmniej 2 tygodnie." },
                     coreSymptoms: {
@@ -923,6 +923,145 @@
                         ]
                     },
                     impairment: "Znaczne upośledzenie funkcjonowania społecznego lub zawodowego."
+                }
+            },
+            {
+                code: "6B21",
+                title: "Body dysmorphic disorder (Dysmorfofobia / Zaburzenie dysmorficzne ciała)",
+                category: "Obsessive-compulsive or related disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 30, description: "Utrzymywanie się preokupacji przez min. miesiąc." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [
+                            { id: "bdd_c1", text: "Preokupacja jednym lub kilkoma domniemanymi defektami lub wadami w wyglądzie fizycznym, które są niewidoczne lub wydają się innym błahe" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Zachowania powtarzalne:",
+                        items: [
+                            { id: "bdd_a1", text: "Występowanie powtarzalnych zachowań (np. ciągłe przeglądanie się w lustrze, porównywanie się) lub czynności myślowych" }
+                        ]
+                    },
+                    impairment: "Znaczny distress i upośledzenie funkcjonowania."
+                }
+            },
+            {
+                code: "6B22",
+                title: "Olfactory reference disorder (Zespół odnośnika węchowego)",
+                category: "Obsessive-compulsive or related disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 30, description: "Trwałe zaabsorbowanie przez min. miesiąc." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [
+                            { id: "ord_c1", text: "Persistent preoccupation with the belief that one is emitting a foul or offensive body odor that is typically imperceptible to others" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Reakcje:",
+                        items: [ { id: "ord_a1", text: "Powtarzalne zachowania (np. nadmiernemycie się, sprawdzanie zapachu)" } ]
+                    },
+                    impairment: "Znaczne cierpienie i wycofanie społeczne."
+                }
+            },
+            {
+                code: "6B24",
+                title: "Hoarding disorder (Zaburzenie gromadzenia / Hording)",
+                category: "Obsessive-compulsive or related disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 90, description: "Uporczywa trudność z wyrzucaniem przedmiotów." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [
+                            { id: "hoar_c1", text: "Uporczywa trudność w pozbywaniu się posiadanych rzeczy, niezależnie od ich rzeczywistej wartości" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Zagracenie przestrzeni:",
+                        items: [
+                            { id: "hoar_a1", text: "Gromadzenie przedmiotów powoduje zagracenie pomieszczeń życiowych uniemożliwiające ich normalne użytkowanie" }
+                        ]
+                    },
+                    impairment: "Zagrożenie bezpieczeństwa i higieny."
+                }
+            },
+            {
+                code: "6B25",
+                title: "Body-focused repetitive behaviour disorders (Zaburzenia powtarzalnych zachowań skoncentrowanych na ciele)",
+                category: "Obsessive-compulsive or related disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 30, description: "Przewlekłe zachowania." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [
+                            { id: "bfrb_c1", text: "Nawracające zachowania polegające na uszkadzaniu własnego ciała (np. skubanie skóry - excoriation, wyrywanie włosów - trichotillomania)" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Próby kontroli:",
+                        items: [ { id: "bfrb_a1", text: "Powtarzane próby ograniczenia lub zaprzestania zachowania z brakiem sukcesu" } ]
+                    },
+                    impairment: "Uszkodzenia fizyczne i distress."
+                }
+            },
+            {
+                code: "6E64",
+                title: "Secondary obsessive-compulsive or related syndrome",
+                category: "Obsessive-compulsive or related disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 1, description: "Wtórne do stanu medycznego." },
+                    coreSymptoms: { minRequired: 1, description: "Objawy:", items: [ { id: "ocdsec_c1", text: "Objawy OCD wynikające bezpośrednio z choroby somatycznej" } ] },
+                    additionalSymptoms: { minRequired: 0, description: "Brak", items: [] },
+                    impairment: "Upośledzenie stanu zdrowia."
+                }
+            },
+            {
+                code: "8A05.00",
+                title: "Tourette syndrome (Zespół Tourette'a)",
+                category: "Obsessive-compulsive or related disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 365, description: "Obecność wielu tików ruchowych i przynajmniej jednego wokalnego przez ponad rok." },
+                    coreSymptoms: {
+                        minRequired: 2,
+                        description: "Objawy:",
+                        items: [
+                            { id: "tour_c1", text: "Występowanie wielu tików ruchowych" },
+                            { id: "tour_c2", text: "Występowanie co najmniej jednego tiku wokalnego (niekoniecznie jednocześnie)" }
+                        ]
+                    },
+                    additionalSymptoms: { minRequired: 1, description: "Wiek:", items: [ { id: "tour_a1", text: "Początek przed 18 rokiem życia" } ] },
+                    impairment: "Znaczny distress."
+                }
+            },
+            {
+                code: "6B2Y",
+                title: "Other specified obsessive-compulsive or related disorders",
+                category: "Obsessive-compulsive or related disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 1, description: "Inne." },
+                    coreSymptoms: { minRequired: 1, description: "Kryteria:", items: [ { id: "ocdy_c1", text: "Inne określone zaburzenia z kręgu OCD" } ] },
+                    additionalSymptoms: { minRequired: 0, description: "Brak", items: [] },
+                    impairment: "Distress."
+                }
+            },
+            {
+                code: "6B2Z",
+                title: "Obsessive-compulsive or related disorders, unspecified",
+                category: "Obsessive-compulsive or related disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 1, description: "Nieokreślone." },
+                    coreSymptoms: { minRequired: 1, description: "Kryteria:", items: [ { id: "ocdz_c1", text: "Zaburzenia z kręgu OCD bez pełnych danych" } ] },
+                    additionalSymptoms: { minRequired: 0, description: "Brak", items: [] },
+                    impairment: "Wymaga diagnozy."
                 }
             },
             {
