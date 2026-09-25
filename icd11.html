@@ -219,27 +219,69 @@
         // Baza danych kluczowych jednostek ICD-11 z podziałem na kategorie
         const icd11Database = [
             {
-                code: "6A00",
-                title: "Disorders of intellectual development (Zaburzenia rozwoju intelektualnego)",
-                category: "Neurodevelopmental disorders",
+                code: "6A00.0",
+                title: "Disorder of intellectual development, mild",
+                category: "6A00 Disorders of intellectual development",
                 diagnosticRequirements: {
-                    duration: { minDays: 180, description: "Upośledzenie funkcji poznawczych widoczne w okresie rozwojowym." },
-                    coreSymptoms: {
-                        minRequired: 1,
-                        description: "Główne kryteria:",
-                        items: [
-                            { id: "id_c1", text: "Znaczące ograniczenie funkcjonowania intelektualnego (np. IQ ok. 70 lub poniżej)" },
-                            { id: "id_c2", text: "Znaczące ograniczenie zachowania adaptacyjnego w sferze pojęciowej, społecznej i praktycznej" }
-                        ]
-                    },
-                    additionalSymptoms: {
-                        minRequired: 1,
-                        description: "Kryteria rozwojowe:",
-                        items: [
-                            { id: "id_a1", text: "Początek w okresie rozwojowym" }
-                        ]
-                    },
-                    impairment: "Utrudnienie samodzielnego funkcjonowania."
+                    duration: { minDays: 180, description: "Utrzymujący się w okresie rozwojowym stan." },
+                    coreSymptoms: { minRequired: 1, description: "Kryteria:", items: [ { id: "id_mild_c1", text: "Lekki stopień upośledzenia funkcji intelektualnych i adaptacyjnych" } ] },
+                    additionalSymptoms: { minRequired: 0, description: "Brak", items: [] },
+                    impairment: "Ograniczenia w nauce i samodzielności w stopniu lekkim."
+                }
+            },
+            {
+                code: "6A00.1",
+                title: "Disorder of intellectual development, moderate",
+                category: "6A00 Disorders of intellectual development",
+                diagnosticRequirements: {
+                    duration: { minDays: 180, description: "Utrzymujący się w okresie rozwojowym stan." },
+                    coreSymptoms: { minRequired: 1, description: "Kryteria:", items: [ { id: "id_mod_c1", text: "Umiarkowany stopień upośledzenia funkcji intelektualnych i adaptacyjnych" } ] },
+                    additionalSymptoms: { minRequired: 0, description: "Brak", items: [] },
+                    impairment: "Znaczne ograniczenia wymagające wsparcia w codziennym życiu."
+                }
+            },
+            {
+                code: "6A00.2",
+                title: "Disorder of intellectual development, severe",
+                category: "6A00 Disorders of intellectual development",
+                diagnosticRequirements: {
+                    duration: { minDays: 180, description: "Utrzymujący się stan." },
+                    coreSymptoms: { minRequired: 1, description: "Kryteria:", items: [ { id: "id_sev_c1", text: "Głębokie ograniczenia funkcji poznawczych i komunikacji" } ] },
+                    additionalSymptoms: { minRequired: 0, description: "Brak", items: [] },
+                    impairment: "Wymaga stałej opieki."
+                }
+            },
+            {
+                code: "6A00.3",
+                title: "Disorder of intellectual development, profound",
+                category: "6A00 Disorders of intellectual development",
+                diagnosticRequirements: {
+                    duration: { minDays: 180, description: "Utrzymujący się stan." },
+                    coreSymptoms: { minRequired: 1, description: "Kryteria:", items: [ { id: "id_prof_c1", text: "Skrajnie głęboki deficyt funkcjonowania" } ] },
+                    additionalSymptoms: { minRequired: 0, description: "Brak", items: [] },
+                    impairment: "Pełna zależność od otoczenia."
+                }
+            },
+            {
+                code: "6A00.4",
+                title: "Disorder of intellectual development, provisional",
+                category: "6A00 Disorders of intellectual development",
+                diagnosticRequirements: {
+                    duration: { minDays: 1, description: "Wstępna diagnoza." },
+                    coreSymptoms: { minRequired: 1, description: "Kryteria:", items: [ { id: "id_prov_c1", text: "Diagnoza tymczasowa ze względu na wiek lub brak pełnych testów" } ] },
+                    additionalSymptoms: { minRequired: 0, description: "Brak", items: [] },
+                    impairment: "Wymaga weryfikacji."
+                }
+            },
+            {
+                code: "6A00.Z",
+                title: "Disorders of intellectual development, unspecified",
+                category: "6A00 Disorders of intellectual development",
+                diagnosticRequirements: {
+                    duration: { minDays: 1, description: "Nieokreślone." },
+                    coreSymptoms: { minRequired: 1, description: "Kryteria:", items: [ { id: "id_uns_c1", text: "Zaburzenie rozwoju intelektualnego bez szczegółowych danych" } ] },
+                    additionalSymptoms: { minRequired: 0, description: "Brak", items: [] },
+                    impairment: "Wymaga dokładniejszej diagnozy."
                 }
             },
             {
