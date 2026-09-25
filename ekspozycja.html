@@ -12,53 +12,60 @@
             font-family: 'Inter', sans-serif; 
             line-height: 1.6; 
             margin: 20px; 
-            background-color: #FAFAFA;
-            color: #1a237e; 
+            background-color: #f7f3ec;
+            background-image: radial-gradient(#e9e1d4 0.75px, transparent 0.75px), radial-gradient(#e9e1d4 0.75px, #f7f3ec 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            color: #1b4332; 
         }
         
         .container { 
             max-width: 850px; 
             margin: 0 auto; 
-            background-color: #ffffff; 
+            background-color: #fffdf9; 
             padding: 30px; 
             border-radius: 15px; 
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); 
+            box-shadow: 0 8px 16px rgba(27, 67, 50, 0.08); 
+            border: 1px solid #d8c3a5;
             margin-bottom: 40px; 
         }
 
         .logo-wrapper { text-align: center; margin-bottom: 20px; }
-        .logo-wrapper img { max-height: 80px; width: auto; }
+        .logo-wrapper a { text-decoration: none; border: none; }
+        .logo-wrapper img { max-height: 80px; width: auto; display: inline-block; border: 0; }
         
-        h1 { color: #0d47a1; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+        h1 { color: #1b4332; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
 
         /* Stylizacja kroków */
         .step-container { margin-bottom: 30px; }
         
         .step-title {
-            background-color: #bbdefb;
-            color: #0d47a1;
+            background-color: #e5ede6;
+            color: #1b4332;
             padding: 10px 15px;
             border-radius: 8px 8px 0 0;
             font-weight: bold;
-            border-left: 5px solid #1e88e5;
+            border-left: 5px solid #2d6a4f;
         }
 
         .step-content {
             padding: 20px;
-            border: 1px solid #e3f2fd;
+            border: 1px solid #d8c3a5;
             border-top: none;
-            background-color: #fcfcfc;
+            background-color: #fffdf9;
             border-radius: 0 0 8px 8px;
         }
 
         textarea { 
             width: 100%; 
             padding: 12px; 
-            border: 1px solid #ccc; 
+            border: 1px solid #d8c3a5; 
             border-radius: 5px; 
             box-sizing: border-box; 
             resize: vertical; 
             font-family: inherit;
+            background-color: #ffffff;
+            color: #1b4332;
         }
 
         /* Stylizacja tabel */
@@ -69,32 +76,32 @@
             background-color: white;
         }
 
-        th { background-color: #e3f2fd; color: #0d47a1; padding: 10px; text-align: left; border: 1px solid #bbdefb; }
-        td { border: 1px solid #bbdefb; padding: 5px; vertical-align: top; }
+        th { background-color: #e5ede6; color: #1b4332; padding: 10px; text-align: left; border: 1px solid #d8c3a5; }
+        td { border: 1px solid #d8c3a5; padding: 5px; vertical-align: top; }
         
         /* Specyficzne dla tabeli inputowej */
         td textarea { border: none; border-radius: 0; min-height: 50px; display: block; width: 100%; box-shadow: none; resize: none; }
-        td textarea:focus { outline: 2px solid #bbdefb; }
+        td textarea:focus { outline: 2px solid #d8c3a5; }
         
         /* Tabela z przykładem (statyczna) */
-        .example-table td { padding: 10px; background-color: #f9f9f9; color: #555; }
+        .example-table td { padding: 10px; background-color: #fffdf9; color: #1b4332; }
 
         ul { margin-top: 0; padding-left: 20px; }
         li { margin-bottom: 5px; }
 
         .citation {
             font-size: 0.85em;
-            color: #555;
-            border-top: 1px solid #eee;
+            color: #40916c;
+            border-top: 1px solid #d8c3a5;
             margin-top: 20px;
             padding-top: 10px;
         }
 
         .action-buttons { text-align: center; margin-top: 30px; }
-        .print-btn { background-color: #4caf50; color: white; padding: 12px 25px; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .clear-btn { background-color: #e53935; color: white; padding: 12px 25px; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; margin-left: 10px; }
+        .print-btn { background-color: #52b788; color: white; padding: 12px 25px; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .clear-btn { background-color: #6c757d; color: white; padding: 12px 25px; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; margin-left: 10px; }
         
-        .print-btn:hover { background-color: #43a047; }
+        .print-btn:hover { background-color: #40916c; }
 
         @media print {
             .action-buttons, .logo-wrapper { display: none; }
@@ -107,7 +114,7 @@
 <body>
 
     <div class="logo-wrapper">
-        <a href="index.html"><img src="logo.png" alt="Logo"></a>
+        <a href="index.html" title="Powrót do strony głównej"><img src="logo.png" alt="Logo"></a>
     </div>
 
     <div class="container">
