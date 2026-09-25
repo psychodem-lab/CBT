@@ -219,27 +219,249 @@
         // Baza danych kluczowych jednostek ICD-11 z podziałem na kategorie
         const icd11Database = [
             {
-                code: "6A00-6A0Z",
-                title: "Neurodevelopmental disorders (Zaburzenia neurorozwojowe)",
-                category: "06 Mental, behavioural or neurodevelopmental disorders",
+                code: "6A00",
+                title: "Disorders of intellectual development (Zaburzenia rozwoju intelektualnego)",
+                category: "Neurodevelopmental disorders",
                 diagnosticRequirements: {
-                    duration: { minDays: 180, description: "Objawy ujawniają się w okresie rozwojowym i utrzymują się długotrwale." },
+                    duration: { minDays: 180, description: "Upośledzenie funkcji poznawczych widoczne w okresie rozwojowym." },
                     coreSymptoms: {
                         minRequired: 1,
-                        description: "Występują deficyty w zakresie rozwoju ośrodkowego układu nerwowego:",
+                        description: "Główne kryteria:",
                         items: [
-                            { id: "nd_c1", text: "Zaburzenia funkcji poznawczych, komunikacji lub zachowań społecznych" },
-                            { id: "nd_c2", text: "Trudności w funkcjonowaniu szkolnym, zawodowym lub społecznym" }
+                            { id: "id_c1", text: "Znaczące ograniczenie funkcjonowania intelektualnego (np. IQ ok. 70 lub poniżej)" },
+                            { id: "id_c2", text: "Znaczące ograniczenie zachowania adaptacyjnego w sferze pojęciowej, społecznej i praktycznej" }
                         ]
                     },
                     additionalSymptoms: {
                         minRequired: 1,
-                        description: "Kryteria specyficzne:",
+                        description: "Kryteria rozwojowe:",
                         items: [
-                            { id: "nd_a1", text: "Wzorzec objawów jest charakterystyczny dla zaburzeń neurorozwojowych (np. spektrum autyzmu, ADHD, niepełnosprawność intelektualna)" }
+                            { id: "id_a1", text: "Początek w okresie rozwojowym" }
                         ]
                     },
-                    impairment: "Powoduje istotne ograniczenia w codziennym funkcjonowaniu."
+                    impairment: "Utrudnienie samodzielnego funkcjonowania."
+                }
+            },
+            {
+                code: "6A01",
+                title: "Developmental speech or language disorders (Rozwojowe zaburzenia mowy lub języka)",
+                category: "Neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 180, description: "Trwałe trudności w akwizycji i użyciu języka." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy osiowe:",
+                        items: [
+                            { id: "dsl_c1", text: "Istotne opóźnienie lub deficyt w ekspresji i/lub rozumieniu mowy w porównaniu do norm wiekowych" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Weryfikacja:",
+                        items: [
+                            { id: "dsl_a1", text: "Trudności nie wynikają z uszkodzeń słuchu czy zaburzeń neurologicznych" }
+                        ]
+                    },
+                    impairment: "Utrudnienie komunikacji i nauki."
+                }
+            },
+            {
+                code: "6A02",
+                title: "Autism spectrum disorder (Zaburzenia ze spektrum autyzmu)",
+                category: "Neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 180, description: "Stały wzorzec zachowań utrzymujący się w okresie rozwojowym." },
+                    coreSymptoms: {
+                        minRequired: 2,
+                        description: "Główne obszary:",
+                        items: [
+                            { id: "asd_c1", text: "Trwałe deficyty w zakresie społecznej komunikacji i interakcji" },
+                            { id: "asd_c2", text: "Ograniczone, powtarzalne i stereotypowe wzorce zachowań, zainteresowań lub aktywności" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Występowanie od wczesnego dzieciństwa:",
+                        items: [
+                            { id: "asd_a1", text: "Objawy są widoczne we wczesnym okresie rozwojowym, choć mogą ujawnić się w pełni dopiero wtedy, gdy wymagania społeczne przewyższają zdolności" }
+                        ]
+                    },
+                    impairment: "Istotne upośledzenie funkcjonowania społecznego i osobistego."
+                }
+            },
+            {
+                code: "6A03",
+                title: "Developmental learning disorder (Rozwojowe zaburzenie uczenia się)",
+                category: "Neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 180, description: "Trudności w nauce trwające mimo wsparcia przez min. 6 miesięcy." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Główne objawy:",
+                        items: [
+                            { id: "dld_c1", text: "Znaczne i uporczywe trudności w nauce podstawowych umiejętności akademickich (czytanie, pisanie, matematyka)" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Porównanie z możliwościami:",
+                        items: [
+                            { id: "dld_a1", text: "Wyniki szkolne są znacznie poniżej oczekiwań dla wieku i ogólnego poziomu intelektualnego" }
+                        ]
+                    },
+                    impairment: "Utrudnienie osiągnięć edukacyjnych lub zawodowych."
+                }
+            },
+            {
+                code: "6A04",
+                title: "Developmental motor coordination disorder (Rozwojowe zaburzenie koordynacji ruchowej)",
+                category: "Neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 180, description: "Przewlekłe trudności motoryczne." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [
+                            { id: "dmc_c1", text: "Znaczące opóźnienie w nabywaniu koordynacji ruchowej i wykonywaniu czynności motorycznych adekwatnych do wieku" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Weryfikacja:",
+                        items: [
+                            { id: "dmc_a1", text: "Niezdarność wpływa na codzienne czynności i wyniki szkolne" }
+                        ]
+                    },
+                    impairment: "Ograniczenie aktywności życiowej."
+                }
+            },
+            {
+                code: "6A05",
+                title: "Attention deficit hyperactivity disorder (Zespół nadpobudliwości psychoruchowej - ADHD)",
+                category: "Neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 180, description: "Wzorce zachowań utrzymują się przez co najmniej 6 miesięcy." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Występowanie utrwalonego wzorca braku uwagi i/lub nadpobudliwości:",
+                        items: [
+                            { id: "adhd_c1", text: "Istotny wzorzec deficytu uwagi (trudności ze skupieniem, organizacją, kończeniem zadań)" },
+                            { id: "adhd_c2", text: "Istotny wzorzec nadpobudliwości i impulsywności (wiercenie się, trudność w pozostawaniu w spoczynku)" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 2,
+                        description: "Weryfikacja kontekstowa i rozwojowa:",
+                        items: [
+                            { id: "adhd_a1", text: "Objawy występują w więcej niż jednym środowisku (np. praca, dom, relacje)" },
+                            { id: "adhd_a2", text: "Nasilenie objawów wykracza poza zakres oczekiwany dla poziomu rozwoju" },
+                            { id: "adhd_a3", text: "Początek objawów miał miejsce w okresie rozwojowym" }
+                        ]
+                    },
+                    impairment: "Objawy bezpośrednio wpływają na funkcjonowanie społeczne, akademickie lub zawodowe."
+                }
+            },
+            {
+                code: "6A06",
+                title: "Stereotyped movement disorder (Zaburzenie ruchów stereotypowych)",
+                category: "Neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 30, description: "Powtarzalne ruchy trwające przez min. miesiąc." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [
+                            { id: "smd_c1", text: "Powtarzalne, bezcelowe zachowania ruchowe (np. kołysanie się, uderzanie głową, machanie rękami)" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Wpływ:",
+                        items: [
+                            { id: "smd_a1", text: "Zachowania te powodują urazy fizyczne lub znacząco zakłócają codzienne funkcjonowanie" }
+                        ]
+                    },
+                    impairment: "Zakłócenie aktywności i ryzyko samouszkodzeń."
+                }
+            },
+            {
+                code: "8A05.0",
+                title: "Primary tics or tic disorders (Pierwotne tiki lub zaburzenia tikowe)",
+                category: "Neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 365, description: "Obecność tików ruchowych lub wokalnych przez ponad rok." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Rodzaje tików:",
+                        items: [
+                            { id: "tic_c1", text: "Nagłe, szybkie, przelotne, niesiemienne ruchy lub wokalizacje (np. mruganie, grymasy, chrząkanie)" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Początek:",
+                        items: [
+                            { id: "tic_a1", text: "Początek w dzieciństwie lub okresie dorastania" }
+                        ]
+                    },
+                    impairment: "Znaczny distress lub trudności w komunikacji społecznej."
+                }
+            },
+            {
+                code: "6E60",
+                title: "Secondary neurodevelopmental syndrome (Wtórny zespół neurorozwojowy)",
+                category: "Neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 30, description: "Wystąpienie objawów następczych." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Objawy:",
+                        items: [
+                            { id: "snd_c1", text: "Objawy przypominające zaburzenia neurorozwojowe będące bezpośrednim skutkiem stanu somatycznego lub uszkodzenia OUN" }
+                        ]
+                    },
+                    additionalSymptoms: {
+                        minRequired: 1,
+                        description: "Powiązanie:",
+                        items: [
+                            { id: "snd_a1", text: "Potwierdzone medycznie uszkodzenie lub choroba podstawowa" }
+                        ]
+                    },
+                    impairment: "Upośledzenie rozwoju."
+                }
+            },
+            {
+                code: "6A0Y",
+                title: "Other specified neurodevelopmental disorders",
+                category: "Neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 1, description: "Nietypowy obraz kliniczny." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Kryteria:",
+                        items: [
+                            { id: "on_c1", text: "Zaburzenie neurorozwojowe niespełniające w pełni kryteriów żadnej specyficznej jednostki" }
+                        ]
+                    },
+                    additionalSymptoms: { minRequired: 0, description: "Brak dodatkowych restrykcji", items: [] },
+                    impairment: "Wydźwięk kliniczny i distress."
+                }
+            },
+            {
+                code: "6A0Z",
+                title: "Neurodevelopmental disorders, unspecified",
+                category: "Neurodevelopmental disorders",
+                diagnosticRequirements: {
+                    duration: { minDays: 1, description: "Brak pełnych danych." },
+                    coreSymptoms: {
+                        minRequired: 1,
+                        description: "Kryteria:",
+                        items: [
+                            { id: "unz_c1", text: "Zaburzenie neurorozwojowe bez sprecyzowanych danych diagnostycznych" }
+                        ]
+                    },
+                    additionalSymptoms: { minRequired: 0, description: "Brak dodatkowych restrykcji", items: [] },
+                    impairment: "Wymaga dokładniejszej diagnozy."
                 }
             },
             {
