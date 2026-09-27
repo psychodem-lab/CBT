@@ -185,6 +185,86 @@
             font-size: 0.9em;
             color: #555;
         }
+
+        /* --- Lightbox / Podgląd plakatów na tej samej stronie --- */
+        .poster-item-link {
+            cursor: zoom-in;
+        }
+        .poster-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .poster-modal.open {
+            display: flex;
+        }
+        .poster-modal-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            background: #fff;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .poster-modal-content img {
+            max-width: 100%;
+            max-height: calc(90vh - 110px);
+            width: auto;
+            height: auto;
+            border-radius: 6px;
+            object-fit: contain;
+        }
+        .poster-modal-caption {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #1B5E20;
+            text-align: center;
+        }
+        .poster-modal-actions {
+            margin-top: 8px;
+            display: flex;
+            gap: 10px;
+        }
+        .poster-modal-actions a {
+            font-size: 0.9em;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .poster-modal-actions a:hover {
+            text-decoration: underline;
+        }
+        .poster-modal-close {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: #4CAF50;
+            color: #fff;
+            font-size: 20px;
+            line-height: 36px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .poster-modal-close:hover {
+            background: #1B5E20;
+        }
         /* --- Responsywność (dla telefonów i tabletów) --- */
         @media (max-width: 768px) {
             /* Zapewnienie marginesów na krawędziach ekranu */
@@ -236,27 +316,27 @@
     <div class="main-content-wrapper">
         <div class="container">
         
-            <h2 id="plakaty"> Plakaty Psychoedukacyjne (Kliknij, aby pobrać/zobaczyć)</h2>
+            <h2 id="plakaty"> Plakaty Psychoedukacyjne (Kliknij, aby zobaczyć podgląd)</h2>
             
             <ul>
          
 
                 <li>
-                    <a href=" psychoedukacja/3.png" target="_blank" class="poster-item-link">
+                    <a href="psychoedukacja/3.png" target="_blank" class="poster-item-link">
                         Emocje
                     </a>
                     <p class="poster-description">Do czego potrzebujesz emocji? Co oznacza to, że się pojawiają?</p>
                 </li>
                 
                 <li>
-                    <a href=" psychoedukacja/2.png" target="_blank" class="poster-item-link">
+                    <a href="psychoedukacja/2.png" target="_blank" class="poster-item-link">
                         Poznawczo Behawioralne ABC
                     </a>
                     <p class="poster-description">Graficzne przedstawienie wzajemnego wpływu myśli, uczuć i zachowań w kontekście Terapii Poznawczo-Behawioralnej.</p>
                 </li>
 
                 <li>
-                    <a href=" psychoedukacja/4.png" target="_blank" class="poster-item-link">
+                    <a href="psychoedukacja/4.png" target="_blank" class="poster-item-link">
                         Zniekształcenia poznawcze
                     </a>
                     <p class="poster-description">Sprawdź jakie są pułapki myślowe.</p>
@@ -312,7 +392,19 @@
             </ul>
 
         </div>
-    </div>    
+    </div>
+
+    <!-- Modal / Lightbox do podglądu plakatów na tej samej stronie -->
+    <div id="poster-modal" class="poster-modal" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="poster-modal-content">
+            <button class="poster-modal-close" aria-label="Zamknij podgląd">&times;</button>
+            <img id="poster-modal-img" src="" alt="Podgląd plakatu">
+            <div id="poster-modal-caption" class="poster-modal-caption"></div>
+            <div class="poster-modal-actions">
+                <a id="poster-modal-open" href="#" target="_blank" rel="noopener">Otwórz w pełnym rozmiarze</a>
+            </div>
+        </div>
+    </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const toggles = document.querySelectorAll('.toggle-article');
@@ -336,6 +428,49 @@
                         content.classList.add('show');
                     }
                 });
+            });
+
+            // --- Podgląd plakatów na tej samej stronie (lightbox) ---
+            const modal = document.getElementById('poster-modal');
+            const modalImg = document.getElementById('poster-modal-img');
+            const modalCaption = document.getElementById('poster-modal-caption');
+            const modalOpen = document.getElementById('poster-modal-open');
+            const modalClose = modal.querySelector('.poster-modal-close');
+
+            function openPosterModal(src, title) {
+                modalImg.src = src;
+                modalImg.alt = title || 'Podgląd plakatu';
+                modalCaption.textContent = title || '';
+                modalOpen.href = src;
+                modal.classList.add('open');
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closePosterModal() {
+                modal.classList.remove('open');
+                modal.setAttribute('aria-hidden', 'true');
+                modalImg.src = '';
+                document.body.style.overflow = '';
+            }
+
+            document.querySelectorAll('.poster-item-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openPosterModal(this.getAttribute('href'), this.textContent.trim());
+                });
+            });
+
+            modalClose.addEventListener('click', closePosterModal);
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closePosterModal();
+                }
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.classList.contains('open')) {
+                    closePosterModal();
+                }
             });
         });
     </script>
