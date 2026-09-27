@@ -268,6 +268,39 @@
         .poster-modal-close:hover {
             background: #1B5E20;
         }
+
+        /* --- Klikalne kafelki: linki i artykuły --- */
+        .link-tile {
+            cursor: pointer;
+        }
+        .article-tile {
+            cursor: zoom-in;
+        }
+        /* --- Modal do artykułów (tekstowy, jak plakaty) --- */
+        #article-modal .poster-modal-content {
+            max-width: 700px;
+            width: 90vw;
+            align-items: stretch;
+            text-align: left;
+        }
+        .article-modal-title {
+            color: #1B5E20;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+        .article-modal-date {
+            font-size: 0.85em;
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+        .article-modal-body {
+            font-size: 0.95em;
+            color: #333;
+            line-height: 1.6;
+            overflow-y: auto;
+            max-height: calc(90vh - 150px);
+        }
         /* --- Responsywność (dla telefonów i tabletów) --- */
         @media (max-width: 768px) {
             /* Zapewnienie marginesów na krawędziach ekranu */
@@ -355,11 +388,12 @@
             </ul>
             <h2 id="linki"> Polecane Linki do Zaufanych Źródeł</h2>
 
-            <ul class="link-list"> <li>
+            <ul class="link-list">
+                <li class="link-tile">
                     <img src="logo-pttpb.png" alt="Logo PTTPB" class="resource-icon">
                     <a href="https://www.pttpb.pl/" target="_blank" class="resource-title">PTTPB</a>
                     </li>
-                <li>
+                <li class="link-tile">
                     <img src="icon-telefon.png" alt="Ikona Telefonu Zaufania" class="resource-icon">
                     <a href="https://116sos.pl" target="_blank" class="resource-title">Telefon Zaufania</a>
                 </li>
@@ -375,10 +409,10 @@
                 </li>
             </ul>
 
-            <h2 id="artykuly"> Polecane Artykuły i Wpisy (Kliknij, aby rozwinąć)</h2>
+            <h2 id="artykuly"> Polecane Artykuły i Wpisy (Kliknij, aby zobaczyć podgląd)</h2>
 
             <ul>
-                <li>
+                <li class="article-tile">
                     <span class="toggle-article">Jak działa CBT? Podstawowe założenia terapii poznawczo-behawioralnej</span>
                     <span class="article-date">Opublikowano: 10.11.2025</span>
                     
@@ -410,30 +444,24 @@ W praktyce terapia opiera się na partnerskiej współpracy, w której razem z t
             </div>
         </div>
     </div>
+
+    <!-- Modal do podglądu artykułów (jak plakaty, zamiast rozwijania) -->
+    <div id="article-modal" class="poster-modal" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="poster-modal-content">
+            <button class="poster-modal-close" aria-label="Zamknij podgląd">&times;</button>
+            <div id="article-modal-title" class="article-modal-title"></div>
+            <div id="article-modal-date" class="article-modal-date"></div>
+            <div id="article-modal-body" class="article-modal-body"></div>
+        </div>
+    </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const toggles = document.querySelectorAll('.toggle-article');
-
-            toggles.forEach(toggle => {
-                toggle.addEventListener('click', function() {
-                    // Znajduje element .article-content (jest dwa elementy dalej)
-                    // Sprawdzamy, czy następny element (article-date) istnieje, jeśli nie, bierzemy kolejny element
-                    const dateElement = this.nextElementSibling;
-                    let content;
-
-                    if (dateElement && dateElement.classList.contains('article-date')) {
-                        content = dateElement.nextElementSibling;
-                    } else {
-                        content = dateElement; // Bierzemy element, który jest od razu po toggle
-                    }
-
-                    if (content.classList.contains('show')) {
-                        content.classList.remove('show');
-                    } else {
-                        content.classList.add('show');
-                    }
-                });
-            });
+            function lockScroll() { document.body.style.overflow = 'hidden'; }
+            function unlockScroll() {
+                if (!document.querySelector('.poster-modal.open')) {
+                    document.body.style.overflow = '';
+                }
+            }
 
             // --- Podgląd plakatów na tej samej stronie (lightbox) ---
             const modal = document.getElementById('poster-modal');
@@ -449,14 +477,14 @@ W praktyce terapia opiera się na partnerskiej współpracy, w której razem z t
                 modalOpen.href = src;
                 modal.classList.add('open');
                 modal.setAttribute('aria-hidden', 'false');
-                document.body.style.overflow = 'hidden';
+                lockScroll();
             }
 
             function closePosterModal() {
                 modal.classList.remove('open');
                 modal.setAttribute('aria-hidden', 'true');
                 modalImg.src = '';
-                document.body.style.overflow = '';
+                unlockScroll();
             }
 
             document.querySelectorAll('.poster-tile').forEach(tile => {
@@ -486,9 +514,96 @@ W praktyce terapia opiera się na partnerskiej współpracy, w której razem z t
                     closePosterModal();
                 }
             });
+
+            // --- Polecane linki: cały kafelek klikalny (jak plakaty) ---
+            document.querySelectorAll('.link-tile').forEach(tile => {
+                const link = tile.querySelector('a.resource-title, a');
+                if (!link) return;
+                const url = link.getAttribute('href');
+                tile.setAttribute('tabindex', '0');
+                tile.setAttribute('role', 'link');
+                tile.setAttribute('aria-label', 'Otwórz: ' + link.textContent.trim());
+
+                tile.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.open(url, '_blank', 'noopener');
+                });
+                tile.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        window.open(url, '_blank', 'noopener');
+                    }
+                });
+            });
+
+            // --- Artykuły: podgląd w modalu jak plakaty (zamiast rozwijania) ---
+            const articleModal = document.getElementById('article-modal');
+            const articleTitle = document.getElementById('article-modal-title');
+            const articleDate = document.getElementById('article-modal-date');
+            const articleBody = document.getElementById('article-modal-body');
+            const articleClose = articleModal.querySelector('.poster-modal-close');
+
+            function openArticleModal(title, date, html) {
+                articleTitle.textContent = title || '';
+                articleDate.textContent = date || '';
+                articleBody.innerHTML = html || '';
+                articleModal.classList.add('open');
+                articleModal.setAttribute('aria-hidden', 'false');
+                lockScroll();
+            }
+
+            function closeArticleModal() {
+                articleModal.classList.remove('open');
+                articleModal.setAttribute('aria-hidden', 'true');
+                unlockScroll();
+            }
+
+            document.querySelectorAll('.article-tile').forEach(tile => {
+                const titleEl = tile.querySelector('.toggle-article');
+                const dateEl = tile.querySelector('.article-date');
+                const contentEl = tile.querySelector('.article-content');
+                if (!titleEl || !contentEl) return;
+                tile.setAttribute('tabindex', '0');
+                tile.setAttribute('role', 'button');
+                tile.setAttribute('aria-label', 'Zobacz podgląd: ' + titleEl.textContent.trim());
+
+                const openFromTile = (e) => {
+                    e.preventDefault();
+                    openArticleModal(
+                        titleEl.textContent.trim(),
+                        dateEl ? dateEl.textContent.trim() : '',
+                        contentEl.innerHTML
+                    );
+                };
+
+                tile.addEventListener('click', openFromTile);
+                tile.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openArticleModal(
+                            titleEl.textContent.trim(),
+                            dateEl ? dateEl.textContent.trim() : '',
+                            contentEl.innerHTML
+                        );
+                    }
+                });
+            });
+
+            articleClose.addEventListener('click', closeArticleModal);
+            articleModal.addEventListener('click', function(e) {
+                if (e.target === articleModal) {
+                    closeArticleModal();
+                }
+            });
+
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && modal.classList.contains('open')) {
-                    closePosterModal();
+                if (e.key === 'Escape') {
+                    if (modal.classList.contains('open')) {
+                        closePosterModal();
+                    }
+                    if (articleModal.classList.contains('open')) {
+                        closeArticleModal();
+                    }
                 }
             });
         });
