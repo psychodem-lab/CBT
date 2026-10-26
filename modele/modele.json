@@ -1,0 +1,376 @@
+[
+  {
+    "id": "clark_panic",
+    "title": "Model Paniki (D. Clark)",
+    "category": "Lęk / Somatyzacja",
+    "description": "Błędne koło paniki wynikające z katastroficznej interpretacji łagodnych doznań z ciała.",
+    "nodes": [
+      {
+        "id": 1,
+        "type": "trigger",
+        "label": "Bodziec Wyzwalający",
+        "patientText": "Szybkie wejście po schodach / uczucie gorąca"
+      },
+      {
+        "id": 2,
+        "type": "thought",
+        "label": "Postrzegane Zagrożenie",
+        "patientText": "Coś jest nie tak z moim sercem!"
+      },
+      {
+        "id": 3,
+        "type": "emotion",
+        "label": "Lęk / Przerażenie",
+        "patientText": "Narastająca panika, poczucie utraty kontroli"
+      },
+      {
+        "id": 4,
+        "type": "physiology",
+        "label": "Doznania z Ciała",
+        "patientText": "Kołatanie serca, duszność, zawroty głowy"
+      },
+      {
+        "id": 5,
+        "type": "thought",
+        "label": "Katastroficzna Interpretacja",
+        "patientText": "Zaraz dostanę zawału lub zemdleję!"
+      },
+      {
+        "id": 6,
+        "type": "behavior",
+        "label": "Zachowania Zabezpieczające",
+        "patientText": "Ucieczka, siadanie na ziemi, mierzenie tętna"
+      }
+    ],
+    "edges": [
+      {
+        "from": 1,
+        "to": 2,
+        "label": "WYZWALA",
+        "type": "NASILA"
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "label": "NASILA",
+        "type": "NASILA"
+      },
+      {
+        "from": 3,
+        "to": 4,
+        "label": "WYWOŁUJE",
+        "type": "NASILA"
+      },
+      {
+        "from": 4,
+        "to": 5,
+        "label": "INTERPRETUJE",
+        "type": "NASILA"
+      },
+      {
+        "from": 5,
+        "to": 3,
+        "label": "WZMOCNIENIE KOŁA",
+        "type": "NASILA"
+      },
+      {
+        "from": 6,
+        "to": 5,
+        "label": "BRAK DISPROOF",
+        "type": "PODTRZYMUJE"
+      }
+    ]
+  },
+  {
+    "id": "beck_depression",
+    "title": "Triada Depresyjna i Wycofanie (Beck)",
+    "category": "Depresja",
+    "description": "Triada poznawcza (Ja, Świat, Przyszłość) prowadząca do anhedonii i wycofania.",
+    "nodes": [
+      {
+        "id": 1,
+        "type": "vulnerability",
+        "label": "Przekonanie Kluczowe",
+        "patientText": "Jestem do niczego / Nie nadaję się"
+      },
+      {
+        "id": 2,
+        "type": "trigger",
+        "label": "Sytuacja / Porażka",
+        "patientText": "Trudne zadanie w pracy"
+      },
+      {
+        "id": 3,
+        "type": "thought",
+        "label": "Negatywne Myśli (Triada)",
+        "patientText": "Nie dam rady, nikt mi nie pomoże, to bez sensu"
+      },
+      {
+        "id": 4,
+        "type": "emotion",
+        "label": "Smutek / Przygnębienie",
+        "patientText": "Pustka, brak energii, poczucie winy"
+      },
+      {
+        "id": 5,
+        "type": "behavior",
+        "label": "Wycofanie Behawioralne",
+        "patientText": "Rezygnacja z aktywności, leżenie w łóżku"
+      },
+      {
+        "id": 6,
+        "type": "consequence",
+        "label": "Brak Pozytywnych Wzmocnień",
+        "patientText": "Poczucie izolacji i narastająca anhedonia"
+      }
+    ],
+    "edges": [
+      {
+        "from": 1,
+        "to": 3,
+        "label": "AKTYWACJA",
+        "type": "NASILA"
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "label": "WYZWALA",
+        "type": "NASILA"
+      },
+      {
+        "from": 3,
+        "to": 4,
+        "label": "NASILA",
+        "type": "NASILA"
+      },
+      {
+        "from": 4,
+        "to": 5,
+        "label": "PROWADZI DO",
+        "type": "NASILA"
+      },
+      {
+        "from": 5,
+        "to": 6,
+        "label": "SKUTKUJE",
+        "type": "NASILA"
+      },
+      {
+        "from": 6,
+        "to": 3,
+        "label": "POTWIERDZA",
+        "type": "NASILA"
+      }
+    ]
+  },
+  {
+    "id": "social_anxiety_clark",
+    "title": "Lęk Społeczny (Clark & Beck)",
+    "category": "Zaburzenia lękowe",
+    "description": "Skupienie uwagi na sobie jako obiekcie społecznym i przetwarzanie 'ja jako obiektu'.",
+    "nodes": [
+      {
+        "id": 1,
+        "type": "trigger",
+        "label": "Sytuacja Społeczna",
+        "patientText": "Wystąpienie na zebraniu zespołu"
+      },
+      {
+        "id": 2,
+        "type": "thought",
+        "label": "Ocena Zagrożenia",
+        "patientText": "Pomyślą, że jestem głupi i zestresowany"
+      },
+      {
+        "id": 3,
+        "type": "behavior",
+        "label": "Self-Focused Attention",
+        "patientText": "Skanowanie swojego głosu i drżenia rąk"
+      },
+      {
+        "id": 4,
+        "type": "physiology",
+        "label": "Objawy Somatyczne",
+        "patientText": "Czerwienienie się, pocenie, drżenie"
+      },
+      {
+        "id": 5,
+        "type": "behavior",
+        "label": "Zachowania Zabezpieczające",
+        "patientText": "Mówienie bardzo szybko, unikanie wzroku"
+      }
+    ],
+    "edges": [
+      {
+        "from": 1,
+        "to": 2,
+        "label": "WYZWALA",
+        "type": "NASILA"
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "label": "KIERUJE UWAGĘ",
+        "type": "NASILA"
+      },
+      {
+        "from": 3,
+        "to": 4,
+        "label": "NASILA DOZNANIA",
+        "type": "NASILA"
+      },
+      {
+        "from": 4,
+        "to": 2,
+        "label": "DOWÓD DLA MYŚLI",
+        "type": "NASILA"
+      },
+      {
+        "from": 5,
+        "to": 2,
+        "label": "PODTRZYMUJE LĘK",
+        "type": "PODTRZYMUJE"
+      }
+    ]
+  },
+  {
+    "id": "ocd_rachman",
+    "title": "Model Natręctw OCD (Rachman / Salkovskis)",
+    "category": "OCD",
+    "description": "Obsesje i kompulsje napędzane fuzją poznawczą i nadmierną odpowiedzialnością.",
+    "nodes": [
+      {
+        "id": 1,
+        "type": "trigger",
+        "label": "Myśl Intruzywna",
+        "patientText": "Co jeśli nie wyłączyłem gazu i będzie pożar?"
+      },
+      {
+        "id": 2,
+        "type": "thought",
+        "label": "Interpretacja (Nadodpowiedzialność)",
+        "patientText": "Jeśli coś się stanie, to będzie moja wina!"
+      },
+      {
+        "id": 3,
+        "type": "emotion",
+        "label": "Dyskomfort / Niepokój",
+        "patientText": "Silny lęk, poczucie zagrożenia"
+      },
+      {
+        "id": 4,
+        "type": "behavior",
+        "label": "Kompulsja / Sprawdzanie",
+        "patientText": "Wracanie do domu 5 razy i dotykanie kurka"
+      },
+      {
+        "id": 5,
+        "type": "consequence",
+        "label": "Chwilowa Ulga",
+        "patientText": "Spadek lęku na 10 minut, wzmocnienie nawyku"
+      }
+    ],
+    "edges": [
+      {
+        "from": 1,
+        "to": 2,
+        "label": "WYZWALA",
+        "type": "NASILA"
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "label": "GENERUJE",
+        "type": "NASILA"
+      },
+      {
+        "from": 3,
+        "to": 4,
+        "label": "ZMUSZA DO",
+        "type": "NASILA"
+      },
+      {
+        "from": 4,
+        "to": 5,
+        "label": "DAJE",
+        "type": "OSŁABIA"
+      },
+      {
+        "from": 5,
+        "to": 1,
+        "label": "WZMOCNIENIE PĘTLI",
+        "type": "NASILA"
+      }
+    ]
+  },
+  {
+    "id": "act_hexaflex",
+    "title": "Model Sztywności Psychologicznej (ACT Hexaflex)",
+    "category": "Trzecia Fala / ACT",
+    "description": "6 procesów sztywności poznawczej i unikania doświadczania.",
+    "nodes": [
+      {
+        "id": 1,
+        "type": "behavior",
+        "label": "Unikanie Doświadczania",
+        "patientText": "Tłumienie smutku i sięganie po alkohol"
+      },
+      {
+        "id": 2,
+        "type": "thought",
+        "label": "Fuzja Poznawcza",
+        "patientText": "Moje myśli to stuprocentowe fakty"
+      },
+      {
+        "id": 3,
+        "type": "trigger",
+        "label": "Brak Uważności / Przeszłość",
+        "patientText": "Ciągłe zamartwianie się o przyszłość"
+      },
+      {
+        "id": 4,
+        "type": "vulnerability",
+        "label": "Przywiązanie do Ja-Koncept",
+        "patientText": "Muszę zawsze pokazywać, że jestem silny"
+      },
+      {
+        "id": 5,
+        "type": "consequence",
+        "label": "Brak Jasności Wartości",
+        "patientText": "Zapomnienie o własnych celach i pasjach"
+      },
+      {
+        "id": 6,
+        "type": "behavior",
+        "label": "Bezowocne Działanie",
+        "patientText": "Działanie na autopilocie"
+      }
+    ],
+    "edges": [
+      {
+        "from": 1,
+        "to": 6,
+        "label": "PROWADZI DO",
+        "type": "NASILA"
+      },
+      {
+        "from": 2,
+        "to": 1,
+        "label": "NAPĘDZA",
+        "type": "NASILA"
+      },
+      {
+        "from": 3,
+        "to": 2,
+        "label": "WZMACNIA",
+        "type": "NASILA"
+      },
+      {
+        "from": 4,
+        "to": 5,
+        "label": "BLOKUJE",
+        "type": "NASILA"
+      }
+    ]
+  }
+]
