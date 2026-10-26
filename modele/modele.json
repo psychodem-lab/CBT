@@ -371,6 +371,103 @@
         "label": "BLOKUJE",
         "type": "NASILA"
       }
-    ]
   }
+  {
+  "id": "ellis",
+  "title": "Model ABC Ellis",
+  "category": "Ogólne",
+  "description": "",
+  "nodes": [
+    {
+      "id": 1793008268718,
+      "type": "trigger",
+      "label": "A Aktywujące wydarzenie, sytuacja (zewnętrzna, wewnętrzna)",
+      "patientText": ""
+    },
+    {
+      "id": 1793008279982,
+      "type": "trigger",
+      "label": "B Przekonania na temat wydarzenia",
+      "patientText": ""
+    },
+    {
+      "id": 1793008297216,
+      "type": "trigger",
+      "label": "Racjonalne",
+      "patientText": ""
+    },
+    {
+      "id": 1793008302572,
+      "type": "trigger",
+      "label": "Irracjonalne",
+      "patientText": ""
+    },
+    {
+      "id": 1793008316164,
+      "type": "trigger",
+      "label": "C Konsekwencje",
+      "patientText": ""
+    },
+    {
+      "id": 1793008328471,
+      "type": "trigger",
+      "label": "Pozytywne",
+      "patientText": ""
+    },
+    {
+      "id": 1793008337067,
+      "type": "trigger",
+      "label": "Negatywne dysfunkcjonalne",
+      "patientText": ""
+    },
+    {
+      "id": 1793008345812,
+      "type": "trigger",
+      "label": "Negatywne funkcjonalne",
+      "patientText": ""
+    }
+  ],
+  "edges": [
+    {
+      "from": 1793008268718,
+      "to": 1793008279982,
+      "label": "NASILA",
+      "type": "NASILA"
+    },
+    {
+      "from": 1793008279982,
+      "to": 1793008316164,
+      "label": "NASILA",
+      "type": "NASILA"
+    },
+    {
+      "from": 1793008279982,
+      "to": 1793008297216,
+      "label": "NASILA",
+      "type": "NASILA"
+    },
+    {
+      "from": 1793008279982,
+      "to": 1793008302572,
+      "label": "NASILA",
+      "type": "NASILA"
+    },
+    {
+      "from": 1793008316164,
+      "to": 1793008328471,
+      "label": "NASILA",
+      "type": "NASILA"
+    },
+    {
+      "from": 1793008316164,
+      "to": 1793008337067,
+      "label": "NASILA",
+      "type": "NASILA"
+    },
+    {
+      "from": 1793008316164,
+      "to": 1793008345812,
+      "label": "NASILA",
+      "type": "NASILA"
+    }
 ]
