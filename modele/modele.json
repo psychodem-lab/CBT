@@ -219,4 +219,56 @@
       { "id": 2, "type": "thought", "label": "Przetwarzanie poznawcze podczas traumy", "patientText": "Poczucie bezradności, dysocjacja w trakcie wypadku", "x": 250, "y": -200 },
       { "id": 3, "type": "thought", "label": "Natura pamięci traumy", "patientText": "Brak spójnej narracji, żywe przebłyski (flashbacki)", "x": -150, "y": -60 },
       { "id": 4, "type": "thought", "label": "Negatywna ocena traumy i konsekwencji", "patientText": "Nigdzie nie jestem bezpieczny / Świat jest zły", "x": 150, "y": -60 },
-      {
+      { "id": 5, "type": "emotion", "label": "Aktualne zagrożenie (Intruzje, pobudzenie)", "patientText": "Koszmary nocne, ciągłe czuwanie", "x": 0, "y": 80 },
+      { "id": 6, "type": "behavior", "label": "Strategie kontroli zagrożenia i objawów", "patientText": "Unikanie przypominajek, zażywanie leków/alkoholu", "x": 0, "y": 220 }
+    ],
+    "edges": [
+      { "from": 1, "to": 3, "label": "WPLYWA NA", "type": "NASILA" },
+      { "from": 2, "to": 4, "label": "FORMUŁUJE", "type": "NASILA" },
+      { "from": 3, "to": 5, "label": "WYWOŁUJE", "type": "NASILA" },
+      { "from": 4, "to": 5, "label": "WZMACNIA", "type": "NASILA" },
+      { "from": 5, "to": 6, "label": "PROWADZI DO", "type": "NASILA" },
+      { "from": 6, "to": 3, "label": "UNEMOŻLIWIA PRETWARZANIE", "type": "PODTRZYMUJE" }
+    ]
+  },
+  {
+    "id": "fennell_low_self_esteem_1997",
+    "title": "Model niskiej samooceny (Fennell, 1997)",
+    "category": "Samoocena",
+    "description": "Powstawanie oraz podtrzymywanie negatywnej oceny własnej wartości poprzez sztywne zasady i przekonania.",
+    "nodes": [
+      { "id": 1, "type": "vulnerability", "label": "Wczesne doświadczenia życiowe", "patientText": "Brak chwalenia, krytyczni rodzice, odrzucenie", "x": 0, "y": -260 },
+      { "id": 2, "type": "vulnerability", "label": "Kwestia kluczowa (Globalna ocena siebie)", "patientText": "Jestem głupi / Niewartościowy", "x": 0, "y": -160 },
+      { "id": 3, "type": "thought", "label": "Specyficzne dysfunkcjonalne założenia", "patientText": "Jeśli zawsze będę idealny, nikt nie odrzuci mojej osoby", "x": 0, "y": -60 },
+      { "id": 4, "type": "trigger", "label": "Wydarzenie krytyczne", "patientText": "Popełnienie drobnego błędu w projekcie", "x": 0, "y": 40 },
+      { "id": 5, "type": "thought", "label": "Samokrytyczne myśli / Lękowe przewidywania", "patientText": "Zaraz wszyscy zobaczą, jaki jestem nieudolny", "x": -160, "y": 150 },
+      { "id": 6, "type": "behavior", "label": "Dysfunkcjonalne zachowanie / Depresja", "patientText": "Wycofanie się, nadmierne sprawdzanie praca", "x": 160, "y": 150 },
+      { "id": 7, "type": "consequence", "label": "Potwierdzenie kwestii kluczowej", "patientText": "Widzisz? Naprawdę do niczego się nie nadajesz", "x": 0, "y": 260 }
+    ],
+    "edges": [
+      { "from": 1, "to": 2, "label": "FORMUŁUJE", "type": "NASILA" },
+      { "from": 2, "to": 3, "label": "TWORZY OBRONĘ", "type": "NASILA" },
+      { "from": 3, "to": 4, "label": "ZŁAMANIE ZASADY", "type": "NASILA" },
+      { "from": 4, "to": 5, "label": "AKTYWUJE MYŚLI", "type": "NASILA" },
+      { "from": 4, "to": 6, "label": "WYZWALA REAKCJĘ", "type": "NASILA" },
+      { "from": 5, "to": 7, "label": "POTWIERDZA", "type": "NASILA" },
+      { "from": 6, "to": 7, "label": "POGŁĘBIA", "type": "NASILA" },
+      { "from": 7, "to": 2, "label": "UTRWALA BRAK WARTOŚCI", "type": "PODTRZYMUJE" }
+    ]
+  },
+  {
+    "id": "ellis_abc_model",
+    "title": "Podstawowy model ABC (Ellis / CBT)",
+    "category": "Podstawy CBT",
+    "description": "Klasyczny model powiązania zdarzenia (A), systemu przekonań i myśli (B) oraz konsekwencji emocjonalnych i zachowania (C).",
+    "nodes": [
+      { "id": 1, "type": "trigger", "label": "A - Zdarzenie aktywujące (Antecedent)", "patientText": "Brak odpowiedzi na wiadomość SMS od znajomego", "x": -250, "y": 0 },
+      { "id": 2, "type": "thought", "label": "B - Przekonania i Myśli (Beliefs)", "patientText": "Pewnie mnie nie lubi i ma mnie dość", "x": 0, "y": 0 },
+      { "id": 3, "type": "consequence", "label": "C - Konsekwencje (Consequences)", "patientText": "Emocjonalne: Smutek; Behawioralne: Unikanie dalszego kontaktu", "x": 250, "y": 0 }
+    ],
+    "edges": [
+      { "from": 1, "to": 2, "label": "WYZWALA MYŚLI", "type": "NASILA" },
+      { "from": 2, "to": 3, "label": "POWODUJE REAKCJĘ", "type": "NASILA" }
+    ]
+  }
+]
