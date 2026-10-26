@@ -634,6 +634,11 @@
       </button>
     </div>
     <div class="modal-body">
+      <!-- WYSZUKIWARKA MODELI -->
+      <div class="field" style="margin-bottom: 4px;">
+        <label for="model-search-input">Szukaj szablonu</label>
+        <input type="text" id="model-search-input" placeholder="Wpisz nazwę, kogo dotyczy lub kategorię (np. lęk, depresja, panic)..." oninput="filterModelCatalog()">
+      </div>
       <div class="models-grid" id="models-grid-container"></div>
     </div>
     <div class="modal-foot">
@@ -1029,21 +1034,51 @@
   }
 
   /* =====================================================
-     KATALOG SZABLONÓW
+     KATALOG SZABLONÓW I FILTROWANIE
      ===================================================== */
   function openModelCatalogModal() {
+    const searchInput = document.getElementById('model-search-input');
+    if (searchInput) {
+      searchInput.value = "";
+    }
     renderModelCatalogModalGrid();
     document.getElementById('modelCatalogModal').classList.remove('hidden');
+    if (searchInput) {
+      setTimeout(() => searchInput.focus(), 100);
+    }
   }
+
   function closeModelCatalogModal() {
     document.getElementById('modelCatalogModal').classList.add('hidden');
   }
 
-  function renderModelCatalogModalGrid() {
+  function filterModelCatalog() {
+    const query = document.getElementById('model-search-input').value;
+    renderModelCatalogModalGrid(query);
+  }
+
+  function renderModelCatalogModalGrid(filterText = '') {
     const container = document.getElementById('models-grid-container');
     container.innerHTML = "";
 
-    modelDatabase.forEach(m => {
+    const term = filterText.toLowerCase().trim();
+    const filtered = modelDatabase.filter(m => {
+      const title = (m.title || '').toLowerCase();
+      const category = (m.category || '').toLowerCase();
+      const desc = (m.description || '').toLowerCase();
+      return title.includes(term) || category.includes(term) || desc.includes(term);
+    });
+
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 24px; color: var(--ink-2);">
+          Brak szablonów spełniających kryteria wyszukiwania.
+        </div>
+      `;
+      return;
+    }
+
+    filtered.forEach(m => {
       const card = document.createElement('div');
       card.className = "model-card";
       card.innerHTML = `
