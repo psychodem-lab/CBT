@@ -148,9 +148,31 @@
   .btn-quiet { border-color: transparent; background: transparent; }
   .btn-quiet:hover { background: var(--surface-2); border-color: transparent; }
   .btn-sm { min-height: 36px; padding: 6px 12px; font-size: .88rem; }
-  .btn-icon-only { padding: 8px 12px; }
   .btn-block { width: 100%; }
   .btn svg { flex: none; }
+
+  /* Zintegrowana grupa przycisków szablonów */
+  .btn-split-group {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--accent);
+  }
+  .btn-split-group .btn {
+    border-radius: 0;
+    border: none;
+  }
+  .btn-split-group .btn-main {
+    padding-right: 12px;
+    border-right: 1px solid rgba(255, 255, 255, 0.25);
+  }
+  .btn-split-group .btn-add {
+    padding: 8px 12px;
+  }
+  .btn-split-group .btn-add:hover {
+    background: var(--accent-hover);
+  }
 
   /* ---------- Menu Plik ---------- */
   .menu { position: relative; }
@@ -366,13 +388,13 @@
     </div>
 
     <div class="toolbar">
-      <div style="display:flex; gap:4px;">
-        <button class="btn btn-primary" onclick="openModelCatalogModal()">
+      <div class="btn-split-group">
+        <button class="btn btn-primary btn-main" onclick="openModelCatalogModal()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/></svg>
           Szablony modeli
         </button>
-        <button class="btn btn-primary btn-icon-only" onclick="openCreateModelModal()" title="Zapisz obecny model jako nowy szablon JSON" aria-label="Stwórz nowy szablon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <button class="btn btn-primary btn-add" onclick="openCreateModelModal()" title="Zapisz obecny układ elementów jako nowy szablon" aria-label="Zapisz nowy szablon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </button>
       </div>
 
@@ -528,7 +550,6 @@
           <span id="node-count-badge" class="count-badge">0 elementów</span>
         </div>
         <div class="canvas-actions">
-          <button class="btn btn-sm" onclick="togglePhysics()" id="physics-btn" aria-pressed="true">Ruch elementów: włączony</button>
           <button class="btn btn-sm" onclick="resetLayout()">Wyśrodkuj</button>
           <button class="btn btn-sm btn-danger" onclick="clearCanvas()">Wyczyść</button>
         </div>
@@ -628,7 +649,7 @@
     <div class="modal-head">
       <div>
         <h3 id="create-model-title">Zapisz jako nowy szablon</h3>
-        <p>Wprowadź opis modelu, aby wygenerować strukturę JSON do pliku modele.json.</p>
+        <p>Wprowadź opis modelu, aby wygenerować strukturę JSON wraz z pozycjami elementów.</p>
       </div>
       <button class="icon-btn" onclick="closeCreateModelModal()" aria-label="Zamknij">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
@@ -737,7 +758,6 @@
   let nodesDataset = new vis.DataSet([]);
   let edgesDataset = new vis.DataSet([]);
   let networkInstance = null;
-  let isPhysicsEnabled = true;
   let restoreThemeAfterPrint = null;
 
   let patientSessionData = {
@@ -769,10 +789,10 @@
     applyTheme(cur === 'dark' ? 'light' : 'dark');
   }
 
-  function nodeObject(id, type, labelRaw, patientText) {
+  function nodeObject(id, type, labelRaw, patientText, x, y) {
     const c = palette(type);
     const ink = css('--ink');
-    return {
+    const obj = {
       id,
       cbtType: type,
       labelRaw,
@@ -786,6 +806,9 @@
       },
       font: { color: c.text }
     };
+    if (x !== undefined && x !== null) obj.x = x;
+    if (y !== undefined && y !== null) obj.y = y;
+    return obj;
   }
 
   function edgeObject(from, to, label, rel) {
@@ -804,7 +827,7 @@
       edges: { font: { color: css('--ink-2'), background: css('--canvas') } }
     });
     nodesDataset.update(nodesDataset.get().map(n => {
-      const o = nodeObject(n.id, n.cbtType || 'thought', n.labelRaw || '', n.patientText || '');
+      const o = nodeObject(n.id, n.cbtType || 'thought', n.labelRaw || '', n.patientText || '', n.x, n.y);
       if (!n.labelRaw) { delete o.label; delete o.labelRaw; }
       return o;
     }));
@@ -855,11 +878,7 @@
         hoverWidth: 1.5
       },
       physics: {
-        enabled: true,
-        solver: 'forceAtlas2Based',
-        forceAtlas2Based: { gravitationalConstant: -70, centralGravity: 0.008, springLength: 160, springConstant: 0.05, damping: 0.75, avoidOverlap: 0.8 },
-        minVelocity: 0.6,
-        stabilization: { iterations: 250, fit: true }
+        enabled: false // Na stałe wyłączony ruch/fizyka
       },
       interaction: { hover: true, selectConnectedEdges: false, tooltipDelay: 300 }
     };
@@ -968,7 +987,8 @@
 
     if (!label) { showToast("Nazwa elementu nie może być pusta.", "warn"); return; }
 
-    nodesDataset.update(nodeObject(id, type, label, patient));
+    const existingNode = nodesDataset.get(id);
+    nodesDataset.update(nodeObject(id, type, label, patient, existingNode.x, existingNode.y));
     closeEditModal();
     showToast("Zaktualizowano element.");
   }
@@ -998,7 +1018,7 @@
     document.getElementById('print-model-title').innerText = `Model: ${model.title}`;
 
     model.nodes.forEach(n => {
-      nodesDataset.add(nodeObject(n.id, n.type, n.label, n.patientText || ''));
+      nodesDataset.add(nodeObject(n.id, n.type, n.label, n.patientText || '', n.x, n.y));
     });
     model.edges.forEach(e => {
       edgesDataset.add(edgeObject(e.from, e.to, e.label, e.type || 'NASILA'));
@@ -1088,12 +1108,20 @@
     const category = document.getElementById('new-model-category').value.trim() || "Inne";
     const description = document.getElementById('new-model-desc').value.trim() || "";
 
-    const modelNodes = nodesDataset.get().map(n => ({
-      id: n.id,
-      type: n.cbtType || 'thought',
-      label: n.labelRaw || n.label,
-      patientText: n.patientText || ""
-    }));
+    // Pobranie dokładnych pozycji (x, y) z płótna
+    const currentPositions = networkInstance ? networkInstance.getPositions() : {};
+
+    const modelNodes = nodesDataset.get().map(n => {
+      const pos = currentPositions[n.id] || { x: n.x || 0, y: n.y || 0 };
+      return {
+        id: n.id,
+        type: n.cbtType || 'thought',
+        label: n.labelRaw || n.label,
+        patientText: n.patientText || "",
+        x: Math.round(pos.x),
+        y: Math.round(pos.y)
+      };
+    });
 
     const modelEdges = edgesDataset.get().map(e => ({
       from: e.from,
@@ -1111,7 +1139,7 @@
       edges: modelEdges
     };
 
-    // Dodanie do lokalnej bazy szablonów, by od razu działał w szablonach
+    // Dodanie do lokalnej bazy szablonów
     const idx = modelDatabase.findIndex(m => m.id === rawId);
     if (idx >= 0) {
       modelDatabase[idx] = newModelObject;
@@ -1120,7 +1148,7 @@
     }
     renderModelCatalogModalGrid();
 
-    // Pokazanie gotowego kody JSON
+    // Pokazanie gotowego kodu JSON z pozycjami
     const jsonString = JSON.stringify(newModelObject, null, 2);
     const outputArea = document.getElementById('generated-json-output');
     outputArea.value = jsonString;
@@ -1132,7 +1160,7 @@
     document.getElementById('current-model-display').innerText = `Model: ${title}`;
     document.getElementById('print-model-title').innerText = `Model: ${title}`;
 
-    showToast("Wygenerowano JSON szablonu!");
+    showToast("Wygenerowano JSON z pozycjami elementów!");
   }
 
   function copyGeneratedJSON() {
@@ -1205,9 +1233,19 @@
 
   function exportSession() {
     updatePatientMeta();
+    const currentPositions = networkInstance ? networkInstance.getPositions() : {};
+    const nodesWithPositions = nodesDataset.get().map(n => {
+      const pos = currentPositions[n.id] || { x: n.x || 0, y: n.y || 0 };
+      return {
+        ...n,
+        x: Math.round(pos.x),
+        y: Math.round(pos.y)
+      };
+    });
+
     const session = {
       metadata: patientSessionData,
-      nodes: nodesDataset.get(),
+      nodes: nodesWithPositions,
       edges: edgesDataset.get()
     };
     downloadJSON(session, `CBT_Sesja_${patientSessionData.patientId || 'Pacjent'}_${patientSessionData.sessionDate}.json`);
@@ -1235,7 +1273,7 @@
         if (session.nodes && session.edges) {
           nodesDataset.clear();
           edgesDataset.clear();
-          nodesDataset.add(session.nodes);
+          nodesDataset.add(session.nodes.map(n => nodeObject(n.id, n.cbtType || n.type || 'thought', n.labelRaw || n.label, n.patientText || '', n.x, n.y)));
           edgesDataset.add(session.edges);
           restyleAll();
           setTimeout(() => networkInstance.fit(), 250);
@@ -1252,14 +1290,6 @@
   /* =====================================================
      STEROWANIE PŁÓTNEM
      ===================================================== */
-  function togglePhysics() {
-    isPhysicsEnabled = !isPhysicsEnabled;
-    networkInstance.setOptions({ physics: { enabled: isPhysicsEnabled } });
-    const btn = document.getElementById('physics-btn');
-    btn.innerText = `Ruch elementów: ${isPhysicsEnabled ? 'włączony' : 'wyłączony'}`;
-    btn.setAttribute('aria-pressed', String(isPhysicsEnabled));
-  }
-
   function resetLayout() { networkInstance.fit({ animation: { duration: 300 } }); }
 
   function clearCanvas() {
