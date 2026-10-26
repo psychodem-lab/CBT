@@ -148,6 +148,7 @@
   .btn-quiet { border-color: transparent; background: transparent; }
   .btn-quiet:hover { background: var(--surface-2); border-color: transparent; }
   .btn-sm { min-height: 36px; padding: 6px 12px; font-size: .88rem; }
+  .btn-icon-only { padding: 8px 12px; }
   .btn-block { width: 100%; }
   .btn svg { flex: none; }
 
@@ -365,10 +366,15 @@
     </div>
 
     <div class="toolbar">
-      <button class="btn btn-primary" onclick="openModelCatalogModal()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/></svg>
-        Szablony modeli
-      </button>
+      <div style="display:flex; gap:4px;">
+        <button class="btn btn-primary" onclick="openModelCatalogModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/></svg>
+          Szablony modeli
+        </button>
+        <button class="btn btn-primary btn-icon-only" onclick="openCreateModelModal()" title="Zapisz obecny model jako nowy szablon JSON" aria-label="Stwórz nowy szablon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
 
       <details class="menu" id="file-menu">
         <summary class="btn" aria-label="Menu plików">
@@ -612,6 +618,52 @@
     <div class="modal-foot">
       <span class="note">Bazę szablonów możesz pobrać i edytować w pliku modele.json.</span>
       <button class="btn" onclick="closeModelCatalogModal()">Zamknij</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: TWORZENIE NOWEGO SZABLONU -->
+<div id="createModelModal" class="modal hidden no-print" role="dialog" aria-modal="true" aria-labelledby="create-model-title">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div>
+        <h3 id="create-model-title">Zapisz jako nowy szablon</h3>
+        <p>Wprowadź opis modelu, aby wygenerować strukturę JSON do pliku modele.json.</p>
+      </div>
+      <button class="icon-btn" onclick="closeCreateModelModal()" aria-label="Zamknij">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label for="new-model-title">Tytuł modelu *</label>
+        <input type="text" id="new-model-title" placeholder="np. Model Zaburzenia Lękowego Uogólnionego (GAD)">
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label for="new-model-id">Identyfikator (ID)</label>
+          <input type="text" id="new-model-id" placeholder="np. gad_beck (opcjonalnie)">
+        </div>
+        <div class="field">
+          <label for="new-model-category">Kategoria</label>
+          <input type="text" id="new-model-category" placeholder="np. Zaburzenia lękowe">
+        </div>
+      </div>
+      <div class="field">
+        <label for="new-model-desc">Opis modelu</label>
+        <textarea id="new-model-desc" rows="2" placeholder="Krótki opis mechanizmu, autorów lub błędnego koła..."></textarea>
+      </div>
+      <div id="json-output-container" class="field hidden">
+        <label for="generated-json-output">Kod JSON szablonu (gotowy do przekopiowania do modele.json):</label>
+        <textarea id="generated-json-output" rows="6" readonly style="font-family: monospace; font-size: 0.85rem; background: var(--surface-2); color: var(--ink);"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-quiet" onclick="closeCreateModelModal()">Zamknij</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-primary" id="btn-save-model" onclick="saveNewModelTemplate()">Zapisz i generuj JSON</button>
+        <button class="btn btn-primary hidden" id="btn-copy-json" onclick="copyGeneratedJSON()">Kopiuj JSON</button>
+      </div>
     </div>
   </div>
 </div>
@@ -999,6 +1051,104 @@
   }
 
   /* =====================================================
+     TWORZENIE I EKSPORT NOWEGO SZABLONU DO JSON
+     ===================================================== */
+  function openCreateModelModal() {
+    if (nodesDataset.length === 0) {
+      showToast("Twój model jest pusty. Dodaj najpierw elementy na płótno.", "warn");
+      return;
+    }
+    document.getElementById('new-model-title').value = "";
+    document.getElementById('new-model-id').value = "";
+    document.getElementById('new-model-category').value = "Ogólne";
+    document.getElementById('new-model-desc').value = "";
+    document.getElementById('json-output-container').classList.add('hidden');
+    document.getElementById('btn-copy-json').classList.add('hidden');
+    document.getElementById('btn-save-model').classList.remove('hidden');
+
+    document.getElementById('createModelModal').classList.remove('hidden');
+    document.getElementById('new-model-title').focus();
+  }
+
+  function closeCreateModelModal() {
+    document.getElementById('createModelModal').classList.add('hidden');
+  }
+
+  function saveNewModelTemplate() {
+    const title = document.getElementById('new-model-title').value.trim();
+    if (!title) {
+      showToast("Wprowadź tytuł modelu.", "warn");
+      return;
+    }
+
+    let rawId = document.getElementById('new-model-id').value.trim();
+    if (!rawId) {
+      rawId = title.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now().toString().slice(-4);
+    }
+    const category = document.getElementById('new-model-category').value.trim() || "Inne";
+    const description = document.getElementById('new-model-desc').value.trim() || "";
+
+    const modelNodes = nodesDataset.get().map(n => ({
+      id: n.id,
+      type: n.cbtType || 'thought',
+      label: n.labelRaw || n.label,
+      patientText: n.patientText || ""
+    }));
+
+    const modelEdges = edgesDataset.get().map(e => ({
+      from: e.from,
+      to: e.to,
+      label: e.label || "",
+      type: inferRel(e)
+    }));
+
+    const newModelObject = {
+      id: rawId,
+      title: title,
+      category: category,
+      description: description,
+      nodes: modelNodes,
+      edges: modelEdges
+    };
+
+    // Dodanie do lokalnej bazy szablonów, by od razu działał w szablonach
+    const idx = modelDatabase.findIndex(m => m.id === rawId);
+    if (idx >= 0) {
+      modelDatabase[idx] = newModelObject;
+    } else {
+      modelDatabase.push(newModelObject);
+    }
+    renderModelCatalogModalGrid();
+
+    // Pokazanie gotowego kody JSON
+    const jsonString = JSON.stringify(newModelObject, null, 2);
+    const outputArea = document.getElementById('generated-json-output');
+    outputArea.value = jsonString;
+
+    document.getElementById('json-output-container').classList.remove('hidden');
+    document.getElementById('btn-copy-json').classList.remove('hidden');
+
+    patientSessionData.activeModelTitle = title;
+    document.getElementById('current-model-display').innerText = `Model: ${title}`;
+    document.getElementById('print-model-title').innerText = `Model: ${title}`;
+
+    showToast("Wygenerowano JSON szablonu!");
+  }
+
+  function copyGeneratedJSON() {
+    const outputArea = document.getElementById('generated-json-output');
+    if (!outputArea.value) return;
+
+    navigator.clipboard.writeText(outputArea.value).then(() => {
+      showToast("Skopiowano kod JSON do schowka!");
+    }).catch(err => {
+      outputArea.select();
+      document.execCommand('copy');
+      showToast("Skopiowano kod JSON do schowka!");
+    });
+  }
+
+  /* =====================================================
      DANE PACJENTA
      ===================================================== */
   function updatePatientMeta() {
@@ -1158,6 +1308,7 @@
     if (e.key === 'Escape') {
       closeEditModal();
       closeModelCatalogModal();
+      closeCreateModelModal();
       document.getElementById('file-menu').open = false;
       return;
     }
@@ -1182,7 +1333,7 @@
   });
 
   // Zamykanie okien po kliknięciu w tło
-  ['editNodeModal', 'modelCatalogModal'].forEach(id => {
+  ['editNodeModal', 'modelCatalogModal', 'createModelModal'].forEach(id => {
     document.getElementById(id).addEventListener('mousedown', function (e) {
       if (e.target === this) this.classList.add('hidden');
     });
